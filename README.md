@@ -1,5 +1,5 @@
 # Homefitness-Ja
-For our project we designed a workout fitness application. We designed this application for the web based platform.This application allows the user to monitor their workout performances and Recommend Excersises.We also incorperate Pose Estimation, where users can be informed about specific areas to help in working out corectly.
+For our project we designed a workout fitness application. We designed this application for the web based platform.This application allows the user to monitor their workout performances and Recommend Excersises.We also incorperate Pose Estimation, where users can be informed about specific areas to help in working out correctly.
 # Excersise Recommendation
 We propose an exercises recommendation algorithm which uses model-free reinforcement learning with neural network function approximation to learn an exercise recommendation policy. The policy directly operates on raw observations of a student's exercise history. Experimental results show that our policy achieves better performance than existing heuristic policy in terms of maximizing students' knowledge level.
 # Knowledge Tracing Model
