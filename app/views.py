@@ -6,21 +6,38 @@ This file creates your application.
 """
 
 from app import app, db, login_manager
-from flask import render_template, request, redirect, url_for, flash
+from flask import render_template, request, redirect, url_for, flash,Response
 from flask_login import login_user, logout_user, current_user, login_required
 from app.forms import LoginForm
 from app.models import UserProfile
 from werkzeug.security import check_password_hash
+#from app.camera import VideoCamera
+import cv2
 
 
 ###
 # Routing for your application.
 ###
+cam = cv2.VideoCapture(0)
 
 @app.route('/')
 def home():
     """Render website's home page."""
     return render_template('home.html')
+@app.route('/rest/')
+def main():
+    return render_template('index.html')
+    
+def stream():
+    while 1 :
+        __,frame = cam.read()
+        imgencode = cv2.imencode('.jpg',frame)[1]
+        strinData = imgencode.tostring()
+        yield (b'--frame\r\n'b'Content-Type: text/plain\r\n\r\n'+strinData+b'\r\n')
+
+@app.route('/video')
+def video():
+    return Response(stream(),mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 @app.route('/about/')
@@ -28,6 +45,19 @@ def about():
     """Render the website's about page."""
     return render_template('about.html')
 
+@app.route('/registration/',methods=["GET","POST"])
+def signup():
+    form=SignUpForm()
+    if request.method == 'POST' :
+        if form.validate_on_submit():
+            user=UserProfile(form.fname.data,form.lname.data,form.age.data,form.weight.data,form.username.data,form.password.data)
+            db.session.add(user)
+            db.session.commit()
+            flash('User Saved', 'success')
+            return redirect(url_for('login'))
+        else:
+            flash_errors(form)
+    return render_template('signup.html',form=form)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():

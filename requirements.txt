@@ -4,11 +4,15 @@
 flask
 Flask-WTF
 Flask-SQLAlchemy
+Flask-PyMongo
 Flask-Migrate
 Flask-Script
 Flask-Login
 psycopg2
-
+opencv-python
+numpy
+pandas
+matplotlib
 # ----------------------
 # Production Server
 # ----------------------
