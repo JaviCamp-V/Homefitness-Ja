@@ -6,3 +6,4 @@ We propose an exercises recommendation algorithm which uses model-free reinforce
 We propose a new exercise-level deep knowledge tracing model whose structure is built based on the course's concept list, and the exercise-concept mapping relationships are utilized during students' knowledge tracing. The model supports more input features and obtains higher performance compared with existing models.
 # Pose Estimation
 Human pose estimation is a popular solution that AI has to offer; it is used to determine the position and orientation of the human body given an image containing a person.At the core of any human pose estimation application lies a pose estimation algorithm that receives an image of a person as an input and outputs the coordinates of the specific keypoints or landmarks on the human body (XY coords in 2D pose estimation or XYZ coords in 3D pose estimation).
+# Website Link
