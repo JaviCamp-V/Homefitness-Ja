@@ -11,14 +11,15 @@ from flask_login import login_user, logout_user, current_user, login_required
 from app.forms import LoginForm
 from app.models import UserProfile
 from werkzeug.security import check_password_hash
+from app.utils.get_points import pose_estimation
 #from app.camera import VideoCamera
-import cv2
+import cv2 as cv2
 
 
 ###
 # Routing for your application.
 ###
-cam = cv2.VideoCapture(0)
+cam = cv2.VideoCapture("app/utils/curls.mp4")
 
 @app.route('/')
 def home():
@@ -29,8 +30,10 @@ def main():
     return render_template('index.html')
     
 def stream():
+    cam.set(cv2.CAP_PROP_FPS,10)
     while 1 :
         __,frame = cam.read()
+        frame=pose_estimation(frame)
         imgencode = cv2.imencode('.jpg',frame)[1]
         strinData = imgencode.tostring()
         yield (b'--frame\r\n'b'Content-Type: text/plain\r\n\r\n'+strinData+b'\r\n')
