@@ -12,40 +12,49 @@ from app.forms import LoginForm
 from app.models import UserProfile
 from werkzeug.security import check_password_hash
 from app.utils.get_points import pose_estimation
-#from app.camera import VideoCamera
+from app.utils.camera import WebCam
+from app.utils.estimator import estimator
 import cv2 as cv2
 
 
 ###
 # Routing for your application.
 ###
-cam = cv2.VideoCapture("app/utils/curls.mp4")
 
 @app.route('/')
 def home():
     """Render website's home page."""
+    img=cv2.imread("app/utils/curl-down.png")
+    points=estimator(img)
+    print(points)
     return render_template('home.html')
 @app.route('/rest/')
 def main():
     return render_template('index.html')
-    
-def stream():
-    cam.set(cv2.CAP_PROP_FPS,10)
-    while 1 :
-        __,frame = cam.read()
-        frame=pose_estimation(frame)
-        imgencode = cv2.imencode('.jpg',frame)[1]
-        strinData = imgencode.tostring()
-        yield (b'--frame\r\n'b'Content-Type: text/plain\r\n\r\n'+strinData+b'\r\n')
 
-@app.route('/video')
-def video():
-    return Response(stream(),mimetype='multipart/x-mixed-replace; boundary=frame')
+@app.route('/2/')
+def webcam():
+    return render_template('index.html')
+def stream(cam):
+    t=True
+    while t:
+        t,data = cam.get_frame()
+        #frame=pose_estimation(frame)
+        if t==False:
+            cam.stop()
+        frame=data[0]
+        yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n'+frame+b'\r\n')
+    cam.stop()
+
+@app.route('/video/<source>')
+def video(source):
+    return Response(stream(WebCam(int(source))),mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 @app.route('/about/')
 def about():
     """Render the website's about page."""
+
     return render_template('about.html')
 
 @app.route('/registration/',methods=["GET","POST"])

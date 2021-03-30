@@ -15,6 +15,6 @@ class WebCam(object):
         ret,jpeg=cv2.imencode('.jpg',image)
         data=[]
         data.append(jpeg.tobytes())
-        return ret,data
+        return data
 
 
