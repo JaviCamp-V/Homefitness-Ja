@@ -8,7 +8,7 @@ This file creates your application.
 from app import app, db, login_manager
 from flask import render_template, request, redirect, url_for, flash, Response
 from flask_login import login_user, logout_user, current_user, login_required
-from app.forms import LoginForm
+from app.forms import LoginForm,VideoFrom
 from app.models import UserProfile
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
@@ -16,21 +16,14 @@ from wtforms.validators import DataRequired
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
-from app.utils.get_points import pose_estimation
+#from app.utils.get_points import pose_estimation
 from app.utils.camera import WebCam
-from app.utils.estimator import estimator
+from app.utils.estimator import estimator,drawkeypoints
 import cv2 as cv2
 import os
 
 
 
-#Path to save video uploads 
-UPLOAD_FOLDER = './app/static/uploads'
-app.config["VIDEO_UPLOADS"] = UPLOAD_FOLDER
-
-###
-# Routing for your application.
-###
 
 @app.route('/')
 def home():
@@ -41,40 +34,43 @@ def home():
 # Allows user to upload VIDEO FILE
 @app.route('/upload', methods=["GET", "POST"])
 def upload():
-
+    form=VideoFrom()
     if request.method == "POST":
-
-        if request.files:
-
-            video = request.files["video"]
-
-            if video.filename == "":
-                flash("No video selected")
-                return redirect(request.url)
-            else:
-                filename = secure_filename(video.filename)
-
-            video.save(os.path.join(app.config["VIDEO_UPLOADS"], filename))
-            flash("Video Uploaded Successfully")
+        if form.validate_on_submit():
+            video = form.video.data 
+            filename = secure_filename(video.filename)
+            video.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            filename=processvideo(filename)
+            flash("Video Uploaded Successfully","Sucess")
             return redirect(url_for('uploaded_file', filename=filename))
-
-
-    return render_template('upload.html')
-
+        else:
+            flash_errors(form)
+    return render_template('upload.html',form=form)
 # Result page after Upload
 @app.route('/show/<filename>')
 def uploaded_file(filename):
     return render_template('result.html', filename=filename)
+def processvideo(filename):
+    cap=cv2.VideoCapture('app/static/uploads/{}'.format(filename))
+    result = cv2.VideoWriter('app/static/uploads{}.avi'.format(filename),cv2.VideoWriter_fourcc(*'MJPG'),10, (int(cap.get(3)),int(cap.get(4))))
+    while True:
+        ret, frame = cap.read()
+        if ret == False:
+            break 
+        points=estimator(frame)
+        frame=drawkeypoints(points,frame)
+        result.write(frame)
+    video.release()
+    result.release()
+    filename='{}.avi'.format(filename)
+    return filename
+    
 
 #Page with uploaded video
 @app.route('/uploads/<filename>')
-def send_file(filename):
+def send_file(filename):    
     return redirect(url_for('static', filename='uploads/' + filename), code=301)
-# 
-@app.route('/rest/')
-def main():
-    return render_template('index.html')
-#
+
 @app.route('/rest/stream')  
 def stream():
     cam.set(cv2.CAP_PROP_FPS,10)
@@ -89,12 +85,9 @@ def stream():
 def webcam():
     return render_template('index.html')
 def stream(cam):
-    t=True
-    while t:
-        t,data = cam.get_frame()
+    while True:
+        data = cam.get_frame()
         #frame=pose_estimation(frame)
-        if t==False:
-            cam.stop()
         frame=data[0]
         yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n'+frame+b'\r\n')
     cam.stop()

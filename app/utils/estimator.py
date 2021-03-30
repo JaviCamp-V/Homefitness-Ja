@@ -51,6 +51,19 @@ def estimator(frame):
                 model_features[0]=(0,0)
     return model_features
     
+def drawkeypoints(points,frame):
+  for pair in POSE_PAIRS:
+        partA = pair[0]
+        partB = pair[1]
+        if pair==[5,6] or pair==[6,7]:
+          color=(255, 0, 85)
+        else:
+          color=(0, 0, 255)
+        if points[partA] and points[partB]:
+            cv2.line(frame, points[partA], points[partB], (0, 0, 0), 1, lineType=cv2.LINE_AA)
+            cv2.circle(frame, points[partA], 4, color, thickness=-1, lineType=cv2.FILLED)
+            cv2.circle(frame, points[partB], 4, color, thickness=-1, lineType=cv2.FILLED)
+  return frame
 
 
 

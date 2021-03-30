@@ -29,15 +29,16 @@
 
 <h2>Upload Video File</h2>
 <hr />
-<form action="/upload" method="POST" enctype="multipart/form-data">
+{% include 'flash_messages.html' %}
+<form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+  {{ form.csrf_token }}
   <div class="form-group">
     <label for="">Select Video</label>
     <div class="custom-file">
-      <input type="file" class="custom-file-input" name="video" id="video" />
+      {{ form.video(class="custom-file-input",id="videos") }}  
       <label class="custom-file-label" for="video">Select video...</label>
     </div>
   </div>
-
   <button type="submit" class="btn btn-success" id="upload-btn">Upload</button>
 </form>
 {% endblock %}

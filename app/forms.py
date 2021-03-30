@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField,IntegerField,FloatField
 from wtforms import StringField, PasswordField
-from wtforms.validators import InputRequired
+from wtforms.validators import InputRequired,DataRequired
+from flask_wtf.file import FileField, FileRequired, FileAllowed
 
 
 class LoginForm(FlaskForm):
@@ -14,3 +15,6 @@ class SignUpForm(FlaskForm):
     weight=FloatField('Weight',validators=[InputRequired()])
     username = StringField('Username', validators=[InputRequired()])
     password = PasswordField('Password', validators=[InputRequired()])
+class VideoFrom(FlaskForm):
+    video = FileField('Video', validators=[FileRequired(), FileAllowed(['mp4', 'avi', 'Mp4 and avi only!'])])
+
