@@ -58,10 +58,15 @@ def processvideo(filename):
         if ret == False:
             break 
         points=estimator(frame)
+        print("points generated")
         frame=drawkeypoints(points,frame)
+        print("skeleton drawn")
         result.write(frame)
+        print("writing")
+
     video.release()
     result.release()
+    print("complete")
     filename='{}.avi'.format(filename)
     return filename
     
