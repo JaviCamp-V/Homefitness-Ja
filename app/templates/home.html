@@ -1,7 +1,10 @@
 {% extends "base.html" %}
 {% block main %}
 {% include 'flash_messages.html' %}
-<h1 class="page-header">Lab 5 Starter Code</h1>
-<p class="lead">Use this starter template for Lab 5<br/>
-All you get are these files and mostly barebones HTML/CSS files.</p>
+<h1 class="page-header">Home Fitness ja</h1>
+<p class="lead"><br/>
+    <a class="view-link" href="{{ url_for('webcam')}}" >Real Time Correction</a>
+    <button type="submit" name="real" class="btn btn-primary btn-block">Video Correction</button>
+
+</p>
 {% endblock %}

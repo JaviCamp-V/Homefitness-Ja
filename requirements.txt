@@ -13,6 +13,7 @@ opencv-python
 numpy
 pandas
 matplotlib
+imutils
 # ----------------------
 # Production Server
 # ----------------------
