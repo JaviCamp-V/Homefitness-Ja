@@ -1,10 +1,17 @@
-{% extends "base.html" %}
-{% block main %}
-{% include 'flash_messages.html' %}
+{% extends "base.html" %} {% block main %} {% include 'flash_messages.html' %}
 <h1 class="page-header">Home Fitness ja</h1>
-<p class="lead"><br/>
-    <a class="view-link" href="{{ url_for('webcam')}}" >Real Time Correction</a>
-    <button type="submit" name="real" class="btn btn-primary btn-block">Video Correction</button>
-
+<p class="lead">
+  <br />
+  <a class="view-link" href="{{ url_for('stream')}}">
+    <button type="submit" name="real" class="btn btn-primary btn-block">
+      Real Time Correction
+    </button></a
+  >
+  <br /><br />
+  <a href="{{ url_for('upload') }}">
+    <button type="submit" name="real" class="btn btn-primary btn-block">
+      Video Correction
+    </button></a
+  >
 </p>
 {% endblock %}

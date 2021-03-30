@@ -10,6 +10,8 @@ from flask import render_template, request, redirect, url_for, flash,Response
 from flask_login import login_user, logout_user, current_user, login_required
 from app.forms import LoginForm
 from app.models import UserProfile
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
 from werkzeug.security import check_password_hash
 from app.utils.get_points import pose_estimation
 from app.utils.camera import WebCam
@@ -21,6 +23,7 @@ import cv2 as cv2
 # Routing for your application.
 ###
 
+
 @app.route('/')
 def home():
     """Render website's home page."""
@@ -28,10 +31,23 @@ def home():
     points=estimator(img)
     print(points)
     return render_template('home.html')
+
+@app.route('/upload', methods=["GET", "POST"])
+def upload():
+    return render_template('upload.html')
+
 @app.route('/rest/')
 def main():
     return render_template('index.html')
-
+@app.route('/rest/stream')  
+def stream():
+    cam.set(cv2.CAP_PROP_FPS,10)
+    while 1 :
+        __,frame = cam.read()
+        frame=pose_estimation(frame)
+        imgencode = cv2.imencode('.jpg',frame)[1]
+        strinData = imgencode.tostring()
+        yield (b'--frame\r\n'b'Content-Type: text/plain\r\n\r\n'+strinData+b'\r\n')
 @app.route('/2/')
 def webcam():
     return render_template('index.html')

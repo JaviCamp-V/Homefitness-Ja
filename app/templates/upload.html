@@ -1,0 +1,41 @@
+{% extends "base.html" %} {% block main %} {% include 'flash_messages.html' %}
+
+<h2>Select An Excercise</h2>
+<div class="dropdown select-exc">
+  <a
+    class="btn btn-secondary dropdown-toggle"
+    href="#"
+    role="button"
+    id="dropdownMenuLink"
+    data-bs-toggle="dropdown"
+    aria-expanded="false"
+  >
+    Select An Excercise
+  </a>
+
+  <ul class="dropdown-menu" id="select-exc" aria-labelledby="dropdownMenuLink">
+    <li><a class="dropdown-item" href="#">Plank</a></li>
+    <li><a class="dropdown-item" href="#">Squat</a></li>
+    <li><a class="dropdown-item" href="#">Bicep Curl</a></li>
+    <li><a class="dropdown-item" href="#">Pushup</a></li>
+    <li><a class="dropdown-item" href="#">Lunges</a></li>
+  </ul>
+</div>
+<br />
+<h3 class="exc-choice"></h3>
+<br />
+
+<br />
+
+<h2>Upload Video File</h2>
+<hr />
+<form action="/upload" method="POST" enctype="multipart/form-data">
+  <div class="form-group">
+    <label for="">Select Video</label>
+    <div class="custom-file">
+      <input type="file" class="custom-file-input" name="video" id="video" />
+      <label class="custom-file-label" for="video">Select video...</label>
+    </div>
+  </div>
+</form>
+{% endblock %}
