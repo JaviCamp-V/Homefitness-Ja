@@ -6,37 +6,82 @@ This file creates your application.
 """
 
 from app import app, db, login_manager
-from flask import render_template, request, redirect, url_for, flash,Response
+from flask import render_template, request, redirect, url_for, flash, Response
 from flask_login import login_user, logout_user, current_user, login_required
 from app.forms import LoginForm
 from app.models import UserProfile
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
+from wtforms.validators import DataRequired
+from flask_wtf.file import FileField, FileAllowed, FileRequired
 from werkzeug.security import check_password_hash
+from werkzeug.utils import secure_filename
 from app.utils.get_points import pose_estimation
 from app.utils.camera import WebCam
 from app.utils.estimator import estimator
 import cv2 as cv2
+import os
 
+
+
+#Path to save video uploads 
+UPLOAD_FOLDER = './app/static/uploads'
+app.config["VIDEO_UPLOADS"] = UPLOAD_FOLDER
+
+class UploadForm(FlaskForm):
+    description = StringField("", validators=[DataRequired()])
+    photo = FileField(validators=[
+        FileRequired(),
+        FileAllowed(['jpg', 'png'], 'Images only!')
+    ])
 
 ###
 # Routing for your application.
 ###
-
 
 @app.route('/')
 def home():
     """Render website's home page."""
     return render_template('home.html')
 
+
+# Allows user to upload VIDEO FILE
 @app.route('/upload', methods=["GET", "POST"])
 def upload():
+
+    if request.method == "POST":
+
+        if request.files:
+
+            video = request.files["video"]
+
+            if video.filename == "":
+                flash("No video selected")
+                return redirect(request.url)
+            else:
+                filename = secure_filename(video.filename)
+
+            video.save(os.path.join(app.config["VIDEO_UPLOADS"], filename))
+            flash("Video Uploaded Successfully")
+            return redirect(url_for('uploaded_file', filename=filename))
+
+
     return render_template('upload.html')
 
+# Result page after Upload
+@app.route('/show/<filename>')
+def uploaded_file(filename):
+    return render_template('result.html', filename=filename)
+
+#Page with uploaded video
+@app.route('/uploads/<filename>')
+def send_file(filename):
+    return redirect(url_for('static', filename='uploads/' + filename), code=301)
+# 
 @app.route('/rest/')
 def main():
     return render_template('index.html')
-
+#
 @app.route('/rest/stream')  
 def stream():
     cam.set(cv2.CAP_PROP_FPS,10)
