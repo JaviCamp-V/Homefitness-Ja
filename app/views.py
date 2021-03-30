@@ -27,9 +27,6 @@ import cv2 as cv2
 @app.route('/')
 def home():
     """Render website's home page."""
-    img=cv2.imread("app/utils/curl-down.png")
-    points=estimator(img)
-    print(points)
     return render_template('home.html')
 
 @app.route('/upload', methods=["GET", "POST"])
@@ -39,6 +36,7 @@ def upload():
 @app.route('/rest/')
 def main():
     return render_template('index.html')
+
 @app.route('/rest/stream')  
 def stream():
     cam.set(cv2.CAP_PROP_FPS,10)
@@ -48,6 +46,7 @@ def stream():
         imgencode = cv2.imencode('.jpg',frame)[1]
         strinData = imgencode.tostring()
         yield (b'--frame\r\n'b'Content-Type: text/plain\r\n\r\n'+strinData+b'\r\n')
+        
 @app.route('/2/')
 def webcam():
     return render_template('index.html')
