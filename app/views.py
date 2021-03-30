@@ -52,7 +52,7 @@ def uploaded_file(filename):
     return render_template('result.html', filename=filename)
 def processvideo(filename):
     cap=cv2.VideoCapture('app/static/uploads/{}'.format(filename))
-    result = cv2.VideoWriter('app/static/uploads{}.avi'.format(filename),cv2.VideoWriter_fourcc(*'MJPG'),10, (int(cap.get(3)),int(cap.get(4))))
+    result = cv2.VideoWriter('app/static/uploads/{}.avi'.format(filename),cv2.VideoWriter_fourcc(*'MJPG'),10, (int(cap.get(3)),int(cap.get(4))))
     while True:
         ret, frame = cap.read()
         if ret == False:
