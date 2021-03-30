@@ -129,3 +129,5 @@ dmypy.json
 .pyre/
 app/utils/graph_opt.pb
 *.mp4
+*.prototxt
+*.caffemodel
