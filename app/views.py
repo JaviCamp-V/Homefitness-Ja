@@ -28,13 +28,6 @@ import os
 UPLOAD_FOLDER = './app/static/uploads'
 app.config["VIDEO_UPLOADS"] = UPLOAD_FOLDER
 
-class UploadForm(FlaskForm):
-    description = StringField("", validators=[DataRequired()])
-    photo = FileField(validators=[
-        FileRequired(),
-        FileAllowed(['jpg', 'png'], 'Images only!')
-    ])
-
 ###
 # Routing for your application.
 ###
