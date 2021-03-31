@@ -16,9 +16,9 @@ Human pose estimation is a popular solution that AI has to offer; it is used to 
 - [ ] a neural network to classify the kepponts and angles
 
 ### Research 
-https://github.com/rodosingh/Table-Tennis-Shot-Classification-Using-OpenPose
-https://github.com/jrobchin/phormatics
-https://github.com/JaviCamp-V/Fitness-App
+#https://github.com/rodosingh/Table-Tennis-Shot-Classification-Using-OpenPose
+#https://github.com/jrobchin/phormatics
+#https://github.com/JaviCamp-V/Fitness-App
 
 
 
