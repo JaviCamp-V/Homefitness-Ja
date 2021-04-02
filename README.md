@@ -10,7 +10,7 @@ Human pose estimation is a popular solution that AI has to offer; it is used to 
 ### TODO
 - [ ] fucntion for to calculate angle betwen points
 - [ ] label each video frame for biceps curls,shoulder press,pushup
-- [ ] We need a functions fi calculate the number of reps fi each exercise base on the angles
+- [ ] We need a functions fi calculate the number of reps for each exercise base on the angles
 - [ ] find the key points for each workout
       - [ ] isolate those frames 
 - [ ] a neural network to classify the kepponts and angles
