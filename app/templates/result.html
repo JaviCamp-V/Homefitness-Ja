@@ -1,24 +1,28 @@
 {% extends "base.html" %} {% block main %} {% include 'flash_messages.html' %}
-{% if filename %}
-<h1 class=".exc-video"></h1>
+{% block css %} <link rel="stylesheet" href="/static/css/resultpage.css" />
+{% endblock %} {% if filename %}
+
 <div class="result-file">
-  <video
-    controls=""
-    autoplay=""
-    src="{{ url_for('send_file', filename=filename) }}"
-    type="video/mp4"
-  ></video>
-  <div>
+  <div class="video-section">
+    <h1 class=".exc-video">Video Correction</h1>
+    <video
+      controls=""
+      autoplay=""
+      src="{{ url_for('send_file', filename=filename) }}"
+      type="video/mp4"
+    ></video>
+  </div>
+  <div class="side-box">
+    <div class="comments"></div>
     <h3>Comments</h3>
-    <p></p>
+    <div class="info">
+      <br />
+      <p>COUNTER:</p>
+      <p>TIME:</p>
+    </div>
   </div>
 </div>
-<div>
-  <br />
-  <p># of reps:</p>
-  <p># of sets:</p>
-  <p>TIME:</p>
-</div>
+
 {% else %}
 <h1>no image for whatever reason</h1>
 {% endif %} {% endblock %}
