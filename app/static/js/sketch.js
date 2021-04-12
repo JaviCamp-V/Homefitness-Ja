@@ -26,15 +26,9 @@ function modelReady() {
   select("#status").html("Model Loaded");
 }
 
+//
 function send(){
-  for (let i = 0; i < poses.length; i += 1) {
-    // For each pose detected, loop through all the keypoints
-    const pose = poses[i].pose;
-    for (let j = 0; j < pose.keypoints.length; j += 1) {
-      // A keypoint is an object describing a body part (like rightArm or leftShoulder)
-      const keypoint = pose.keypoints[j];
-      // Only draw an ellipse is the pose probability is bigger than 0.2
-      if (keypoint.score > 0.2) {
+      if (poses!=null) {
         fetch(`/test34`,
   {
     method:"POST",
@@ -45,12 +39,25 @@ function send(){
       "content-type": "application/json"
     })
   })   
-      }
+  .then(function(response){
+    return response.json();
+   
+  }).then(function (jsonResponse) {
+       document.getElementById("reps").innerHTML = jsonResponse.reps;
+       document.getElementById("review").innerHTML = jsonResponse.status;
+       var node = document.createElement("p");
+       var textnode = document.createTextNode(jsonResponse.status);
+       node.appendChild(textnode);
+       document.getElementById("review").appendChild(node);    
+      }).catch(function (error) {
+        console.log(error); 
+
+
+      })
     }
   }
   
- 
-}
+
 function draw() {
   image(video, 0, 0, width, height);
 
