@@ -4,7 +4,7 @@ Jinja2 Documentation:    http://jinja.pocoo.org/2/documentation/
 Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
-
+from . import socketio
 from app import app, db, login_manager
 from flask import render_template, request, redirect, url_for, flash, Response
 from flask_login import login_user, logout_user, current_user, login_required
@@ -40,7 +40,7 @@ def upload():
             video = form.video.data 
             filename = secure_filename(video.filename)
             video.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            filename=processvideo(filename)
+            #filename=processvideo(filename)
             flash("Video Uploaded Successfully","Sucess")
             return redirect(url_for('uploaded_file', filename=filename))
         else:
@@ -76,16 +76,6 @@ def processvideo(filename):
 def send_file(filename):    
     return redirect(url_for('static', filename='uploads/' + filename), code=301)
 
-@app.route('/rest/stream')  
-def stream():
-    cam.set(cv2.CAP_PROP_FPS,10)
-    while 1 :
-        __,frame = cam.read()
-        frame=pose_estimation(frame)
-        imgencode = cv2.imencode('.jpg',frame)[1]
-        strinData = imgencode.tostring()
-        yield (b'--frame\r\n'b'Content-Type: text/plain\r\n\r\n'+strinData+b'\r\n')
-        
 @app.route('/2/')
 def webcam():
     return render_template('index.html')
@@ -106,7 +96,7 @@ def video(source):
 def about():
     """Render the website's about page."""
 
-    return render_template('about.html')
+    return render_template('ml5index.html')
 
 @app.route('/registration/',methods=["GET","POST"])
 def signup():
@@ -201,7 +191,13 @@ def add_header(response):
 def page_not_found(error):
     """Custom 404 page."""
     return render_template('404.html'), 404
-
+@app.route("/test34", methods=["GET", "POST"])
+def handle_message():
+    data=request.get_json()
+    print('received json: ' + str(data))
+    return redirect(url_for('about'))
 
 if __name__ == '__main__':
+    #socketio.run(app)
     app.run(debug=True, host="0.0.0.0", port="8080")
+

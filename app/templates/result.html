@@ -1,6 +1,7 @@
 {% extends "base.html" %} {% block main %} {% include 'flash_messages.html' %}
 {% if filename %}
 <h1 class=".exc-video"></h1>
+<div class="card">
 <div class="result-file">
   <video
     controls=""
@@ -13,7 +14,8 @@
     <p></p>
   </div>
 </div>
-<div>
+</div>
+<div class="card">
   <br />
   <p># of reps:</p>
   <p># of sets:</p>

@@ -1,5 +1,6 @@
 import cv2
 from imutils.video import WebcamVideoStream
+from app.utils.estimator import estimator,drawkeypoints
 
 
 
@@ -13,6 +14,9 @@ class WebCam(object):
     def get_frame(self):
         image=self.stream.read()
         ret,jpeg=cv2.imencode('.jpg',image)
+        y=estimator(image)
+
+        print(y)
         data=[]
         data.append(jpeg.tobytes())
         return data
