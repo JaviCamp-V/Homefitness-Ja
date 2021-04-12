@@ -9,10 +9,15 @@ body {
 .select-correction {
   text-align: center;
 }
-
+.btn {
+  width: 300px;
+}
 .exc-choice {
   font-size: 20px;
   color: red;
+}
+.video-section h1 {
+  padding: 10px 0;
 }
 
 .result-file img {
@@ -26,5 +31,12 @@ body {
 }
 .result-file {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 500px;
+}
+
+.side-box {
+  height: 500px;
+  width: 300px;
+  text-align: center;
+  border: 1px solid black;
 }
