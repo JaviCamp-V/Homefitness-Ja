@@ -1,0 +1,10 @@
+{% extends "base.html" %} {% block main %} {% include 'flash_messages.html' %}
+<form action="{{ url_for('RealTime2') }}" method="post" enctype="multipart/form-data">
+    {{ form.csrf_token }}
+    <div class="form-group">
+        {{ form.etype.label }} {{ form.etype(class="form-control") }}
+    </div>
+    <button type="submit" class="btn btn-success" id="upload-btn">Upload</button>
+  </form>
+  {% endblock %}
+  

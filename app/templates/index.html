@@ -17,6 +17,11 @@
       </div>
     </div>
     </div>
+    <script>
+      fetch('/realtime/correction/')
+      .then(response => response.json())
+      .then(commits => console.log(commits));
+    </script>
 {% endblock %}
 
 

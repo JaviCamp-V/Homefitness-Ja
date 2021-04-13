@@ -14,7 +14,9 @@ numpy
 pandas
 matplotlib
 imutils
+tensorflow
 flask-socketio
+Keras
 # ----------------------
 # Production Server
 # ----------------------

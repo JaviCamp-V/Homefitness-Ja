@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block main %} {% include 'flash_messages.html' %}
+{% extends "base.html" %} {% block main %} 
 
 <h2>Select An Excercise</h2>
 <div class="dropdown select-exc">
@@ -32,6 +32,9 @@
 {% include 'flash_messages.html' %}
 <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
   {{ form.csrf_token }}
+  <div class="form-group">
+      {{ form.etype.label }} {{ form.etype(class="form-control") }}
+  </div>
   <div class="form-group">
     <label for="">Select Video</label>
     <div class="custom-file">

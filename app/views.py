@@ -8,7 +8,7 @@ from . import socketio
 from app import app, db, login_manager
 from flask import render_template, request, redirect, url_for, flash, Response,jsonify
 from flask_login import login_user, logout_user, current_user, login_required
-from app.forms import LoginForm,VideoFrom
+from app.forms import LoginForm,VideoFrom,WebcamFrom
 from app.models import UserProfile
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
@@ -19,11 +19,13 @@ from werkzeug.utils import secure_filename
 #from app.utils.get_points import pose_estimation
 from app.utils.camera import WebCam
 from app.utils.estimator import estimator,drawkeypoints
+from app.Main import Main
 import cv2 as cv2
 import os
 
 
-
+correction=""
+reps=0
 ##Home page 
 @app.route('/')
 def home():
@@ -41,7 +43,7 @@ def upload():
             typee= form.etype.data 
             filename = secure_filename(video.filename)
             video.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            filename=processvideo(typee,filename)
+            filename=Main.vedioAnalysis(typee,filename)
             flash("Video Uploaded Successfully","Sucess")
             return redirect(url_for('uploaded_file', filename=filename))
         else:
@@ -51,44 +53,53 @@ def upload():
 @app.route('/show/<filename>')
 def uploaded_file(filename):
     return render_template('result.html', filename=filename)
-##function to edit video 
-def processvideo(typee,filename):
-    cap=cv2.VideoCapture('app/static/uploads/{}'.format(filename))
-    result = cv2.VideoWriter('app/static/uploads/{}.avi'.format(filename),cv2.VideoWriter_fourcc(*'MJPG'),10, (int(cap.get(3)),int(cap.get(4))))
-    while True:
-        ret, frame = cap.read()
-        if ret == False:
-            break 
-        points=analyze(typee,frame)
-        print("points generated")
-        frame=drawkeypoints(points,frame)
-        print("skeleton drawn")
-        result.write(frame)
-        print("writing")
-
-    video.release()
-    result.release()
-    print("complete")
-    filename='{}.avi'.format(filename)
-    return filename
-    
-
 #Page with uploaded video
 @app.route('/uploads/<filename>')
 def send_file(filename):    
     return redirect(url_for('static', filename='uploads/' + filename), code=301)
+
+@app.route('/ExerciseSlection/',methods=["GET", "POST"])
+def RealTime2():
+    form=WebcamFrom()
+    if request.method == 'POST' :
+        if form.validate_on_submit():
+            typee= form.etype.data
+            print(typee)
+            return redirect(url_for('webcam', type=typee))
+
+        else:
+            flash_errors(form)
+    return render_template('realTimeS.html',form=form)
+
+global real
 ##route to cv webcam
-@app.route('/2/')
-def webcam():
+
+@app.route('/RealTime/<type>',methods=["GET"])
+def webcam(type):
+    global real
+    real=Main(type)
     return render_template('index.html')
 ##stream cv web cam
+
 def stream(cam):
+    global real,correction,reps
     while True:
         data = cam.get_frame()
         #frame=pose_estimation(frame)
         frame=data[0]
+        correction,reps=real.realtime(frame)
         yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n'+frame+b'\r\n')
     cam.stop()
+
+@app.route('/realtime/correction/',methods=["GET","POST"])
+def livecorrection():
+    global correction
+    message={"status":correction,"reps":reps}
+    print("new")
+    return jsonify(message)
+
+
+
 ##Responce for cv web cam
 @app.route('/video/<source>')
 def video(source):

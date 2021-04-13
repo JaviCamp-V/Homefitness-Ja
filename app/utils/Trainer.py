@@ -1,31 +1,33 @@
 import os
-import cv
+import cv2 as cv2
 import time
 from app.utils.estimator import estimator
 from keras.models import load_model
+from app.utils.RepCounter import RepCounter
 
 
-
-global Models={"biceps":"app/models/.h5"}
-global Squat={ 0: "good form ",1:"bad form ",2:"knees error"}
-from RepCounter import RepCounter
 class Trainer(object):
+
     def __init__(self,typeInput):
+        Models=dict({"bicepscurls":"app/models/.h5"})
         ## initialize class
         self.exercise=typeInput
-        self.model=load_model(Models[typeInput])
-        modelCompile()
+        #self.model=load_model(Models[typeInput])
+        #modelCompile()
         self.repCounter=RepCounter(typeInput)
     def Corrector(self,inputData):
         ## Corrector Main function
         if os.path.isfile(inputData)==False:
-            keypoints=self.getkeyPoints(frame)
+            #keypoints=self.getkeyPoints(inputData)
+            keypoints=[]
             keypoints=self.normalizeFrame(keypoints)
-            result=self.model.predict_classes(keypoints)
-            result=rightCorrector(result)
+            #result=self.model.predict_classes(keypoints)
+            result=self.rightCorrector(0)
             reps=self.repCounter.getReps(keypoints) 
             return "good form ",reps
         else:
+           return inputData
+           """
             cap = cv2.VideoCapture(inputData)
             fps = int(cap.get(5))
             prev = 0
@@ -48,7 +50,7 @@ class Trainer(object):
             result.release()
             cap.release()
             cv2.destroyAllWindows()
-            return input
+            """
     def modelCompile(self):
         if self.exercise=="squat":
             model.compile(loss='binary_crossentropy',optimizer='rmsprop',metrics=['accuracy'])
@@ -57,27 +59,26 @@ class Trainer(object):
     def normalizeFrame(self,keypoints):
         ## fix excerise points for model 
         if self.exercise=="squat":
-            return frame
+            return keypoints
         elif self.exercise=="plank":
-            return frame
+            return keypoints
         elif self.exercise=="bicepscurls":
-            return frame
+            return keypoints
         elif self.exercise=="shoulderpress":
-            return frame
+            return keypoints
         else:
-            return frame  
+            return keypoints  
     def rightCorrector(self,index): 
         if self.exercise=="squat":
-            squatCorrector(index)
+            return self.squatCorrector(index)
         elif self.exercise=="plank":
-            plankCorrector(index)
+            return self.plankCorrector(index)
         elif self.exercise=="bicepscurls":
-            bicepCorrector(index)
+            return self.bicepCorrector(index)
         elif self.exercise=="shoulderpress":
-            shoulderCorrector(index)
+            return self.shoulderCorrector(index)
         else:
             return ""  
-    def 
     def squatCorrector(self, index):
         if index==0:
             return "good form"
