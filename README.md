@@ -7,6 +7,16 @@ Human pose estimation is a popular solution that AI has to offer; it is used to 
 # Website Link
 # Final Report
 
+
+
+### TODO Update:
+- [ ] Conenct the componets and design frontend responses 
+- [ ] Models creation
+- [ ] Reption Counter
+- [ ] Launch and Test Website
+- [ ] Report
+- [ ] Website
+
 ### TODO
 - [ ] fucntion for to calculate angle betwen points
 - [ ] label each video frame for biceps curls,shoulder press,pushup
