@@ -3,8 +3,9 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 
-
-
+### openpose estimation
+###
+###
 protoFile = "app/utils/openpose/pose_deploy_linevec_faster_4_stages.prototxt"
 weightsFile = "app/utils/openpose/pose_iter_160000.caffemodel"
 net = cv2.dnn.readNetFromCaffe(protoFile, weightsFile)
