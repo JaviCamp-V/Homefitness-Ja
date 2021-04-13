@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2021-04-13T02:01:50.871Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36" etag="jl3mRq4m9pqfVsKXpu7p" version="14.5.10" type="github">
+<mxfile host="app.diagrams.net" modified="2021-04-13T02:15:20.467Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36" etag="p1CYrCSSz0PD_1OqlbsV" version="14.5.10" type="github">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
     <mxGraphModel dx="1038" dy="528" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -51,16 +51,16 @@
         <mxCell id="UNvvKq0hMDLlutOKs-n3-24" value="-getReps(keypoints): int" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="a0mymaZdTOn8uS32HoLL-8" vertex="1">
           <mxGeometry y="206" width="260" height="20" as="geometry" />
         </mxCell>
-        <mxCell id="DeUj1NdnGwY6QF6CIB1H-1" value="-pushupCorrector(keypoints):string;correction" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="a0mymaZdTOn8uS32HoLL-8">
+        <mxCell id="DeUj1NdnGwY6QF6CIB1H-1" value="-pushupCorrector(int):string;correction" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="a0mymaZdTOn8uS32HoLL-8">
           <mxGeometry y="226" width="260" height="20" as="geometry" />
         </mxCell>
-        <mxCell id="DeUj1NdnGwY6QF6CIB1H-0" value="-bicepCorrector(keypoints):string;correction&amp;nbsp;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="a0mymaZdTOn8uS32HoLL-8">
+        <mxCell id="DeUj1NdnGwY6QF6CIB1H-0" value="-bicepCorrector(int):string;correction&amp;nbsp;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="a0mymaZdTOn8uS32HoLL-8">
           <mxGeometry y="246" width="260" height="20" as="geometry" />
         </mxCell>
-        <mxCell id="DeUj1NdnGwY6QF6CIB1H-2" value="&lt;span style=&quot;&quot;&gt;-squatCorrector(keypoints):string;correction&amp;nbsp;&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="a0mymaZdTOn8uS32HoLL-8">
+        <mxCell id="DeUj1NdnGwY6QF6CIB1H-2" value="&lt;span&gt;-squatCorrector(int):string;correction&amp;nbsp;&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="a0mymaZdTOn8uS32HoLL-8">
           <mxGeometry y="266" width="260" height="20" as="geometry" />
         </mxCell>
-        <mxCell id="DeUj1NdnGwY6QF6CIB1H-3" value="-ShoulderpressCorrector(keypoints):string" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="a0mymaZdTOn8uS32HoLL-8">
+        <mxCell id="DeUj1NdnGwY6QF6CIB1H-3" value="-ShoulderpressCorrector(int):string" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="a0mymaZdTOn8uS32HoLL-8">
           <mxGeometry y="286" width="260" height="20" as="geometry" />
         </mxCell>
         <mxCell id="a0mymaZdTOn8uS32HoLL-16" value="Video" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
