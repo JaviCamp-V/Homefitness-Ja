@@ -17,7 +17,7 @@ class SignUpForm(FlaskForm):
     password = PasswordField('Password', validators=[InputRequired()])
 class VideoFrom(FlaskForm):
     video = FileField('Video', validators=[FileRequired(), FileAllowed(['mp4', 'avi', 'Mp4 and avi only!'])])
-    etype = SelectField('Exercise', choices=[('squat', 'Squat'), ('bicepscurls', 'biceps Curls'),('shoulderpress','Shoulder Press'),('Plank','plank')],validators=[DataRequired()])
+    etype = SelectField('Exercise', choices=[('squat', 'Squat'), ('curls', 'biceps Curls'),('shp','Shoulder Press'),('plank','plank')],validators=[DataRequired()])
 class WebcamFrom(FlaskForm):
-    etype = SelectField('Exercise', choices=[('squat', 'Squat'), ('bicepscurls', 'biceps Curls'),('shoulderpress','Shoulder Press'),('Plank','plank')],validators=[DataRequired()])
+    etype = SelectField('Exercise', choices=[('squat', 'Squat'), ('curls', 'biceps Curls'),('shp','Shoulder Press'),('plank','plank')],validators=[DataRequired()])
 

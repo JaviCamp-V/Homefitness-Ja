@@ -40,3 +40,7 @@ body {
   text-align: center;
   border: 1px solid black;
 }
+#bg{
+  width:700px;
+  height:500px;
+}

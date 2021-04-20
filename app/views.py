@@ -6,7 +6,7 @@ This file creates your application.
 """
 from . import socketio
 from app import app, db, login_manager
-from flask import render_template, request, redirect, url_for, flash, Response,jsonify
+from flask import render_template, request, redirect, url_for, flash, Response,jsonify,session
 from flask_login import login_user, logout_user, current_user, login_required
 from app.forms import LoginForm,VideoFrom,WebcamFrom
 from app.models import UserProfile
@@ -18,14 +18,13 @@ from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
 #from app.utils.get_points import pose_estimation
 from app.utils.camera import WebCam
-from app.utils.estimator import estimator,drawkeypoints
+#from app.utils.estimator import estimator,drawkeypoints
 from app.Main import Main
 import cv2 as cv2
 import os
 
 
-correction=""
-reps=0
+
 ##Home page 
 @app.route('/')
 def home():
@@ -65,36 +64,42 @@ def RealTime2():
         if form.validate_on_submit():
             typee= form.etype.data
             print(typee)
-            return redirect(url_for('webcam', type=typee))
+            return redirect(url_for('webcam', typee=typee))
 
         else:
             flash_errors(form)
     return render_template('realTimeS.html',form=form)
 
-global real
+#global real
 ##route to cv webcam
 
-@app.route('/RealTime/<type>',methods=["GET"])
-def webcam(type):
-    global real
-    real=Main(type)
+@app.route('/RealTime/<typee>',methods=["GET"])
+def webcam(typee):
+    #global real
+    #session['Real']=Main(typee)
+    #real=Main(typee)
+    session['correction']=""
+    session['reps']=0
     return render_template('index.html')
 ##stream cv web cam
 
 def stream(cam):
-    global real,correction,reps
+    #global real
     while True:
         data = cam.get_frame()
+        imgplot = plt.imshow(data)#plot 
+        plt.show()#show plot
         #frame=pose_estimation(frame)
         frame=data[0]
-        correction,reps=real.realtime(frame)
+        #session['correction'],session['reps']=real.realtime(frame)
         yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n'+frame+b'\r\n')
     cam.stop()
 
 @app.route('/realtime/correction/',methods=["GET","POST"])
 def livecorrection():
-    global correction
-    message={"status":correction,"reps":reps}
+    #correction=session['correction']
+    #reps=session['reps']
+    message={"status":"good from","reps":0}
     print("new")
     return jsonify(message)
 
@@ -112,6 +117,41 @@ def about():
     """Render the website's about page."""
 
     return render_template('ml5index.html')
+
+##mediaPipe Routes
+@app.route('/ExerciseSlection/',methods=["GET", "POST"])
+def RealTime3():
+    form=WebcamFrom()
+    if request.method == 'POST' :
+        if form.validate_on_submit():
+            typee= form.etype.data
+            print(typee)
+            return redirect(url_for('index2', typee=typee))
+        else:
+            flash_errors(form)
+    return render_template('realTimeS.html',form=form)
+
+
+def gen_frames(etype):  
+    real=Main(etype)
+    while True:
+        success, frame = camera.read()  # read the camera frame
+        if not success:
+            break
+        else:
+            ret, buffer = cv2.imencode('.jpg', frame)
+            frame.real.realtime(frame)
+            frame = buffer.tobytes()
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
+@app.route('/MediaPipe/<typee>',methods=["GET"])
+def index2(typee):
+    return render_template('mediapipe.html',typee=typee)
+
+@app.route('/video_feed/<etype>')
+def video_feed(etype):
+    return Response(gen_frames(etype), mimetype='multipart/x-mixed-replace; boundary=frame')
+
 
 
 ## Ml5 realtime    

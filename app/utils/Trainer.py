@@ -1,30 +1,45 @@
 import os
 import cv2 as cv2
 import time
-from app.utils.estimator import estimator
+from app.utils.Pose import Pose,Holistic
+from app.utils.util import Curl
 from keras.models import load_model
 from app.utils.RepCounter import RepCounter
+import pickle
 
 
 class Trainer(object):
 
     def __init__(self,typeInput):
-        Models=dict({"bicepscurls":"app/models/.h5"})
+        Models=dict({"curls":"app/models/bicepcurlsModel1.pkl","squat":"app/models/squat_detection_model.pkl","shp":"","pank":""})
         ## initialize class
         self.exercise=typeInput
-        #self.model=load_model(Models[typeInput])
+        if typeInput=="curls":
+            self.curlClassifier=Curl()
+        if typeInput=="squat":
+            self.detector=Holistic()
+        else:
+            self.detector=Pose()
+        try:
+            self.model=pickle.load(open(Models[typeInput], 'rb'))
+        except:
+            self.model=None
         #modelCompile()
         self.repCounter=RepCounter(typeInput)
     def Corrector(self,inputData):
         ## Corrector Main function
         if os.path.isfile(inputData)==False:
-            #keypoints=self.getkeyPoints(inputData)
-            keypoints=[]
+            keypoints=self.detector.getkeyPoints(inputData)
             keypoints=self.normalizeFrame(keypoints)
-            #result=self.model.predict_classes(keypoints)
-            result=self.rightCorrector(0)
+            result="No Pose Detected"
+            if keypoints is not None:
+                    X = pd.DataFrame([keypoints])
+                    result=self.model.predict(X)[0]
+            if self.exercise=="curls":
+                self.repCounter.setCurlType(inputData)
             reps=self.repCounter.getReps(keypoints) 
-            return "good form ",reps
+            img=writeToImage(inputData,result,reps)
+            return img
         else:
            return inputData
            """
@@ -51,9 +66,6 @@ class Trainer(object):
             cap.release()
             cv2.destroyAllWindows()
             """
-    def modelCompile(self):
-        if self.exercise=="squat":
-            model.compile(loss='binary_crossentropy',optimizer='rmsprop',metrics=['accuracy'])
     def getkeyPoints(self,frame):
         return estimator(frame)
     def normalizeFrame(self,keypoints):
@@ -62,7 +74,7 @@ class Trainer(object):
             return keypoints
         elif self.exercise=="plank":
             return keypoints
-        elif self.exercise=="bicepscurls":
+        elif self.exercise=="curls":
             return keypoints
         elif self.exercise=="shoulderpress":
             return keypoints
@@ -73,7 +85,7 @@ class Trainer(object):
             return self.squatCorrector(index)
         elif self.exercise=="plank":
             return self.plankCorrector(index)
-        elif self.exercise=="bicepscurls":
+        elif self.exercise=="curls":
             return self.bicepCorrector(index)
         elif self.exercise=="shoulderpress":
             return self.shoulderCorrector(index)
@@ -91,6 +103,9 @@ class Trainer(object):
     def shoulderCorrector(self,index):
         if index==0:
             return "good form"
+    def writeToImage(img,label,reps):
+        return img
+
 
 
 
