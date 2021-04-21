@@ -79,7 +79,20 @@ class RepCounter(object):
         return self.reps
 
     def squatCounter(self,keypoints):
-        self.reps+=1
+        lefthip = keypoints[23][:2]
+        leftknee = keypoints[25][:2]
+        leftankle = keypoints[27][:2]
+        righthip = keypoints[24][:2]
+        rightknee = keypoints[26][:2]
+        rightankle = keypoints[28][:2]
+        leftangle = Pose.calculate_angle(lefthip, leftknee, leftankle)
+        rightangle = Pose.calculate_angle(righthip, rightknee, rightankle)
+        # Squat counter logic
+        if leftangle > 160 and rightangle > 160:
+            self.state = "up"
+        if leftangle < 120 and rightangle < 120 and stage =='up':
+            self.state="down"
+            self.reps+=1
         return self.reps
 
     def shoulderpressCounter(self,keypoints):
