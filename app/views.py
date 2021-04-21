@@ -87,8 +87,6 @@ def stream(cam):
     #global real
     while True:
         data = cam.get_frame()
-        imgplot = plt.imshow(data)#plot 
-        plt.show()#show plot
         #frame=pose_estimation(frame)
         frame=data[0]
         #session['correction'],session['reps']=real.realtime(frame)

@@ -1,4 +1,4 @@
-import cv2
+import cv2 # Import opencv 
 from imutils.video import WebcamVideoStream
 from app.utils.estimator import estimator,drawkeypoints
 

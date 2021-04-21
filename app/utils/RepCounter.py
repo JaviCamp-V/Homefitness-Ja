@@ -1,4 +1,3 @@
-from util import Curl
 class RepCounter(object):
     def __init__(self, exercise):
         self.exercise = exercise
@@ -73,7 +72,7 @@ class RepCounter(object):
             elif rightAngle<=90 and self.state=="mid-up":
                 self.state="up"
                 self.reps+=1
-       return self.reps
+        return self.reps
 
     def pushupCounter(self,keypoints):
         self.reps+=1

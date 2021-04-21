@@ -3,9 +3,14 @@ import cv2 as cv2
 import time
 from app.utils.Pose import Pose,Holistic
 from app.utils.util import Curl
-from keras.models import load_model
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import make_pipeline 
+from sklearn.preprocessing import StandardScaler 
+from sklearn.linear_model import LogisticRegression, RidgeClassifier
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from app.utils.RepCounter import RepCounter
 import pickle
+
 
 
 class Trainer(object):
