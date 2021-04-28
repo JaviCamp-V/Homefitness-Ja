@@ -1,10 +1,12 @@
+import  numpy as np
 class RepCounter(object):
     def __init__(self, exercise):
         self.exercise = exercise
         self.reps = 0
         self.pastPose = []
         self.state=""
-
+    def getype(self):
+        return self.exercise
     def getReps(self,keypoints):
         self.pastPose.append(keypoints)
 
@@ -102,7 +104,7 @@ class RepCounter(object):
     def resetCounter(self):
         self.reps = 0
     def setCurlType(self,exercise):
-        self.exercise=exercise
+        self.exercsise=exercise
 
     
 

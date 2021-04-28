@@ -8,7 +8,8 @@ class Main(object):
         correction,reps=self.trainer.Corrector(frame)
         return correction,reps
     @staticmethod
-    def vedioAnalysis(self,typeInput,path):
+    def vedioAnalysis(typeInput,path):
+        print(typeInput)
         ## initiate vedio analysis functiion 
         t=Trainer(typeInput)
         return t.Corrector(path)

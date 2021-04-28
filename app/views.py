@@ -81,6 +81,7 @@ def webcam(typee):
     session['correction']=""
     session['reps']=0
     return render_template('index.html')
+
 ##stream cv web cam
 
 def stream(cam):
@@ -117,14 +118,14 @@ def about():
     return render_template('ml5index.html')
 
 ##mediaPipe Routes
-@app.route('/ExerciseSlection/',methods=["GET", "POST"])
+@app.route('/ExerciseSlection2/',methods=["GET", "POST"])
 def RealTime3():
     form=WebcamFrom()
     if request.method == 'POST' :
         if form.validate_on_submit():
             typee= form.etype.data
             print(typee)
-            return redirect(url_for('index2', typee=typee))
+            return redirect(url_for('indexAlpha', typee=typee))
         else:
             flash_errors(form)
     return render_template('realTimeS.html',form=form)
@@ -132,23 +133,35 @@ def RealTime3():
 
 def gen_frames(etype):  
     real=Main(etype)
+    camera=cv2.VideoCapture(0)
     while True:
         success, frame = camera.read()  # read the camera frame
         if not success:
             break
         else:
             ret, buffer = cv2.imencode('.jpg', frame)
-            frame.real.realtime(frame)
+            #session['correction'],session['reps']=real.realtime(frame)
             frame = buffer.tobytes()
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
 @app.route('/MediaPipe/<typee>',methods=["GET"])
-def index2(typee):
+def indexAlpha(typee):
+    session['correction']="No PoseD etected"
+    session['reps']=0
     return render_template('mediapipe.html',typee=typee)
 
 @app.route('/video_feed/<etype>')
 def video_feed(etype):
     return Response(gen_frames(etype), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.route('/MediaPipe/results',methods=["GET"])
+def results():
+    correction=session['correction']
+    reps=session['reps']
+    message={"status":correction,"reps":reps}
+    return jsonify(message)
+
+
 
 
 
@@ -240,7 +253,6 @@ def logout():
 @login_manager.user_loader
 def load_user(id):
     return UserProfile.query.get(int(id))
-
 
 
 

@@ -1,4 +1,6 @@
 import mediapipe as mp
+import cv2 as cv2
+import numpy as np
 class Pose():
  
     def __init__(self, mode=False, upBody=False):
@@ -19,8 +21,10 @@ class Pose():
     def getkeyPoints(self, img):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         results = self.pose.process(img)
-        pose = results.pose_landmarks.landmark
-        return list(np.array([[landmark.x, landmark.y, landmark.z, landmark.visibility] for landmark in pose]).flatten())
+        if results.pose_landmarks is not None:
+            pose = results.pose_landmarks.landmark
+            return list(np.array([[landmark.x, landmark.y, landmark.z, landmark.visibility] for landmark in pose]).flatten())
+        return None
     def getkeyPoints2(self, img):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         results = self.pose.process(img)

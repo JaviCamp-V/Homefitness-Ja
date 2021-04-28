@@ -1,11 +1,30 @@
 {% extends "base.html" %} {% block main %} {% include 'flash_messages.html' %}
 
-    <div class="container">
+    <div class="container" width="1920px" height="1080px">
         <div class="row">
             <div class="col-lg-8  offset-lg-2">
                 <h3 class="mt-5">Live Streaming</h3>
-                <img src="{{ url_for('video_feed',etype=typee) }}" width="100%">
+                <img src="{{ url_for('video_feed',etype=typee) }}" width="640px" height="480px">
             </div>
         </div>
     </div>
+    <div class="side-box">
+        <div class="comments"></div>
+        <h3>Comments</h3>
+        <div class="info">
+          <br />
+          <p> COUNTER: <p id="reps"></p></p>
+          <p id="correction">TIME:</p>
+        </div>
+      </div>    
+    <script>
+  fetch('/MediaPipe/results')
+      .then(function (response) {
+          return response.json();
+      }).then(function (text) {
+          console.log('GET response:');
+          console.log(text); 
+      });
+    </script>
+
 {% endblock %}
