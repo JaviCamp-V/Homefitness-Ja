@@ -16,9 +16,7 @@ from wtforms.validators import DataRequired
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
-#from app.utils.get_points import pose_estimation
 from app.utils.camera import WebCam
-#from app.utils.estimator import estimator,drawkeypoints
 from app.Main import Main
 import cv2 as cv2
 import os
@@ -57,42 +55,8 @@ def uploaded_file(filename):
 def send_file(filename):    
     return redirect(url_for('static', filename='uploads/' + filename), code=301)
 
-@app.route('/ExerciseSlection/',methods=["GET", "POST"])
-def RealTime2():
-    form=WebcamFrom()
-    if request.method == 'POST' :
-        if form.validate_on_submit():
-            typee= form.etype.data
-            print(typee)
-            return redirect(url_for('webcam', typee=typee))
 
-        else:
-            flash_errors(form)
-    return render_template('realTimeS.html',form=form)
 
-#global real
-##route to cv webcam
-
-@app.route('/RealTime/<typee>',methods=["GET"])
-def webcam(typee):
-    #global real
-    #session['Real']=Main(typee)
-    #real=Main(typee)
-    session['correction']=""
-    session['reps']=0
-    return render_template('index.html')
-
-##stream cv web cam
-
-def stream(cam):
-    #global real
-    while True:
-        data = cam.get_frame()
-        #frame=pose_estimation(frame)
-        frame=data[0]
-        #session['correction'],session['reps']=real.realtime(frame)
-        yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n'+frame+b'\r\n')
-    cam.stop()
 
 @app.route('/realtime/correction/',methods=["GET","POST"])
 def livecorrection():
@@ -102,20 +66,6 @@ def livecorrection():
     print("new")
     return jsonify(message)
 
-
-
-##Responce for cv web cam
-@app.route('/video/<source>')
-def video(source):
-    return Response(stream(WebCam(int(source))),mimetype='multipart/x-mixed-replace; boundary=frame')
-
-##live pose estimation
-##use fetch api to send poses to test34 rout aka handle_message function
-@app.route('/live/')
-def about():
-    """Render the website's about page."""
-
-    return render_template('ml5index.html')
 
 ##mediaPipe Routes
 @app.route('/ExerciseSlection2/',methods=["GET", "POST"])
@@ -144,6 +94,7 @@ def gen_frames(etype):
             frame = buffer.tobytes()
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
+
 @app.route('/MediaPipe/<typee>',methods=["GET"])
 def indexAlpha(typee):
     session['correction']="No PoseD etected"
@@ -160,35 +111,6 @@ def results():
     reps=session['reps']
     message={"status":correction,"reps":reps}
     return jsonify(message)
-
-
-
-
-
-## Ml5 realtime    
-count=0
-@app.route("/test34", methods=["GET", "POST"])
-def handle_message():
-    global count
-    data=request.get_json()
-    #analyzeBy(data)
-    #print('received json: ' + str(data))
-    count+=1
-    data={"reps":count,"status": "good"}
-    return jsonify(data)
-##attempt to use vue js to do realtime estimation
-#not working going to take out
-@app.route('/RealTime/', defaults={'path': ''})
-@app.route('/RealTime/<path:path>')
-def real(path):
-    """
-    Because we use HTML5 history mode in vue-router we need to configure our
-    web server to redirect all routes to index.html. Hence the additional route
-    "/<path:path".
-
-    Also we will render the initial webpage and then let VueJS take control.
-    """
-    return render_template('realtime.html')
 
 ##signup
 @app.route('/registration/',methods=["GET","POST"])
