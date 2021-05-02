@@ -102,7 +102,7 @@ def RealTime3():
 def webSocket(typee):
     global real
     real=Main(typee)
-    return render_template('postimag.html')
+    return render_template('realtime.html',typee=typee)
 
 
 def messageRecived():
@@ -120,16 +120,16 @@ def stringToRGB(base64_string):
     image = Image.open(io.BytesIO(imgdata))
     return cv2.cvtColor(np.array(image), cv2.COLOR_BGR2RGB)
 
-
+i=0
 @socketio.on('livevideo')
 def test_live(message):
-    global real
+    global real,i
     if len(message)>10:
         img=stringToRGB(message.split('base64')[-1])
         lst=real.realtime(img)
-        print(lst)
+    i+=1
     print('received message: live')
-    data={"class":"","correction":"","sets":0,"reps":0,"image":message,"calorie":0}
+    data={"class":lst[0],"correction":"lock in ebows run","sets":1,"reps":i,"image":lst[-1],"calorie":40}
     emit('my response', data)
 
     """Video stream reader."""

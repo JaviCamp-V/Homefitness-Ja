@@ -25,16 +25,19 @@
           <button class="button"  id="btnPlay">
             <span class="icon is-small">
               <i class="fas fa-play"></i>
+              <p>Sart Workout</p>
             </span>
+            
           </button>
           <button  class="button is-hidden" id="btnPause">
             <span class="icon is-small">
               <i class="fas fa-pause"></i>
+              <p>Pause Workout</p>
             </span>
           </button>
-          <button class="button is-success" id="btnScreenshot">
+          <button class="button is-success" id="btnStop">
             <span class="icon is-small">
-              <i class="fas fa-camera"></i>
+              <i class="bi bi-stop-circle"></i>
             </span>
           </button>
           <button class="button" id="btnChangeCamera">
@@ -45,8 +48,30 @@
           </button>
         </div>
         <div class="column">
-          <h2 class="title">Screenshots</h2>
-          <div id="screenshots"></div>
+          <div class="row">
+            <h2 class="title">Status</h2>
+            <div id="status">
+                   <div class="sets-container">
+                     sets
+                     <p id="sets"></p>
+
+                   </div>
+                   <div class="reps-container">
+                    Reps
+                    <p id="reps"></p>
+
+                  </div>
+                  <div class="calorie-container">
+                    Calorie
+                    <p id="calorie"></p>
+                  </div>
+            </div>
+            </div>
+          </div>
+          <div class="row">
+            <h2 class="title">Screenshots</h2>
+            <div id="screenshots"></div>
+          </div>
         </div>
       </div>
     </div>

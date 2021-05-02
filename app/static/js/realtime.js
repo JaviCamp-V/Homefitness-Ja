@@ -17,9 +17,6 @@
       console.log("ok");
     } )
 
-    socket.on( 'my response', function( msg ) {
-      console.log( msg )
-    })
   
 
 
@@ -33,9 +30,13 @@
     const video = document.querySelector("#video");
     const btnPlay = document.querySelector("#btnPlay");
     const btnPause = document.querySelector("#btnPause");
-    const btnScreenshot = document.querySelector("#btnScreenshot");
+    const btnStop = document.querySelector("#btnStop");
     const btnChangeCamera = document.querySelector("#btnChangeCamera");
-    const screenshotsContainer = document.querySelector("#screenshots");
+    const comments = document.querySelector("#critique");
+    const sets = document.querySelector("#sets");
+    const caloire = document.querySelector("#calorie");
+    const reps = document.querySelector("#reps");
+
     const canvas = document.querySelector("#canvas");
     const devicesSelect = document.querySelector("#devicesSelect");
   
@@ -64,8 +65,6 @@
     // handle events
     // play
     var intervalId="";
-    var sets=0;
-    var reps=0;
     var lastclass="12";
 
     function sendToServer(){
@@ -73,22 +72,34 @@
       canvas.height = video.videoHeight;
       canvas.getContext("2d").drawImage(video, 0, 0);
       const data = canvas.toDataURL("image/jpeg");
-      socket.emit('livevideo', data, function (res) {
+      
 
-        if (true) {
-          var btn = document.createElement("BUTTON");
-          btn.setAttribute("class", "accordion");
-          var div = document.createElement("div");
-          div.setAttribute("class", "panel");
-          var para = document.createElement("p");
-          para.innerHTML = "Lorem100kkkkkkkkkkkkkkk";  
-          div.appendChild(para);
-          screenshotsContainer.prepend(btn);
-          screenshotsContainer.prepend(div);
-          // Create a <p> element
+      socket.emit('livevideo', data);
+  
+      socket.on( 'my response', function( msg ) {
+        reps.innerHTML=msg.reps;
+        sets.innerHTML=msg.sets;
+
+        if(msg.class!=lastclass ){
+        lastclass=msg.class;
+        const divone = document.createElement("div");
+        divone.setAttribute("class", "critique-item");
+        const link = document.createElement("a");
+        link.setAttribute("class", "critique-link");
+        link.innerHTML = msg.class;
+        const divtwo = document.createElement("div");
+        divtwo.setAttribute("class", "critique-body");
+        const img = document.createElement("img");
+        img.src = "data:image/jpg;base64,"+ msg.image;
+        const p = document.createElement("p");
+        p.innerHTML=msg.correction;
+        divtwo.appendChild(img);               
+        divtwo.appendChild(p); 
+        divone.appendChild(link);   
+        divone.appendChild(divtwo);  
+        comments.prepend(divone);
 
         }
-      
       });
     }
     
@@ -108,7 +119,11 @@
     });
   
     // take screenshot  
-  btnScreenshot.addEventListener("click", function () {
+
+
+    /**
+     * 
+     *   btnScreenshot.addEventListener("click", function () {
       const img = document.createElement("img");
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
@@ -116,6 +131,16 @@
       img.src = canvas.toDataURL("image/png");
       screenshotsContainer.prepend(img);
     });
+
+     */
+
+    btnStop.addEventListener("click", function () {
+      stopVideoStream();
+      btnPause.classList.add("is-hidden");
+      btnPlay.classList.remove("is-hidden");
+    });
+
+
   
     // switch camera
     btnChangeCamera.addEventListener("click", function () {
