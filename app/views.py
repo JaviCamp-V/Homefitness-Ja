@@ -182,7 +182,7 @@ def signup():
     form=SignUpForm()
     if request.method == 'POST' :
         if form.validate_on_submit():
-            user=UserProfile(form.fname.data,form.lname.data,form.age.data,form.weight.data,form.username.data,form.password.data)
+            user=Users(form.fname.data,form.lname.data,form.age.data,form.weight.data,form.username.data,form.password.data)
             db.session.add(user)
             db.session.commit()
             flash('User Saved', 'success')
@@ -207,7 +207,7 @@ def login():
             # Then store the result of that query to a `user` variable so it can be
             # passed to the login_user() method below.
             # get user id, load into session
-            user = UserProfile.query.filter_by(username=username).first()
+            user = Users.query.filter_by(username=username).first()
             if user is not None and check_password_hash(user.password, password):
                 login_user(user)
                 flash('Logged in successfully.', 'success')
@@ -238,7 +238,7 @@ def logout():
 # the user ID stored in the session
 @login_manager.user_loader
 def load_user(id):
-    return UserProfile.query.get(int(id))
+    return Users.query.get(int(id))
 
 @app.route('/testing')
 def testing():
