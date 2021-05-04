@@ -7,7 +7,9 @@ class RepCounter(object):
         self.state=""
     def getype(self):
         return self.exercise
-    def getReps(self,keypoints):
+    def getReps(self,keypoints=None):
+        if keypoints==None:
+            return self.reps
         self.pastPose.append(keypoints)
 
         if self.exercise=="squat":
@@ -22,6 +24,7 @@ class RepCounter(object):
            return 0
 
     def bicepCounter(self,keypoints):
+        self.exercise="dual"
         if "dual" in self.exercise:
             rightWrist=keyPoints[16][:2]
             leftWrist=keyPoints[15][:2]

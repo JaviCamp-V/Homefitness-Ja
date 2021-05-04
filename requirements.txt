@@ -37,3 +37,4 @@ scikit-learn==0.24.1
 scipy==1.6.2
 sklearn==0.0
 Flask-Session
+tqdm

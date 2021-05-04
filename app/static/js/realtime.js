@@ -133,7 +133,7 @@
       video.play();
       btnPlay.classList.add("is-hidden");
       btnPause.classList.remove("is-hidden");
-      intervalId=setInterval(sendToServer,10);
+      intervalId=setInterval(sendToServer,100);
     });
   
     // pause
@@ -187,7 +187,7 @@
     // initialize
     async function initializeCamera() {
       stopVideoStream();
-      constraints.video.facingMode = useFrontCamera ? "user" : "environment";
+      //constraints.video.facingMode = useFrontCamera ? "user" : "environment";
   
       try {
         videoStream = await navigator.mediaDevices.getUserMedia(constraints);

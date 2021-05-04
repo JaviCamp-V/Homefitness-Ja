@@ -12,7 +12,7 @@ from app.utils.RepCounter import RepCounter
 import pickle
 import pandas as pd
 import json
-
+#import tqdm
 
 class Trainer(object):
 
@@ -80,9 +80,9 @@ class Trainer(object):
         if keypoints is not None:
             X = pd.DataFrame([keypoints])
             Eclass=self.model.predict(X)[0]
-        if self.exercise=="curls":
-            self.repCounter.setCurlType(frame)
-        reps=self.repCounter.getReps(keypoints) 
+            reps=self.repCounter.getReps(keypoints)
+        else:
+            reps=self.repCounter.getReps() 
         data={"class": "","correction":"lock in ebows run","sets":"","reps":"","image":"","calorie":40}
         return Eclass,reps
     def videoCorrection(self,filename):
@@ -96,6 +96,7 @@ class Trainer(object):
             output="app/static/uploads/output"+os.path.splitext(filename)[1]
             cap = cv2.VideoCapture(filename)
             fps = int(cap.get(5))
+            frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
             dimension= (int(cap.get(3)),int(cap.get(4)))
             if dimension!=(640,480):
                 cap.set(3,640)
@@ -103,7 +104,9 @@ class Trainer(object):
             vtype=fourcc[os.path.splitext(filename)[1]]
             out = cv2.VideoWriter(output,vtype,fps,dimension)
             i=0
+            #pbar = tqdm(total = frame_count)
             while cv2.waitKey(1) < 0:
+                    #pbar.update(i)
                     hasFrame, frame = cap.read()
                     if not hasFrame:
                         break
@@ -115,18 +118,15 @@ class Trainer(object):
                     frame=self.detector.drawPose(frame)
                     frame=self.writeToimage(frame,label,reps)
                     out.write(frame)
-                    if cv2.waitKey(1) & 0xFF == ord('q'):
-                        break
+                    cv2.waitKey(1)
                     i+=1
-                    print(i)
+                    print("Video is still processing ")
             cap.release()
             out.release()
             cv2.destroyAllWindows()
-            #os.remove(filename)
-            #os.rename(output,"app/static/uploads/"+filename)
         except cv2.error as e:
             pass
-        return output
+        return output.split("app/static/uploads/")[1]
     def writeToimage(self,frame,label,reps):
         cv2.rectangle(frame, (0,0), (300,73), (245,117,16), -1)
         cv2.putText(frame, 

@@ -1,4 +1,8 @@
 {% extends "base.html" %} {% block main %} 
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <h2>Select An Excercise</h2>
 <div class="dropdown select-exc">
@@ -44,4 +48,19 @@
   </div>
   <button type="submit" class="btn btn-success" id="upload-btn">Upload</button>
 </form>
+<script>
+  (function () {
+    const btn = document.querySelector("#upload-btn");
+    btn.addEventListener("click", function () {
+      btn.classList.remove("btn-success");
+      btn.classList.add("btn-primary");
+      const span = document.createElement("span");
+      span.classList.add("spinner-border");
+      span.classList.add("spinner-border-sm");
+      btn.innerHTML="Processing..";
+      btn.appendChild(span);  
+    });
+
+  })();
+</script>
 {% endblock %}
