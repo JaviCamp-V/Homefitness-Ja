@@ -11,28 +11,24 @@ from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from app.utils.RepCounter import RepCounter
 import pickle
 import pandas as pd
-
+import json
 
 
 class Trainer(object):
 
-    def __init__(self,typeInput):
-        Models=dict({"curls":"app/static/models/bicepcurlsModel1.pkl","squat":"app/static/models/squat_detection_model.pkl","shp":"","plank":""})
+    def __init__(self,typeInput,weight=180,sex="Female"):
+        Models=dict({"curls":"bicepcurlsModel1.pkl","squat":"squat_detection_model.pkl","shp":"squat_detection_model.pkl","plank":"plank_detection_model.pkl"})
         ## initialize class
         self.exercise=typeInput
-        if typeInput=="curls":
-            self.curlClassifier=Curl()
-        if typeInput=="squat":
-            self.detector=Holistic()
-        else:
-            self.detector=Pose()
+        self.weight=weight
+        self.sex=sex
+        self.detector=Pose()
         try:
-            self.model=pickle.load(open(Models[typeInput], 'rb'))
+            self.model=pickle.load(open("app/static/models/"+Models[typeInput], 'rb'))
         except:
             self.model=None
         #modelCompile()
         self.repCounter=RepCounter(typeInput)
-        print(self.repCounter.getype())
     def Corrector(self,inputData):
         ## Corrector Main function
         if type(inputData) is not str:
@@ -80,15 +76,15 @@ class Trainer(object):
     def frameCorrection(self,frame):
         keypoints=self.detector.getkeyPoints(frame)
         keypoints=self.normalizeFrame(keypoints)
-        result="No Pose Detected"
+        Eclass="No Pose Detected"
         if keypoints is not None:
             X = pd.DataFrame([keypoints])
-            result=self.model.predict(X)[0]
+            Eclass=self.model.predict(X)[0]
         if self.exercise=="curls":
             self.repCounter.setCurlType(frame)
         reps=self.repCounter.getReps(keypoints) 
-        print("reps")
-        return result,reps
+        data={"class": "","correction":"lock in ebows run","sets":"","reps":"","image":"","calorie":40}
+        return Eclass,reps
     def videoCorrection(self,filename):
         ogfilename=filename
         filename="app/static/uploads/"+filename

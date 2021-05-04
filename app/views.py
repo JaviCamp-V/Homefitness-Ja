@@ -10,7 +10,7 @@ from app import app, db, login_manager,socketio
 from flask import render_template, request, redirect, url_for, flash, Response,jsonify,session,make_response
 from flask_login import login_user, logout_user, current_user, login_required
 from app.forms import LoginForm,VideoFrom,WebcamFrom
-from app.models import UserProfile
+from app.models import Users,HealthCondition,SquatSession,PlankSession,OhpSession,CurlSession
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
