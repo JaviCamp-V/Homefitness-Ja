@@ -8,6 +8,19 @@
       alert("Camera API is not available in your browser");
       return;
     }
+    let videfeeds=[];
+    navigator.mediaDevices.enumerateDevices().then(function (devices) {
+      for(var i = 0; i < devices.length; i ++){
+          var device = devices[i];
+          if (device.kind === 'videoinput') {
+            videfeeds.push(device);
+            console.log(videfeeds);
+
+          }
+      };
+    });
+      
+    
     var socket = io.connect( 'http://' + document.domain + ':' + location.port )
     // broadcast a message
     socket.on( 'connect', function() {
@@ -50,6 +63,7 @@
   
     // video constraints
     const constraints = {
+
       video: {
         width: {
           min: 1280,
@@ -190,7 +204,7 @@
       //constraints.video.facingMode = useFrontCamera ? "user" : "environment";
   
       try {
-        videoStream = await navigator.mediaDevices.getUserMedia(constraints);
+        videoStream = await navigator.mediaDevices.getUserMedia({video:true});
         video.srcObject = videoStream;      
       } catch (err) {
         alert("Could not access the camera");

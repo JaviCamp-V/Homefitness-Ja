@@ -12,7 +12,7 @@ from app.utils.RepCounter import RepCounter
 import pickle
 import pandas as pd
 import json
-#import tqdm
+import tqdm
 
 class Trainer(object):
 
@@ -103,10 +103,10 @@ class Trainer(object):
                 cap.set(4,480)
             vtype=fourcc[os.path.splitext(filename)[1]]
             out = cv2.VideoWriter(output,vtype,fps,dimension)
-            i=0
-            #pbar = tqdm(total = frame_count)
+            i=1
+            pbar = tqdm(total = frame_count)
             while cv2.waitKey(1) < 0:
-                    #pbar.update(i)
+                    pbar.update(i)
                     hasFrame, frame = cap.read()
                     if not hasFrame:
                         break
@@ -119,8 +119,6 @@ class Trainer(object):
                     frame=self.writeToimage(frame,label,reps)
                     out.write(frame)
                     cv2.waitKey(1)
-                    i+=1
-                    print("Video is still processing ")
             cap.release()
             out.release()
             cv2.destroyAllWindows()

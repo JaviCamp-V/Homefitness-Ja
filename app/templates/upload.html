@@ -5,6 +5,8 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <h2>Select An Excercise</h2>
+
+<!--
 <div class="dropdown select-exc">
   <a
     class="btn btn-secondary dropdown-toggle"
@@ -30,6 +32,7 @@
 <br />
 
 <br />
+-->
 
 <h2>Upload Video File</h2>
 <hr />
@@ -52,6 +55,7 @@
   (function () {
     const btn = document.querySelector("#upload-btn");
     btn.addEventListener("click", function () {
+      btn.disabled = true;
       btn.classList.remove("btn-success");
       btn.classList.add("btn-primary");
       const span = document.createElement("span");
