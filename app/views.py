@@ -128,7 +128,7 @@ def test_live(message):
         img=stringToRGB(message.split('base64')[-1])
         lst=real.realtime(img)
     i+=1
-    print('received message: live')
+    print('[live correction in pogress]******************************************')
     data={"class":lst[0],"correction":"lock in ebows run","sets":1,"reps":i,"image":lst[-1],"calorie":40}
     emit('live corrections', data)
 

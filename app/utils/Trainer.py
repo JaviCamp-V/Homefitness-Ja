@@ -90,7 +90,7 @@ class Trainer(object):
         filename="app/static/uploads/"+filename
         fourcc ={
         '.avi': cv2.VideoWriter_fourcc(*'XVID'),
-        '.mp4': cv2.VideoWriter_fourcc(*'mp4v'),
+        '.mp4': cv2.VideoWriter_fourcc(*'X264'),
         }
         try:
             output="app/static/uploads/output"+os.path.splitext(filename)[1]
@@ -104,9 +104,7 @@ class Trainer(object):
             vtype=fourcc[os.path.splitext(filename)[1]]
             out = cv2.VideoWriter(output,vtype,fps,dimension)
             i=1
-            pbar = tqdm(total = frame_count)
             while cv2.waitKey(1) < 0:
-                    pbar.update(i)
                     hasFrame, frame = cap.read()
                     if not hasFrame:
                         break
@@ -119,9 +117,10 @@ class Trainer(object):
                     frame=self.writeToimage(frame,label,reps)
                     out.write(frame)
                     cv2.waitKey(1)
+                    print('[Video correction in pogress]******************************************')
+
             cap.release()
             out.release()
-            cv2.destroyAllWindows()
         except cv2.error as e:
             pass
         return output.split("app/static/uploads/")[1]

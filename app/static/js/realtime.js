@@ -147,7 +147,7 @@
       video.play();
       btnPlay.classList.add("is-hidden");
       btnPause.classList.remove("is-hidden");
-      intervalId=setInterval(sendToServer,100);
+      intervalId=setInterval(sendToServer,17);
     });
   
     // pause

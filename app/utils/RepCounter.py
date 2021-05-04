@@ -34,15 +34,15 @@ class RepCounter(object):
             leftShoulder=keyPoints[11][:2]
             rightAngle=Pose.calculate_angle(rightShoulder,rightElbow,rightWrist)
             leftAngle=Pose.calculate_angle(leftShoulder,leftElbow,leftWrist)
-            if rightAngle>=150 and leftAngle>=150 :
+            if rightAngle>=150 or leftAngle>=150 :
                 self.state="stage"
-            elif rightAngle<150 and rightAngle>90 and leftAngle<150 and leftAngle>90:
+            elif rightAngle<150 and rightAngle>90 or leftAngle<150 and leftAngle>90:
                 if self.state=="up":
                     self.state="mid-down"
                 else:
                     self.state="mid-up"
                 
-            elif rightAngle<=90 and leftAngle<=90 and self.state=="mid-up":
+            elif rightAngle<=90 or leftAngle<=90 and self.state=="mid-up":
                 self.state="up"
                 self.reps+=1
         elif "left" in self.exercise:

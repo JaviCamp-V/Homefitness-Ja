@@ -25,7 +25,7 @@ class Main(object):
         ## initiate vedio analysis functiion 
         t=Trainer(typeInput)
         return t.Corrector(path)
-    
+"""
 app = Flask(__name__)
 
 @app.route('/Homefitness-ja/', methods=['GET', 'POST'])
@@ -77,3 +77,4 @@ def register():
     elif request.method == 'POST':
         msg = 'Please fill out the form!'
     return render_template('register.html', msg=msg)
+"""
