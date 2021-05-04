@@ -2,6 +2,7 @@ from app.utils.Trainer import Trainer
 from app.utils.Pose import Pose,Holistic
 import cv2
 import base64,io
+from flask import Flask, render_template, request, redirect, url_for, session
 
 
 class Main(object):
@@ -25,3 +26,48 @@ class Main(object):
         t=Trainer(typeInput)
         return t.Corrector(path)
     
+app = Flask(__name__)
+
+@app.route('/Homefitness-ja/', methods=['GET', 'POST'])
+def login():
+    msg = ''
+    return render_template('index.html', msg='')
+
+
+def login():
+    # Output message if something goes wrong...
+    msg = ''
+    # Check if "username" and "password" POST requests exist (user submitted form)
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
+        username = request.form['username']
+        password = request.form['password']
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM accounts WHERE username = %s AND password = %s', (username, password,))
+        account = cursor.fetchone()
+        if account:
+            session['loggedin'] = True
+            session['id'] = account['id']
+            session['username'] = account['username']
+            return 'Logged in successfully!'
+        else:
+            msg = 'Incorrect username/password!'
+    return render_template('index.html', msg=msg)
+
+@app.route('/Homefitness-ja/logout')
+def logout():
+   session.pop('loggedin', None)
+   session.pop('id', None)
+   session.pop('username', None)
+   return redirect(url_for('login'))
+
+
+@app.route('/Homefitness-ja/register', methods=['GET', 'POST'])
+def register():
+    msg = ''
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form:
+        username = request.form['username']
+        password = request.form['password']
+        email = request.form['email']
+    elif request.method == 'POST':
+        msg = 'Please fill out the form!'
+    return render_template('register.html', msg=msg)
