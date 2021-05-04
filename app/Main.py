@@ -28,7 +28,7 @@ class Main(object):
     
 app = Flask(__name__)
 
-@app.route('/pythonlogin/', methods=['GET', 'POST'])
+@app.route('/Homefitness-ja/', methods=['GET', 'POST'])
 def login():
     msg = ''
     return render_template('index.html', msg='')
@@ -53,7 +53,7 @@ def login():
             msg = 'Incorrect username/password!'
     return render_template('index.html', msg=msg)
 
-@app.route('/pythonlogin/logout')
+@app.route('/Homefitness-ja/logout')
 def logout():
    session.pop('loggedin', None)
    session.pop('id', None)
@@ -61,7 +61,7 @@ def logout():
    return redirect(url_for('login'))
 
 
-@app.route('/pythonlogin/register', methods=['GET', 'POST'])
+@app.route('/Homefitness-ja/register', methods=['GET', 'POST'])
 def register():
     msg = ''
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form:
