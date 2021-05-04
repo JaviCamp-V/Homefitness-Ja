@@ -17,7 +17,7 @@ import json
 class Trainer(object):
 
     def __init__(self,typeInput,weight=180,sex="Female"):
-        Models=dict({"curls":"bicepcurlsModel1.pkl","squat":"squat_detection_model.pkl","shp":"squat_detection_model.pkl","plank":"plank_detection_model.pkl"})
+        Models=dict({"curls":"bicepcurlsModel1.pkl","squat":"squat_detection_model.pkl","shp":"shoulderpress_detection_model.pkl","plank":"plank_detection_model.pkl"})
         ## initialize class
         self.exercise=typeInput
         self.weight=weight
