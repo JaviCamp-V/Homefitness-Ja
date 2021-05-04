@@ -5,8 +5,9 @@ Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
 from . import socketio
-from app import app, db, login_manager
-from flask import render_template, request, redirect, url_for, flash, Response,jsonify,session
+from flask_socketio import SocketIO ,send, emit
+from app import app, db, login_manager,socketio
+from flask import render_template, request, redirect, url_for, flash, Response,jsonify,session,make_response
 from flask_login import login_user, logout_user, current_user, login_required
 from app.forms import LoginForm,VideoFrom,WebcamFrom
 from app.models import UserProfile
@@ -16,20 +17,36 @@ from wtforms.validators import DataRequired
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
-from app.utils.camera import WebCam
 from app.Main import Main
+import numpy as np
 import cv2 as cv2
+from PIL import Image
+import base64,io
+
 import os
+import time,random
+import json
 
 
+
+correction=" "
+reps=0
+lst=""
+
+
+
+
+
+
+
+real=None
+data={"class":"","correction":"","sets":0,"reps":0,"image":"base64","calorie":0}
 
 ##Home page 
 @app.route('/')
 def home():
     """Render website's home page."""
     return render_template('home.html')
-
-
 # Allows user to upload VIDEO FILE
 @app.route('/upload', methods=["GET", "POST"])
 def upload():
@@ -67,33 +84,80 @@ def livecorrection():
     return jsonify(message)
 
 
+
 ##mediaPipe Routes
-@app.route('/ExerciseSlection2/',methods=["GET", "POST"])
+@app.route('/ExerciseSlection/',methods=["GET", "POST"])
 def RealTime3():
     form=WebcamFrom()
     if request.method == 'POST' :
         if form.validate_on_submit():
             typee= form.etype.data
             print(typee)
-            return redirect(url_for('indexAlpha', typee=typee))
+            return redirect(url_for('webSocket', typee=typee))
         else:
             flash_errors(form)
     return render_template('realTimeS.html',form=form)
 
+@app.route("/Realtime/<typee>")
+def webSocket(typee):
+    global real
+    real=Main(typee)
+    return render_template('realtime.html',typee=typee)
 
-def gen_frames(etype):  
+
+def messageRecived():
+  print( 'message was received!!!' )
+
+@socketio.on( 'connection' )
+def handle_my_custom_event( json ):
+  print( 'recived my event: ' + str( json ) )
+  socketio.emit( 'connection ack', json, callback=messageRecived )
+
+
+# Take in base64 string and return cv image
+def stringToRGB(base64_string):
+    imgdata = base64.b64decode(base64_string)
+    image = Image.open(io.BytesIO(imgdata))
+    return cv2.cvtColor(np.array(image), cv2.COLOR_BGR2RGB)
+
+i=0
+@socketio.on('livevideo')
+def test_live(message):
+    global real,i
+    if len(message)>10:
+        img=stringToRGB(message.split('base64')[-1])
+        lst=real.realtime(img)
+    i+=1
+    print('received message: live')
+    data={"class":lst[0],"correction":"lock in ebows run","sets":1,"reps":i,"image":lst[-1],"calorie":40}
+    emit('live corrections', data)
+
+    """Video stream reader."""
+
+
+
+
+correction=""
+def gen_frames(etype): 
+    global realLock,correction,reps,lst
     real=Main(etype)
-    camera=cv2.VideoCapture(0)
+    camera=cv2.VideoCapture(0,cv2.CAP_DSHOW)
     while True:
         success, frame = camera.read()  # read the camera frame
         if not success:
             break
         else:
+            val=real.realtime(frame)
+            if len(val)==3:
+                correction,reps,lst=val 
+            else:
+                correction,reps=val
+                lst=None
             ret, buffer = cv2.imencode('.jpg', frame)
-            #session['correction'],session['reps']=real.realtime(frame)
             frame = buffer.tobytes()
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
+    cv2.destroyAllWindows()
 
 @app.route('/MediaPipe/<typee>',methods=["GET"])
 def indexAlpha(typee):
@@ -176,6 +240,19 @@ def logout():
 def load_user(id):
     return UserProfile.query.get(int(id))
 
+@app.route('/testing')
+def testing():
+    return render_template('realtime.html')
+
+
+
+@app.route('/data', methods=["GET", "POST"])
+def data():
+    global realLock,correction,reps,lst
+    data=[correction,session['caliore'],reps,lst]
+    response = make_response(json.dumps(data))
+    response.content_type = 'application/json'
+    return response
 
 
 ###
@@ -212,7 +289,7 @@ def page_not_found(error):
     """Custom 404 page."""
     return render_template('404.html'), 404 
 
+
 if __name__ == '__main__':
-    #socketio.run(app)
     app.run(debug=True, host="0.0.0.0", port="8080")
 

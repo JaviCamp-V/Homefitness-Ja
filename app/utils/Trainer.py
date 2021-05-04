@@ -17,7 +17,7 @@ import pandas as pd
 class Trainer(object):
 
     def __init__(self,typeInput):
-        Models=dict({"curls":"app/models/bicepcurlsModel1.pkl","squat":"app/models/squat_detection_model.pkl","shp":"","plank":""})
+        Models=dict({"curls":"app/static/models/bicepcurlsModel1.pkl","squat":"app/static/models/squat_detection_model.pkl","shp":"","plank":""})
         ## initialize class
         self.exercise=typeInput
         if typeInput=="curls":
@@ -87,6 +87,7 @@ class Trainer(object):
         if self.exercise=="curls":
             self.repCounter.setCurlType(frame)
         reps=self.repCounter.getReps(keypoints) 
+        print("reps")
         return result,reps
     def videoCorrection(self,filename):
         ogfilename=filename

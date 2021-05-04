@@ -7,6 +7,7 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'postgresql://testdb:testdb@localhost/testdb'
     SQLALCHEMY_TRACK_MODIFICATIONS = False 
     UPLOAD_FOLDER = './app/static/uploads'
+    
 
 
 class DevelopmentConfig(Config):
