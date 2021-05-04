@@ -64,10 +64,16 @@ def logout():
 @app.route('/Homefitness-ja/register', methods=['GET', 'POST'])
 def register():
     msg = ''
-    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form:
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form and 'height' in request.form and 'weight' in request.form
+    and 'weightgoal' in request.form and 'gender' in request.form and 'age' in request.form:
         username = request.form['username']
         password = request.form['password']
         email = request.form['email']
+        height = request.form['height']
+        weight = request.form['weight']
+        weightgoal = request.form['weightgoal']
+        gender = request.form['gender']
+        age = request.form['age']
     elif request.method == 'POST':
         msg = 'Please fill out the form!'
     return render_template('register.html', msg=msg)
