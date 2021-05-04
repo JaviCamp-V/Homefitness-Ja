@@ -11,11 +11,19 @@
     var socket = io.connect( 'http://' + document.domain + ':' + location.port )
     // broadcast a message
     socket.on( 'connect', function() {
-      socket.emit( 'my event', {
+      socket.emit( 'connection', {
         data: 'User Connected'
       } )
       console.log("ok");
-    } )
+    } );
+    var acck=400;
+    socket.on( 'connection ack', function( msg ) {
+        console.log(msg);
+        acck=200;
+    });
+
+
+    
 
   
 
@@ -32,7 +40,7 @@
     const btnPause = document.querySelector("#btnPause");
     const btnStop = document.querySelector("#btnStop");
     const btnChangeCamera = document.querySelector("#btnChangeCamera");
-    const comments = document.querySelector("#critique");
+    const comments = document.querySelector("#accordion");
     const sets = document.querySelector("#sets");
     const caloire = document.querySelector("#calorie");
     const reps = document.querySelector("#reps");
@@ -66,6 +74,7 @@
     // play
     var intervalId="";
     var lastclass="12";
+    var numErrors=0;
 
     function sendToServer(){
       canvas.width = video.videoWidth;
@@ -75,29 +84,46 @@
       
 
       socket.emit('livevideo', data);
+
   
-      socket.on( 'my response', function( msg ) {
+      socket.on( 'live corrections', function( msg ) {
         reps.innerHTML=msg.reps;
         sets.innerHTML=msg.sets;
 
         if(msg.class!=lastclass ){
         lastclass=msg.class;
-        const divone = document.createElement("div");
-        divone.setAttribute("class", "critique-item");
+        const card = document.createElement("div");
+        card.setAttribute("class", "card");
+        const cardheader = document.createElement("div");
+        cardheader.setAttribute("class", "card-header");
         const link = document.createElement("a");
-        link.setAttribute("class", "critique-link");
+        link.setAttribute("class", "card-link");
+        link.setAttribute("data-toggle", "collapse");
+        link.setAttribute("href", "#Error"+numErrors.toString());
         link.innerHTML = msg.class;
-        const divtwo = document.createElement("div");
-        divtwo.setAttribute("class", "critique-body");
+        cardheader.appendChild(link);  
+        const collapse = document.createElement("div");
+        collapse.setAttribute("id", "Error"+numErrors.toString());
+        collapse.setAttribute("class", "collapse show");
+        collapse.setAttribute("data-parent", "#accordion");
+        const carbody = document.createElement("div");
+        carbody.setAttribute("class", "card-body");
+
         const img = document.createElement("img");
+        img.setAttribute("class", "card-img-top");
         img.src = "data:image/jpg;base64,"+ msg.image;
         const p = document.createElement("p");
         p.innerHTML=msg.correction;
-        divtwo.appendChild(img);               
-        divtwo.appendChild(p); 
-        divone.appendChild(link);   
-        divone.appendChild(divtwo);  
-        comments.prepend(divone);
+
+        carbody.appendChild(img);               
+        carbody.appendChild(p); 
+        collapse.appendChild(carbody);   
+        card.appendChild(cardheader);  
+        card.appendChild(collapse); 
+ 
+
+        comments.appendChild(card);
+        numErrors+=1
 
         }
       });

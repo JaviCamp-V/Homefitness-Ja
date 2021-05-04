@@ -70,4 +70,7 @@ body {
   overflow: hidden;
 }
 
-
+.sidebar-critique{
+  overflow-y: scroll;
+  height: 50%;
+}

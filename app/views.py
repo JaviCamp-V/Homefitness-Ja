@@ -108,10 +108,10 @@ def webSocket(typee):
 def messageRecived():
   print( 'message was received!!!' )
 
-@socketio.on( 'my event' )
+@socketio.on( 'connection' )
 def handle_my_custom_event( json ):
   print( 'recived my event: ' + str( json ) )
-  socketio.emit( 'my response', json, callback=messageRecived )
+  socketio.emit( 'connection ack', json, callback=messageRecived )
 
 
 # Take in base64 string and return cv image
@@ -130,7 +130,7 @@ def test_live(message):
     i+=1
     print('received message: live')
     data={"class":lst[0],"correction":"lock in ebows run","sets":1,"reps":i,"image":lst[-1],"calorie":40}
-    emit('my response', data)
+    emit('live corrections', data)
 
     """Video stream reader."""
 

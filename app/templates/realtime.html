@@ -39,36 +39,45 @@
                 <span>Switch camera</span>
               </button>
             </div>
-            <div class="column">
+            <div class="column" width="w-50 p-3">
               <div class="row">
+                <div class="col">
                 <h2 class="title">Status</h2>
                 <div id="status">
-                       <div class="sets-container">
-                         sets
-                         <p id="sets"></p>
-    
-                       </div>
-                       <div class="reps-container">
-                        Reps
-                        <p id="reps"></p>
-    
-                      </div>
-                      <div class="calorie-container">
-                        Calorie
-                        <p id="calorie"></p>
+                        <div class="row">
+                          <div class="col-sm-6" id="sets-container">
+                            <h3>Sets</h3>
+                            <p id="sets"></p>
+                          </div>
+                          <div class="col-sm-6" id="reps-container">
+                           <h3>Reps</h3>
+                           <p id="reps"></p>
+                          </div>
+
+                        </div>
+                       <div class="row">
+                        <div class="col-sm-6" id="time-container">
+                          <h3>Time lapsed</h3>
+                          <p id="timer"></p>
+                        </div>
+                        <div class="col-sm-6" id="calorie-container">
+                          <h3>Calorie</h3>
+                          <p id="calorie"></p>
+                        </div>
                       </div>
                 </div>
                 </div>
               </div>
-              <div class="row">
+              <div class="col">
                 <h2 class="title">Comments</h2>
                   <div class="sidebar-critique">
-                    <div id="critique"></div>
-
+                    <div id="accordion">
+                    </div>
                   </div>
               </div>
             </div>
           </div>
+        </div>
         </div>
       </section>
       <canvas class="is-hidden" id="canvas"></canvas>
