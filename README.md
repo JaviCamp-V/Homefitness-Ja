@@ -10,20 +10,10 @@ Human pose estimation is a popular solution that AI has to offer; it is used to 
 
 
 ### TODO Update:
-- [ ] Conenct the componets and design frontend responses 
-- [ ] Models creation
-- [ ] Reption Counter
+
 - [ ] Launch and Test Website
 - [ ] Report
 - [ ] Website
-
-### TODO
-- [ ] fucntion for to calculate angle betwen points
-- [ ] label each video frame for biceps curls,shoulder press,pushup
-- [ ] We need a functions fi calculate the number of reps for each exercise base on the angles
-- [ ] find the key points for each workout
-      - [ ] isolate those frames 
-- [ ] a neural network to classify the kepponts and angles
 
 ### Research 
 https://github.com/rodosingh/Table-Tennis-Shot-Classification-Using-OpenPose
