@@ -34,6 +34,7 @@ class RepCounter(object):
             leftShoulder=keyPoints[11][:2]
             rightAngle=Pose.calculate_angle(rightShoulder,rightElbow,rightWrist)
             leftAngle=Pose.calculate_angle(leftShoulder,leftElbow,leftWrist)
+            print("Angles",rightAngle)
             if rightAngle>=150 or leftAngle>=150 :
                 self.state="stage"
             elif rightAngle<150 and rightAngle>90 or leftAngle<150 and leftAngle>90:

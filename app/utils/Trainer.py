@@ -80,6 +80,8 @@ class Trainer(object):
         if keypoints is not None:
             X = pd.DataFrame([keypoints])
             Eclass=self.model.predict(X)[0]
+            if self.exercise=="curls":
+                keypoints=self.detector.getkeyPoints2(frame)
             reps=self.repCounter.getReps(keypoints)
         else:
             reps=self.repCounter.getReps() 

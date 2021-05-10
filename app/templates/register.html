@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Register</title>
-		<link rel="stylesheet" href="{{ url_for('css', filename='style.css') }}">
+		<link rel="stylesheet" href="/static/css/style.css" />
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
 	</head>
 	<body>
@@ -13,43 +13,44 @@
 				<a href="{{ url_for('login') }}">Login</a>
 				<a href="{{ url_for('register') }}" class="active">Register</a>
 			</div>
-			<form action="{{ url_for('register') }}" method="post" autocomplete="off">
+			{% include 'flash_messages.html' %}
+			<form action="{{ url_for('register') }}" method="POST" autocomplete="on">
+				{{ form.csrf_token }}
 				<label for="username">
 					<i class="fas fa-user"></i>
 				</label>
-				<input type="text" name="username" placeholder="Username" id="username" required>
+				{{ form.username(placeholder="Username") }}
 				<label for="password">
 					<i class="fas fa-lock"></i>
 				</label>
-				<input type="password" name="password" placeholder="Password" id="password" required>
+				{{ form.password(placeholder="Password") }}
 				<label for="email">
 					<i class="fas fa-envelope"></i>
 				</label>
-				<input type="email" name="email" placeholder="Email" id="email" required>
-				<div class="msg">{{ msg }}</div>
-				<input type="submit" value="Register">
+				{{ form.email(placeholder="Email") }}
 				<label for="height">
 					<i class="fas fa-height"></i>
 				</label>
-				<input type="number" name="height" placeholder="height" id="height" required>
-												   
+				{{ form.height(placeholder="height") }}												   
 				<label for="weight">
 					<i class="fas fa-weight"></i>
 				</label>
-				<input type="number" name="weight" placeholder="weight" id="weight" required>
+				{{ form.weight(placeholder="weight") }}												   
+
 				<label for="weightgoal">
 					<i class="fas fa-weightgoal"></i>
 				</label>
-				<input type="number" name="weight goal" placeholder="weightgoal" id="weightgoal" required>
+				{{ form.weightgoal(placeholder="weightgoal") }}												   
 				<label for="gender">
 					<i class="fas fa-gender"></i>
 				</label>
-				<input type="text" name="gender" placeholder="gender" id="gender" required>
+				{{ form.gender(placeholder="gender") }}												   
+
 				<label for="age">
 					<i class="fas fa-age"></i>
 				</label>
-				<input type="number" name="age" placeholder="age" id="age" required>
-				
+				{{ form.age(placeholder="age") }}												   
+				<input type="submit" value="register"> 
 			</form>
 		</div>
 	</body>

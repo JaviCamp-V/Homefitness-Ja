@@ -1,0 +1,42 @@
+{% extends "base.html" %} 
+{% block main %} 
+<div class="video_tracker">
+
+    {{audit.Exercise}} Video aduting
+
+    <div id="videocontent">
+        <video  id="video" poster="{{ url_for('static', filename='img/videoposter.jpg') }}">
+          <source src="{{ url_for('send_file', filename=audit.filename) }}" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+  </div>
+  <div class="overview">
+      <p id="duaration">{{audit.duration}}</p>
+      <p id="sets">{{audit.sets}}</p>
+      <p id="reps">{{audit.reps}}</p>
+      <p id="calorie"> {{audit.calorie}}</p>
+  </div>
+  
+      <div id="errors">
+          <a class="btn btn-light" data-bs-toggle="collapse" href="#errorBreakdown" role="button" aria-expanded="false" aria-controls="errorBreakdown">
+              Number of errors {{audit.errors.total}}
+            </a>
+          <div class="collapse" id="errorBreakdown">
+              <div class="card card-body">
+                  {% for error in audit.errors.errors %}
+
+                   <p><storng>{{error}} </storng> </p>
+                   {% endfor %}             
+                </div>
+          </div>
+      </div>
+  </div>
+  
+    {{audit}}
+
+</div>
+
+
+{##<script src="/static/js/videoAudit.js"></script>##}
+
+{% endblock %}

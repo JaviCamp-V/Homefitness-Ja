@@ -49,17 +49,16 @@
   
     // get page elements
     const video = document.querySelector("#video");
-    const btnPlay = document.querySelector("#btnPlay");
-    const btnPause = document.querySelector("#btnPause");
-    const btnStop = document.querySelector("#btnStop");
-    const btnChangeCamera = document.querySelector("#btnChangeCamera");
+    const btnPlay = document.querySelector("#start");
+    const btnPause = document.querySelector("#pause");
+    const btnStop = document.querySelector("#stop");
+    const btnChangeCamera = document.querySelector("#camerasource");
     const comments = document.querySelector("#accordion");
     const sets = document.querySelector("#sets");
     const caloire = document.querySelector("#calorie");
     const reps = document.querySelector("#reps");
 
     const canvas = document.querySelector("#canvas");
-    const devicesSelect = document.querySelector("#devicesSelect");
   
     // video constraints
     const constraints = {

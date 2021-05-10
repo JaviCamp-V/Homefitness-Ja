@@ -1,11 +1,13 @@
 import mediapipe as mp
 import cv2 as cv2
 import numpy as np
+import mediapipe as mp 
+
 class Pose():
  
-    def __init__(self, mode=False, upBody=False):
-       self.mode = mode
-       self.upBody = upBody
+    def __init__(self, mode=True, upBody=False):
+       self.mode = mode #static mode if true for images so that the person detection is activate each time 
+       self.upBody = upBody # upper body joints only 
        self.smooth = True
        self.min_detection_confidence = 0.5
        self.min_tracking_confidence = 0.5
@@ -13,25 +15,83 @@ class Pose():
        self.mpPose = mp.solutions.pose
        self.pose = self.mpPose.Pose(self.mode, self.upBody, self.smooth,self.min_detection_confidence, self.min_tracking_confidence)
     def drawPose(self,img):
+        img.flags.writeable = False
         imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        img.flags.writeable = True
+        img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
         results = self.pose.process(imgRGB)
         if results.pose_landmarks:
                 self.mpDraw.draw_landmarks(img, results.pose_landmarks,self.mpPose.POSE_CONNECTIONS)
         return img
-    def getkeyPoints(self, img):
+    def getkeyPoints(self,img):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         results = self.pose.process(img)
         if results.pose_landmarks is not None:
             pose = results.pose_landmarks.landmark
-            return list(np.array([[landmark.x, landmark.y, landmark.z, landmark.visibility] for landmark in pose]).flatten())
+            keypoints=list(np.array([[landmark.x, landmark.y, landmark.z, landmark.visibility] for landmark in pose]).flatten())
+            return keypoints
         return None
+    def getJoint(keypoints,part):
+        if part==0:
+             return keypoints[:4]
+        else:
+            return keypoints[4*part:4*part+4]
+    def getJointVisbility(keypoints,part):
+        return Pose.getJoint(keypoints,part)[-1]
+    "x and y coordinates"
+
+    def getJointCoords(keypoints,part):
+        return Pose.getJoint(keypoints,part)[:2]
+    def validateJoints(keypoints):
+        if keypoints is None:
+            return  False
+        if len(keypoints)!=132:
+            return False
+        return True #other method to check when points is incorrect 
+    def getVisibility(keypoints,points=[]):
+        if Pose.validateJoints(keypoints)==False:
+            return 0
+        total=0
+        if points==[]:
+            for part in range(34):
+                total+=Pose.getJointVisbility(keypoints,part)
+            return total/33
+        for part in points:
+            total+=Pose.getJointVisbility(keypoints,part)
+        return total/len(points)  
+    def facing(keypoints):
+        "logic to determine whuch direction is facing"
+        return "center"   
+    def drawJoints(img,keypoints,points):
+        for part in points:
+            x,y=Pose.getJointCoords(keypoints,part)
+            x=int(x*img.shape[1])
+            y=int(y*img.shape[0])
+            cv2.circle(img,(x,y),10,(0,0,255),cv2.FILLED)
+            cv2.circle(img,(x,y),15,(0,0,255),2)
+        return img
     def getkeyPoints2(self, img):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         results = self.pose.process(img)
         pose = results.pose_landmarks.landmark
         h, w, c = img.shape
         return list(np.array([[landmark.x * w, landmark.y* h, landmark.z*w, landmark.visibility] for landmark in pose]).flatten())
-     
+    def angle(keypoints,a,b,c):
+        a = np.array(Pose.getJointCoords(keypoints, a)) 
+        b = np.array(Pose.getJointCoords(keypoints, b)) 
+        c = np.array(Pose.getJointCoords(keypoints, c)) 
+        radians = np.arctan2(c[1]-b[1], c[0]-b[0]) - np.arctan2(a[1]-b[1], a[0]-b[0])
+        angle = np.abs(radians*180.0/np.pi)
+
+        if angle >180.0:
+            angle = 360-angle
+            
+        return angle
+
+
+
+
+
     @staticmethod
     def calculate_angle(a,b,c):
         a = np.array(a) 

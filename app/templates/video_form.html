@@ -1,0 +1,42 @@
+{% extends "base.html" %} 
+{% block main %} 
+
+<div id="video_form_container">
+  {% include 'flash_messages.html' %}
+    <form action="{{ url_for('video_from')}}" method="POST" enctype="multipart/form-data" id="video_form">
+      {{ form.csrf_token }}
+        <div class="form-group" id="ETypee">
+            <label class="" for="etype">Select a Workout</label>
+             {{ form.etype(class="form-control") }}
+            </select>
+       </div>
+       <div class="form-group">
+          <div class="jumbotron jumbotron-fluid">
+            <label for="video">Video</label>
+            {{ form.video(class="form-control-file",id="video",accept=".mp4,.avi") }}  
+
+           </div>
+       </div>
+      
+     <button type="submit" class="btn btn-success" id="upload-btn" >Upload</button>
+         
+   </form>
+      
+</div>
+<script>
+  (function () {
+    const btn = document.querySelector("#upload-btn");
+    btn.addEventListener("click", function () {
+      btn.classList.remove("btn-success");
+      btn.classList.add("btn-primary");
+      var span = document.createElement("span");
+      span.classList.add("spinner-border");
+      span.classList.add("spinner-border-sm");
+      btn.innerHTML="Processing..";
+      btn.appendChild(span);  
+    });
+
+  })();
+</script>
+
+{% endblock %}
