@@ -39,5 +39,6 @@ scipy==0.17.0
 sklearn==0.0
 email_validator
 Flask-Session
+flask-marshmallow
 tqdm
 
