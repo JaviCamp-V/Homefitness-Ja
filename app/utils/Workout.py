@@ -12,6 +12,9 @@ import pandas as pd
 import json
 import tqdm
 import base64,io
+import moviepy.editor as moviepy
+import ffmpeg
+
 """
 landmark_names = [
         ('nose',0),
@@ -50,6 +53,7 @@ class Workout:
         self.sets_=0
         self.reps=0
         self.calorie=0
+
     def frame_(self,frame,videoMode=False):
         
         keypoints=self.detector.getkeyPoints(frame)
@@ -104,6 +108,8 @@ class Workout:
         cv2.putText(image,"Rep", (420, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2,cv2.LINE_4)
         cv2.putText(image,str(self.reps), (490, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0),2, cv2.LINE_4)
         return image
+    def getCorrections():
+        return Workout.corrections
     def timefromat(t):
         hours, rem = divmod(t, 3600)
         minutes, seconds = divmod(rem, 60)
@@ -118,12 +124,18 @@ class Workout:
         duration="{:0>2}:{:0>2}:{:05.2f}".format(int(hours),int(minutes),seconds)
         total_errors=sum(list(dict(self.errors).values()))
         data={"exercise":self.exerise,"date":str(self.date.strftime("%x")),"start_time":self.date.strftime("%X"),"end_time":end.strftime("%X"),"duration":duration,
-            "sets":self.sets_,"reps":self.reps,"calorie":self.calorie,"errors":{"total":total_errors,"errors":self.errors}}
+            "sets":self.sets_,"reps":self.reps,"calorie":round(self.calorie,2),"errors":{"total":total_errors,"errors":self.errors}}
         return json.dumps(data, indent = 4)  
 
     def video(self,filename):
-        fourcc ={'.avi': cv2.VideoWriter_fourcc(*'XVID'),'.mp4': cv2.VideoWriter_fourcc(*'mp4v'),'.mkv':cv2.VideoWriter_fourcc(*'mp4v')}
-        output="app/static/uploads/output"+os.path.splitext(filename)[1]
+        fourcc ={'.avi': cv2.VideoWriter_fourcc(*'XVID'),'.MP4': cv2.VideoWriter_fourcc(*'mp4v'),'.mp4': cv2.VideoWriter_fourcc(*'mp4v'),'.mkv':cv2.VideoWriter_fourcc(*'mp4v')}
+        _,ext = os.path.splitext(filename)
+        output="app/static/uploads/output/"+ext
+        #clip = moviepy.VideoFileClip("app/static/uploads/"+filename)
+        #clip.write_videofile(output)
+        ## print("Finished converting {}".format(filename))
+        #os.remove("app/static/uploads/"+filename)
+       # os.rename(output2,"app/static/uploads/"+filename)
         cap = cv2.VideoCapture("app/static/uploads/"+filename)
         fps = int(cap.get(5))
         frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))-1
@@ -131,9 +143,9 @@ class Workout:
         if dimension!=(640,480):
             cap.set(3,640)
             cap.set(4,480)
-        vtype=fourcc[".mp4"]
+        vtype=fourcc[ext]
         codec=int(cap.get(cv2.CAP_PROP_FOURCC))
-        out = cv2.VideoWriter(output,codec,fps,dimension,True)
+        out = cv2.VideoWriter(output,vtype,fps,dimension,True)
         last_label=""
         i=0
         log=[]
@@ -158,20 +170,20 @@ class Workout:
                     log=[(Workout.timefromat(0),self.lastclass)]
                     last_label=self.lastclass
                 elif last_label!=self.lastclass:
-                    log.append((self.lastclass,Workout.timefromat(i/fps)))
+                    log.append((Workout.timefromat(i/fps),self.lastclass,))
                     last_label=self.lastclass
                 t.update(1)
         cap.release()
         out.release()
-        os.remove("app/static/uploads/"+filename)
-        os.rename(output,"app/static/uploads/"+filename)
+        #os.remove("app/static/uploads/"+filename)
+        #os.rename(output,"app/static/uploads/"+filename)
 
         ex_=self.export()
         timecodes=dict(log)
-        j={"filename":filename,"timecodes":[timecodes]}
+        j={"filename":filename,"timecodes":timecodes}
         data=json.loads(ex_)
         end=self.date+datetime.timedelta(seconds=frame_count/fps)
-        data["calorie"]=(self.MET * 3.5 * self.weight )/(200 *((frame_count/fps)/60))
+        data["calorie"]=round((self.MET * 3.5 * self.weight )/(200 *((frame_count/fps)/60)),2)
         data["end_time"]=end.strftime("%X")
         data["duration"]=Workout.timefromat(frame_count/fps)
         data.update(j)
@@ -256,7 +268,7 @@ class Plank(Workout):
     corrections={"No Pose Detected":"Pleasa check camera feed","Low Visbility":"Stand 2-4 meters from the camera","backbentupwards":"<<insert correction here>>","stomachinwards":"<<insert correction here>>","kneesbent":"<<insert correction here>>",
                  "lookingstraight":"<<insert correction here>>","loweringhips":"<<insert correction here>>","archingback":"<<insert correction here>>"}
     model=pickle.load(open("app/static/models/squat_detection_model.pkl", 'rb'))
-    errors={"plank":0,"backbentupwards":0,"stomachinwards":0,"kneesbent":0,"lookingstraight":0,"loweringhips":0,"archingback":0}
+    #errors={"plank":0,"backbentupwards":0,"stomachinwards":0,"kneesbent":0,"lookingstraight":0,"loweringhips":0,"archingback":0}
     exerise="Plank"
     MET=2.5
     required_points=[11,12,23,24,25,26,27,28]

@@ -1,21 +1,11 @@
-window.addEventListener('load', function() {
+function timecode(tt){
+     value=tt.innerHTML;
+     let video = document.querySelector('#video');
+     //00:00:06.79  minutes:seconds:Mseconds
+     let regExTimeArr = value.split(":")
+     let timeMin = regExTimeArr[0] * 60 * 1000;
+     let timeSec = regExTimeArr[1] * 1000;
+     let timeMs = timeMin + timeSec +regExTimeArr[2]; 
+     video.currentTime = timeMs;
 
-    console.log(String(window.location.pathnam));
-   /**
-    fetch("/workout-tracker/video/upload", {
-        method: 'POST',
-        body: form_data,
-        credentials: 'same-origin'
-       })
-        .then(function (response) {
-        return response.json();
-        }).then(function (jsonResponse) {
-            console.log(jsonResponse)
-        }).catch(function (error) {
-            console.log(error);
-
-        });
-    */
-
-
-});
+ }

@@ -50,7 +50,16 @@ def home():
 def video(typee):
     if  session.get("video_session") is not None:
         audit=session["video_session"]
-        return render_template("video_tracker.html",audit=audit)
+        corrections={"Error": "NUll"}
+        if typee=="sqaut":
+            corrections=Squat.corrections
+        elif typee=="curls":
+            corrections=BicepCurls.corrections
+        elif typee=="plank":
+            corrections=Plank.corrections
+        elif typee=="ohp":
+            corrections=OHP.corrections
+        return render_template("video_tracker.html",audit=audit,corrections=corrections)
     return redirect(url_for('video_from'))
 
 @app.route("/workout-tracker/video/upload",methods=["GET","POST"])
@@ -161,10 +170,12 @@ Event handler for when the user is leaves the live page
 """
 @socketio.on('disconnect')
 def test_disconnect():
+
     if  session.get("user_id") is not None:
         user_id=session["user_id"]
-        if user_id in _Trainers:
-            _Trainers.pop(user_id)
+        #if user_id in _Trainers:
+        #   _Trainers.pop(user_id)
+        # pause video 
     print('Client disconnected')
 
 """
@@ -188,8 +199,7 @@ def start_event( json ):
     elif json["data"]=="curls":
         _Trainers[id]=BicepCurls(weight)
         print( '[*socketio] Trainer has been started')
-
-    elif json["data"]=="sqaut":
+    elif json["data"]=='squat':
         _Trainers[id]=Squat(weight)
         print( '[*socketio] Trainer has been started')
     elif json["data"]=="ohp":
@@ -355,7 +365,6 @@ def mets():
     values= MET.query.all()
     print(values)
     met_schema=METSchema()
-    output={}
     print(met_schema.dump(values))
     return jsonify({"data":output})
 

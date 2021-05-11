@@ -13,11 +13,12 @@
     var numErrors=0;
     const canvas = document.querySelector("#canvas");
     const fps=30;
+    var source=null;
 
 
     let stream;
     var camaset=false;
-    var constraints = { video: { width: 1280, height: 720 } };
+    var constraints = { video: { width: 1280, height: 720 , frameRate: { ideal: 30, max: 60 },deviceId: cameraDevice.select ? {exact: cameraDevice.select} : undefined} };
 
     if (
         !"mediaDevices" in navigator ||
@@ -40,14 +41,22 @@
             var device = devices[i];
             if (device.kind === 'videoinput') {
                 var x = document.createElement("OPTION");
+                var y = document.createElement("OPTION");
+
                 x.text = device.label || 'Camera ' + (cameraDevice.length + 1);
+                y.text = device.label || 'Camera ' + (cameraDevice.length + 1);
+
                 cameraDevice.appendChild(x);
+                cameraDevice.appendChild(y);
+                cameraDevice.disabled=false;
                 videfeeds.push(device);
                 console.log(videfeeds);
   
             }}
         
     });
+    if(videfeeds.length!=0){
+    }
     var socket = io.connect( 'http://' + document.domain + ':' + location.port )
     socket.on( 'connect', function() {
         socket.emit( 'connection', {
@@ -66,6 +75,7 @@
         video.srcObject = mediaStream;
         video.onloadedmetadata = function(e) {
             video.play();
+            console.log(video.webkitDecodedFrameCount)
     
         };
         }).catch(function(err) { console.log(err.name + ": " + err.message); });
@@ -79,6 +89,21 @@
 
     });
      
+    cameraDevice.addEventListener('change', function(element) {
+
+        element.preventDefault();
+        console.log(90);
+        if(camaset){
+           stream = video.srcObject;
+          if (stream) {
+            stream.getTracks().forEach((track) => {
+              track.stop();
+            });
+          }
+          loadWebCam()
+        }
+
+    });
 
     
     
@@ -115,7 +140,7 @@
            reps.innerHTML=msg.reps;
            sets.innerHTML=msg.sets;
    
-           if(msg.class_name!=lastclass ){
+           if(true ){
            lastclass=msg.class_name;
            const card = document.createElement("div");
            card.setAttribute("class", "card");
@@ -190,8 +215,27 @@
              * data={"exercise":self.exerise,"date":str(self.date.strftime("%x")),"start_time":self.date.strftime("%X"),"end_time":end.strftime("%X"),"duration":duration,
             "sets":self.sets_,"reps":self.reps,"calorie":self.calorie,"errors":{"total":total_errors,"errors":self.errors}}
 
+            <div class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Modal body text goes here.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+                </div>
+            </div>
+            </div>
              */
-         
+            
             console.log(msg);
         });
 

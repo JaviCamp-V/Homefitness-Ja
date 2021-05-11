@@ -1,42 +1,72 @@
 {% extends "base.html" %} 
 {% block main %} 
-<div class="video_tracker">
+<script src="/static/js/videoAudit.js"></script>
+
+<div class="video_tracker" class="columns">
 
     {{audit.Exercise}} Video aduting
 
-    <div id="videocontent">
-        <video  id="video" poster="{{ url_for('static', filename='img/videoposter.jpg') }}">
+    <div id="videocontent" class="column">
+        <video controls="" autoplay="" id="video" width="640px;" height="480px;">
           <source src="{{ url_for('send_file', filename=audit.filename) }}" type="video/mp4">
           Your browser does not support the video tag.
         </video>
   </div>
   <div class="overview">
-      <p id="duaration">{{audit.duration}}</p>
-      <p id="sets">{{audit.sets}}</p>
-      <p id="reps">{{audit.reps}}</p>
-      <p id="calorie"> {{audit.calorie}}</p>
+      <p id="duaration"><strong>Duration:       </strong>{{audit.duration}}</p>
+      <p id="sets"><strong>Sets:                </strong>{{audit.sets}}</p>
+      <p id="reps"><strong>Reps:                </strong>{{audit.reps}}</p>
+      <p id="calorie"> <strong>Calories Burned: </strong>{{audit.calorie}}</p>
   </div>
   
-      <div id="errors">
+      <div id="errors" class="column">
           <a class="btn btn-light" data-bs-toggle="collapse" href="#errorBreakdown" role="button" aria-expanded="false" aria-controls="errorBreakdown">
               Number of errors {{audit.errors.total}}
             </a>
           <div class="collapse" id="errorBreakdown">
               <div class="card card-body">
-                  {% for error in audit.errors.errors %}
+                  {% for error,total in audit.errors.errors.items() %}
 
-                   <p><storng>{{error}} </storng> </p>
+                   <p><storng>{{error}} </storng> {{total}}</p>
                    {% endfor %}             
                 </div>
           </div>
+
       </div>
+      
+      <div id="timecodes" display="inline-block">
+        {% for timecode,mistake in audit.timecodes.items() %}
+
+             <a href="javascript:void(0);" onclick="timecode(this)" display="inline-block"> {{timecode}}  </a>
+             <p>{{mistake}}</p>
+            </br>
+             {% endfor %}             
+
+      </div>
+
+      <div id="corectionTable">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                  <th scope="col">Mistakes</th>
+                  <th scope="col">Corrections</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mistake,correction in corrections.items()%}
+                <tr>
+
+                <th scope="row">{{mistake}}</th>
+                <th>{{correction}}</th>
+                </tr>
+                {% endfor %}             
+            </tbody>
+        </table>
+          
+     </div> 
   </div>
-  
-    {{audit}}
-
 </div>
-
-
-{##<script src="/static/js/videoAudit.js"></script>##}
+<script>
+</script>
 
 {% endblock %}
