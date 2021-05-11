@@ -367,11 +367,13 @@ def mets():
     values= MET.query.all()
     print(values)
     met_schema=METSchema()
-    print(met_schema.dump(values))
+    output=met_schema.dump(values)
     return jsonify({"data":output})
 
-
-
+@app.route("/homefitness/caloriecalculator")
+@login_required
+def met_calcuator():
+    return render_template("calculator.html")
 
 """
 charts
@@ -389,14 +391,14 @@ def lastsession():
     value=None
     index=None
     for i in range(len(lst)):
-
+        v=lst[i].get_dateTime()
         if lst[i] is not None:
             if value is None:
-                value=lst[i].get_dateTime()
-                print(lst[i].get_dateTime())
+                value=v
+                print(v)
                 index=i
-            elif lst[i].get_dateTime()>value:
-                value=lst[i].get_dateTime
+            elif v>value:
+                value=v
                 index=i
     if value is None:
         return {"Error":"No data avaiable"}
@@ -407,7 +409,7 @@ def lastsession():
         for key,value in mistakes.items():
             labels.append(key)
             data.append(value)
-        reply={"exercie": lst[index].get_name(),"sid":lst[index].get_id(), "date":value ,"duration":lst[index].get_duration() ,"sets":lst[index].get_sets() ,"reps":lst[index].get_reps(), "num_mistakes":lst[index].get_numMistakes(),"labels":labels,"data":data}
+        reply={"exercise": lst[index].get_name(),"sid":lst[index].get_id(), "date":value ,"duration":lst[index].get_duration() ,"sets":lst[index].get_sets() ,"reps":lst[index].get_reps(), "num_mistakes":lst[index].get_numMistakes(),"labels":labels,"data":data}
         return jsonify(reply)
 
 ### num of exercise for the last ten session  / recommended line chart 
@@ -417,22 +419,22 @@ def exercise_record(exercise):
     user_id=current_user.get_id()
     obj=None
     if exercise=="plank":
-        obj=PlankSession.query.filter_by(user_id=user_id).order_by(PlankSession.id.desc()).group_by(date=date).limit(10).all()
+        obj=PlankSession.query.filter_by(user_id=user_id).order_by(PlankSession.id.desc()).limit(10).all()
     elif exercise=="ohp":
-        obj=OhpSession.query.filter_by(user_id=user_id).order_by(OhpSession.id.desc()).group_by(date=date).limit(10).all()
+        obj=OhpSession.query.filter_by(user_id=user_id).order_by(OhpSession.id.desc()).limit(10).all()
     elif exercise=="squat":
-        obj=SquatSession.query.filter_by(user_id=user_id).order_by(SquatSession.id.desc()).group_by(date=date).limit(10).all()
+        obj=SquatSession.query.filter_by(user_id=user_id).order_by(SquatSession.id.desc()).limit(10).all()
     elif exercise=="curls":
-        obj=CurlSession.query.filter_by(user_id=user_id).order_by(CurlSession.id.desc()).group_by(date=date).limit(10).all()
+        obj=CurlSession.query.filter_by(user_id=user_id).order_by(CurlSession.id.desc()).limit(10).all()
     if obj is not None:
         sid=[]
         labels=[] #datetime of session
         data=[]
         for o in obj:
             sid.append(o.get_id())
-            labels.append(o.get_dateTime())
+            labels.append(o.get_dateTime().strftime("%b %d %H:%M:%S"))
             data.append(o.get_numMistakes())
-        reply={"exercie":exercise,"sid":sid,"labels":labels,"data":data}
+        reply={"exercise":exercise,"sid":sid,"labels":labels,"data":data}
     else:
         reply={"Error": "No session data available"}
     return jsonify(reply)
@@ -453,12 +455,18 @@ def session_record(exercise,session_id):
         obj=CurlSession.query.filter_by(user_id=user_id,id=session_id).first()
     if obj is not None:
         mistakes=json.loads(obj.get_mistakes())
-        reply={"exercie": obj.get_name(),"sid":session_id ,"date":obj.get_dateTime() ,"duration":obj.get_duration() ,"sets":obj.get_sets() ,"reps":obj.get_reps(), "num_mistakes":obj.get_numMistakes(),"mistakes":mistakes}
+        labels=[]
+        data=[]
+        for key,value in mistakes.items():
+            labels.append(key)
+            data.append(value)
+
+        reply={"exercise": obj.get_name(),"sid":session_id ,"date":obj.get_dateTime() ,"duration":obj.get_duration() ,"sets":obj.get_sets() ,"reps":obj.get_reps(), "num_mistakes":obj.get_numMistakes(),"mistakes":mistakes,"data":data}
     else:
         reply={"Error": "No session data available"}
     return jsonify(reply)
 
-
+"""
 #### number of mistake made in a sessions of a day 
 @app.route("/homefitness/dashboard/<exercise>/<date>/",methods=["GET"])
 @login_required
@@ -483,7 +491,7 @@ def date_session_record(exercise,date):
     else:
         reply={"Error": "No session data available"}
     return jsonify(reply)
-
+"""
 
 @app.route("/homefitness/dashboard/")
 @login_required
@@ -497,7 +505,7 @@ def dashboard_view():
         BMR=66.5 + ( 13.75 *current_user.weight) +( 5.003 *current_user.height*100 )-( 6.755 *current_user.age )
     else:
         BMR=655 + ( 9.563 *current_user.weight ) + ( 1.850 *current_user.height*100 )-( 4.676 * current_user.age )
-    stat={"BMI":BMI,"BMR": BMR}
+    stats={"BMI":BMI,"BMR": BMR}
     return render_template("dashboard.html",user=current_user,stats=stats)
 
 
