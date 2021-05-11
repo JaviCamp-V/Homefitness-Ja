@@ -1,6 +1,7 @@
 from . import db,ma
 from werkzeug.security import generate_password_hash
-
+import json
+from datetime import datetime
 
 class Users(db.Model):
     __tablename__ = "users"
@@ -95,7 +96,32 @@ class SquatSession(db.Model):
         self.no_of_bentforward = no_of_bentforward
         self.no_of_heelsraised = no_of_heelsraised
         self.no_of_mistakes = no_of_mistakes
-
+    def get_id(self):
+        try:
+            return unicode(self.id)  # python 2 support
+        except NameError:
+            return str(self.id)  # python 3 support
+    def get_name(self):
+        return "Sqaut"
+    def get_mistakes(self):
+        data= {"kneesinward":self.no_of_kneesinward,"toolow":self.no_of_toolow,"bentforward":self.no_of_bentforward,"heelsraised":self.no_of_heelsraised}
+        return json.dumps(data, indent = 4) 
+    def get_dateTime(self):
+        start=str(self.date) +" "+str(self.start_time)
+        date = datetime.strptime(start, '%Y-%m-%d %H:%M:%S')
+        return date
+    def get_numMistakes(self):
+        return self.no_of_mistakes
+    def get_reps(self):
+        return self.rep
+    def get_sets(self):
+        return self.set_number    
+    def get_duration(self):
+        start=str(self.date) +" "+str(self.start_time)
+        sdate = datetime.strptime(start, '%Y-%m-%d %H:%M:%S')
+        end=str(self.date) +" "+str(self.end_time)
+        edate = datetime.strptime(end, '%Y-%m-%d %H:%M:%S')
+        return ((edate-sdate).total_seconds())//60
 
 class CurlSession(db.Model):
     __tablename__ = "curlsession"
@@ -125,6 +151,33 @@ class CurlSession(db.Model):
         self.no_of_elbowflare = no_of_elbowflare
         self.no_of_shouldershrug = no_of_shouldershrug
         self.no_of_mistakes = no_of_mistakes
+    def get_id(self):
+        try:
+            return unicode(self.id)  # python 2 support
+        except NameError:
+            return str(self.id)  # python 3 support
+    def get_name(self):
+        return "Dumbbell Bicep Curls"
+    def get_mistakes(self):
+        data= {"back bent":self.no_of_backbent,"wrist bent":self.no_of_wristbent,"elbow flare":self.no_of_elbowflare,"shoulder shrug":self.no_of_shouldershrug}
+        return json.dumps(data, indent = 4) 
+    def get_dateTime(self):
+        start=str(self.date) +" "+str(self.end_time)
+        sdate = datetime.strptime(start, '%Y-%m-%d %H:%M:%S')
+        return sdate
+    def get_numMistakes(self):
+        return self.no_of_mistakes
+    def get_reps(self):
+        return self.rep
+    def get_sets(self):
+        return self.set_number
+    def get_duration(self):
+        start=str(self.date) +" "+str(self.start_time)
+        sdate = datetime.strptime(start, '%Y-%m-%d %H:%M:%S')
+        end=str(self.date) +" "+str(self.end_time)
+        edate = datetime.strptime(end, '%Y-%m-%d %H:%M:%S')
+        return ((edate-sdate).total_seconds())//60
+
 
 
 class OhpSession(db.Model):
@@ -154,6 +207,37 @@ class OhpSession(db.Model):
         self.no_of_elbowposition = no_of_elbowposition
         self.no_of_archedback = no_of_archedback
         self.no_of_mistakes = no_of_mistakes
+    def get_id(self):
+        try:
+            return unicode(self.id)  # python 2 support
+        except NameError:
+            return str(self.id)  # python 3 support
+
+    def get_name(self):
+        return "overhead shoulder press"
+
+    def get_mistakes(self):
+        data= {"bent knees":self.no_of_bentknees,"elbow position":self.no_of_elbowposition,"archedback":self.no_of_archedback}
+        return json.dumps(data, indent = 4) 
+    def get_dateTime(self):
+        start=str(self.date) +" "+str(self.start_time)
+        sdate = datetime.strptime(start, '%Y-%m-%d %H:%M:%S')
+        return sdate
+    def get_numMistakes(self):
+        return self.no_of_mistakes
+    def get_reps(self):
+        return self.rep
+    def get_sets(self):
+        return self.set_number
+    def get_duration(self):
+        start=str(self.date) +" "+str(self.start_time)
+        sdate = datetime.strptime(start, '%Y-%m-%d %H:%M:%S')
+        end=str(self.date) +" "+str(self.end_time)
+        edate = datetime.strptime(end, '%Y-%m-%d %H:%M:%S')
+        return ((edate-sdate).total_seconds())//60
+
+
+
 
 
 class PlankSession(db.Model):
@@ -189,6 +273,35 @@ class PlankSession(db.Model):
         self.no_of_loweringhips = no_of_loweringhips
         self.no_of_archingback = no_of_archingback
         self.no_of_mistakes = no_of_mistakes
+    def get_id(self):
+        try:
+            return unicode(self.id)  # python 2 support
+        except NameError:
+            return str(self.id)  # python 3 support
+    def get_name(self):
+        return "Plank"
+    def get_mistakes(self):
+        data= {"backbent upwards":self.no_of_backbentupwards,"stomach inwards":self.no_of_stomachinwards,"knees bent":self.no_of_kneesbent,"looking straight":self.no_of_lookingstraight,
+        "lowering hips":self.no_of_loweringhips,"arching back":self.no_of_archingback}
+        return json.dumps(data, indent = 4) 
+    def get_dateTime(self):
+        start=str(self.date) +" "+str(self.start_time)
+        sdate = datetime.strptime(start, '%Y-%m-%d %H:%M:%S')
+        return sdate
+    def get_numMistakes(self):
+        return self.no_of_mistakes
+    def get_reps(self):
+        return self.rep
+    def get_sets(self):
+        return self.set_number
+    def get_duration(self):
+        start=str(self.date) +" "+str(self.start_time)
+        sdate = datetime.strptime(start, '%Y-%m-%d %H:%M:%S')
+        end=str(self.date) +" "+str(self.end_time)
+        edate = datetime.strptime(end, '%Y-%m-%d %H:%M:%S')
+        return ((edate-sdate).total_seconds())//60
+
+
 
 
 class MET(db.Model):

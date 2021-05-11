@@ -1,0 +1,26 @@
+{% extends "base.html" %} {% block main %} {% include 'flash_messages.html' %}
+
+
+<div>
+    {{user.username}}
+    {{user.weight}}
+    {{user.weight_goal}}
+    {{stats.BMI}}
+    {{stats.BMR}}
+
+
+   <div id="chartsArea">
+       <div id="lastsessionDiv">
+        <canvas id="lastsession"></canvas>
+       </div>
+   </div>
+
+
+
+
+
+
+
+
+</div>
+{% endblock %}

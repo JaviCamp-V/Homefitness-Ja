@@ -42,21 +42,14 @@
             if (device.kind === 'videoinput') {
                 var x = document.createElement("OPTION");
                 var y = document.createElement("OPTION");
-
                 x.text = device.label || 'Camera ' + (cameraDevice.length + 1);
-                y.text = device.label || 'Camera ' + (cameraDevice.length + 1);
-
                 cameraDevice.appendChild(x);
-                cameraDevice.appendChild(y);
                 cameraDevice.disabled=false;
                 videfeeds.push(device);
-                console.log(videfeeds);
   
             }}
         
     });
-    if(videfeeds.length!=0){
-    }
     var socket = io.connect( 'http://' + document.domain + ':' + location.port )
     socket.on( 'connect', function() {
         socket.emit( 'connection', {

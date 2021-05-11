@@ -289,6 +289,8 @@ def gen_frames(etype):
 @app.route('/registration', methods=['GET','POST'])
 def register():
 
+
+### height needs to be converted to metres and weight into kg 
     form=SignUpForm()
     if request.method == 'POST':
        if form.validate_on_submit():
@@ -369,6 +371,141 @@ def mets():
     return jsonify({"data":output})
 
 
+
+
+"""
+charts
+"""
+##Last workout session data / bar graph recommended 
+@app.route("/homefitness/dashboard/lastsession",methods=["GET"])
+@login_required
+def lastsession():
+    user_id=current_user.get_id()
+    plank=PlankSession.query.filter_by(user_id=user_id).order_by(PlankSession.id.desc()).first()
+    ohp=OhpSession.query.filter_by(user_id=user_id).order_by(OhpSession.id.desc()).first()
+    curls=CurlSession.query.filter_by(user_id=user_id).order_by(CurlSession.id.desc()).first()
+    sqaut=SquatSession.query.filter_by(user_id=user_id).order_by(SquatSession.id.desc()).first()
+    lst=[plank,ohp,curls,sqaut]
+    value=None
+    index=None
+    for i in range(len(lst)):
+
+        if lst[i] is not None:
+            if value is None:
+                value=lst[i].get_dateTime()
+                print(lst[i].get_dateTime())
+                index=i
+            elif lst[i].get_dateTime()>value:
+                value=lst[i].get_dateTime
+                index=i
+    if value is None:
+        return {"Error":"No data avaiable"}
+    else:
+        mistakes=json.loads(lst[index].get_mistakes())
+        labels=[]
+        data=[]
+        for key,value in mistakes.items():
+            labels.append(key)
+            data.append(value)
+        reply={"exercie": lst[index].get_name(),"sid":lst[index].get_id(), "date":value ,"duration":lst[index].get_duration() ,"sets":lst[index].get_sets() ,"reps":lst[index].get_reps(), "num_mistakes":lst[index].get_numMistakes(),"labels":labels,"data":data}
+        return jsonify(reply)
+
+### num of exercise for the last ten session  / recommended line chart 
+@app.route("/homefitness/dashboard/<exercise>",methods=["GET"])
+@login_required
+def exercise_record(exercise):
+    user_id=current_user.get_id()
+    obj=None
+    if exercise=="plank":
+        obj=PlankSession.query.filter_by(user_id=user_id).order_by(PlankSession.id.desc()).group_by(date=date).limit(10).all()
+    elif exercise=="ohp":
+        obj=OhpSession.query.filter_by(user_id=user_id).order_by(OhpSession.id.desc()).group_by(date=date).limit(10).all()
+    elif exercise=="squat":
+        obj=SquatSession.query.filter_by(user_id=user_id).order_by(SquatSession.id.desc()).group_by(date=date).limit(10).all()
+    elif exercise=="curls":
+        obj=CurlSession.query.filter_by(user_id=user_id).order_by(CurlSession.id.desc()).group_by(date=date).limit(10).all()
+    if obj is not None:
+        sid=[]
+        labels=[] #datetime of session
+        data=[]
+        for o in obj:
+            sid.append(o.get_id())
+            labels.append(o.get_dateTime())
+            data.append(o.get_numMistakes())
+        reply={"exercie":exercise,"sid":sid,"labels":labels,"data":data}
+    else:
+        reply={"Error": "No session data available"}
+    return jsonify(reply)
+
+## get the seson data for a particular exerise / don't know chart yet
+@app.route("/homefitness/dashboard/<exercise>/<int:session_id>",methods=["GET"])
+@login_required
+def session_record(exercise,session_id):
+    user_id=current_user.get_id()
+    obj=None
+    if exercise=="plank":
+        obj=PlankSession.query.filter_by(user_id=user_id,id=session_id).first()
+    elif exercise=="ohp":
+        obj=OhpSession.query.filter_by(user_id=user_id,id=session_id).first()
+    elif exercise=="squat":
+        obj=SquatSession.query.filter_by(user_id=user_id,id=session_id).first()
+    elif exercise=="curls":
+        obj=CurlSession.query.filter_by(user_id=user_id,id=session_id).first()
+    if obj is not None:
+        mistakes=json.loads(obj.get_mistakes())
+        reply={"exercie": obj.get_name(),"sid":session_id ,"date":obj.get_dateTime() ,"duration":obj.get_duration() ,"sets":obj.get_sets() ,"reps":obj.get_reps(), "num_mistakes":obj.get_numMistakes(),"mistakes":mistakes}
+    else:
+        reply={"Error": "No session data available"}
+    return jsonify(reply)
+
+
+#### number of mistake made in a sessions of a day 
+@app.route("/homefitness/dashboard/<exercise>/<date>/",methods=["GET"])
+@login_required
+def date_session_record(exercise,date):
+    user_id=current_user.get_id()
+    obj=None
+    if exercise=="plank":
+        obj=PlankSession.query.filter_by(user_id=user_id,date=date).all()
+    elif exercise=="ohp":
+        obj=OhpSession.query.filter_by(user_id=user_id,date=date).all()
+    elif exercise=="squat":
+        obj=SquatSession.query.filter_by(user_id=user_id,date=date).all()
+    elif exercise=="curls":
+        obj=CurlSession.query.filter_by(user_id=user_id,date=date).all()
+    if obj is not None:
+        labels=[] #datetime of session
+        data=[]
+        for o in obj:
+            labels.append(o.get_id())
+            data.append(o.get_numMistakes())
+        reply={"exercie":exercise,"date":date,"labels":labels,"data":data}
+    else:
+        reply={"Error": "No session data available"}
+    return jsonify(reply)
+
+
+@app.route("/homefitness/dashboard/")
+@login_required
+def dashboard_view():
+    """
+    Male= BMR = 66.5 + ( 13.75 × weight in kg ) + ( 5.003 × height in cm ) – ( 6.755 × age in years )
+    Femae =BMR = 655 + ( 9.563 × weight in kg ) + ( 1.850 × height in cm ) – ( 4.676 × age in years )
+    """
+    BMI=round(current_user.weight/(current_user.height**2),2)
+    if current_user.gender=="M":
+        BMR=66.5 + ( 13.75 *current_user.weight) +( 5.003 *current_user.height*100 )-( 6.755 *current_user.age )
+    else:
+        BMR=655 + ( 9.563 *current_user.weight ) + ( 1.850 *current_user.height*100 )-( 4.676 * current_user.age )
+    stat={"BMI":BMI,"BMR": BMR}
+    return render_template("dashboard.html",user=current_user,stats=stats)
+
+
+
+        
+    
+
+   
 
 
 
