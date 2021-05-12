@@ -370,10 +370,28 @@ def mets():
     output=met_schema.dump(values)
     return jsonify({"data":output})
 
+@app.route("/homefitness/caloriecalculator/search",methods=["GET", "POST"])
+@login_required
+def met_search():
+    data={"results":[]}
+    if request.method == "POST" :
+          search =(request.get_json()) 
+          search = "%{}%".format(search["query"])
+          #output = db.session.query(Mets).filter(Mets.activities.ilike(search))
+          #output=Mets.query.filter_by(heading.like(search)).all()
+          #output=Mets.query.filter(Mets.heading.like(search)|Mets.activities.like(search)).all()
+          output=Mets.query.filter(Mets.activities.ilike(search)).all()
+          results=[]
+          for out in output:
+              obj={"code":out.get_code(),"heading":out.get_heading(),"activities":out.get_activites(),"met":out.get_met()}
+              results.append(obj)
+          data["results"]=results
+    return jsonify(data)  
+
 @app.route("/homefitness/caloriecalculator")
 @login_required
 def met_calcuator():
-    return render_template("calculator.html")
+    return render_template("calculator.html",user=current_user)
 
 """
 charts

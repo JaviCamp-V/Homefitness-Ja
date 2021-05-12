@@ -304,6 +304,34 @@ class PlankSession(db.Model):
 
 
 
+class Mets(db.Model):
+    __tablename__ = "mets_table"
+    code=db.Column(db.Integer(),primary_key=True)
+    met=db.Column(db.Float())
+    heading=db.Column(db.String(50))
+    activities=db.Column(db.String(255))
+
+    def __init__(self, code, met,heading, activities):
+        self.code=code
+        self.met=met
+        self.heading=heading
+        self.activities=activities
+    def get_code(self):
+        return self.code
+    def get_met(self):
+        return self.met
+    def get_heading(self):
+        return self.heading
+    def get_activites(self):
+        return self.activities
+    def __repr__(self):
+        return '<Code %r>' % self.code
+
+    
+
+
+
+
 
 class MET(db.Model):
     __tablename__ = "mettable"
