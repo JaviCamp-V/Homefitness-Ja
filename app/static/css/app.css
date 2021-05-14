@@ -82,3 +82,20 @@ nav {
   display: none;
   overflow: hidden;
 }
+
+.dashboard-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.dashboard-info {
+  text-align: center;
+  background-color: #cccccc;
+  height: 400px;
+  width: 400px;
+  margin-top: 50px;
+  border: 1px solid black;
+}
+.charts .card {
+  margin: 50px 0;
+}
