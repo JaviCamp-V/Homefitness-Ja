@@ -1,7 +1,11 @@
 body {
   padding-top: 5rem;
+  background-color: white;
 }
 
+nav {
+  background-color: white;
+}
 .select-exc {
   text-align: center;
 }
@@ -40,11 +44,19 @@ body {
   text-align: center;
   border: 1px solid black;
 }
-#bg{
-  width:700px;
-  height:500px;
+#bg {
+  width: 700px;
+  height: 500px;
 }
 
+.sidebar h2 {
+  padding: 10px 0;
+}
+
+.sidebar-critique {
+  overflow-y: scroll;
+  height: 600px;
+}
 .accordion {
   background-color: #eee;
   color: #444;
@@ -58,8 +70,9 @@ body {
 }
 
 /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
-.active, .accordion:hover {
-  background-color: #ccc;
+.active,
+.accordion:hover {
+  background-color: #ff955a;
 }
 
 /* Style the accordion panel. Note: hidden by default */
@@ -69,4 +82,3 @@ body {
   display: none;
   overflow: hidden;
 }
-

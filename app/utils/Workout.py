@@ -68,7 +68,7 @@ class Workout:
 
             class_name=self.model.predict(X)[0]
             if class_name!=self.lastclass:
-                if class_name!=self.errors:
+                if class_name not in self.errors:
                     self.errors[class_name]=0
                 self.errors[class_name]+=1
                 self.lastclass=class_name
@@ -130,7 +130,7 @@ class Workout:
     def video(self,filename):
         fourcc ={'.avi': cv2.VideoWriter_fourcc(*'XVID'),'.MP4': cv2.VideoWriter_fourcc(*'mp4v'),'.mp4': cv2.VideoWriter_fourcc(*'mp4v'),'.mkv':cv2.VideoWriter_fourcc(*'mp4v')}
         _,ext = os.path.splitext(filename)
-        output="app/static/uploads/output/"+ext
+        output="app/static/uploads/output"+ext
         #clip = moviepy.VideoFileClip("app/static/uploads/"+filename)
         #clip.write_videofile(output)
         ## print("Finished converting {}".format(filename))
@@ -180,7 +180,7 @@ class Workout:
 
         ex_=self.export()
         timecodes=dict(log)
-        j={"filename":filename,"timecodes":timecodes}
+        j={"filename":"output.mp4","timecodes":timecodes}
         data=json.loads(ex_)
         end=self.date+datetime.timedelta(seconds=frame_count/fps)
         data["calorie"]=round((self.MET * 3.5 * self.weight )/(200 *((frame_count/fps)/60)),2)
@@ -245,7 +245,6 @@ class BicepCurls(Workout):
     def Setcounter(self):
         self.steps=1
 
-
 class Squat(Workout):
     corrections={"No Pose Detected":"Pleasa check camera feed","Low Visbility":"Stand 2-4 meters from the camera","kneesinward":"<<insert correction here>>","toolow":"<<insert correction here>>","bentforward":"<<insert correction here>>","heelsraised":"<<insert correction here>>"}
     model=pickle.load(open("app/static/models/squat_detection_model.pkl", 'rb'))
@@ -264,6 +263,8 @@ class Squat(Workout):
         if lAngle < 120 and rAngle < 120 and self.state=='up':
             self.state="down"
             self.reps+=1
+
+
 class Plank(Workout):
     corrections={"No Pose Detected":"Pleasa check camera feed","Low Visbility":"Stand 2-4 meters from the camera","backbentupwards":"<<insert correction here>>","stomachinwards":"<<insert correction here>>","kneesbent":"<<insert correction here>>",
                  "lookingstraight":"<<insert correction here>>","loweringhips":"<<insert correction here>>","archingback":"<<insert correction here>>"}
@@ -286,6 +287,8 @@ class Plank(Workout):
         cv2.rectangle(image, (0,0), (640,60), ( 255,255,255),cv2.FILLED)
         cv2.putText(image,self.lastclass, (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2,cv2.LINE_4)
         return image
+
+        
 class OHP(Workout):
     corrections={"No Pose Detected":"Pleasa check camera feed","Low Visbility":"Stand 2-4 meters from the camera","bentknees":"<<insert correction here>>","elbowposition":"<<insert correction here>>","archedback":"<<insert correction here>>"}
     model=pickle.load(open("app/static/models/shoulderpress_detection_model.pkl", 'rb'))

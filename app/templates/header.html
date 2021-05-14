@@ -1,13 +1,23 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
   <a class="navbar-brand" href="#">HomeFitness-Ja</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+  <button
+    class="navbar-toggler"
+    type="button"
+    data-toggle="collapse"
+    data-target="#navbarSupportedContent"
+    aria-controls="navbarSupportedContent"
+    aria-expanded="false"
+    aria-label="Toggle navigation"
+  >
     <span class="navbar-toggler-icon"></span>
   </button>
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="{{ url_for('home') }}">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="{{ url_for('home') }}"
+          >Home <span class="sr-only">(current)</span></a
+        >
       </li>
       <li class="nav-item">
         <a class="nav-link" href="{{ url_for('RealTime3') }}">Realtime</a>
@@ -16,13 +26,17 @@
         <a class="nav-link" href="{{ url_for('video_from') }}">Video Upload</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{{ url_for('met_calcuator') }}">Calorie Calculator</a>
+        <a class="nav-link" href="{{ url_for('met_calcuator') }}"
+          >Calorie Calculator</a
+        >
       </li>
       <li class="nav-item">
         <a class="nav-link" href="{{ url_for('dashboard_view') }}">Dashboard</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{{ url_for('dashboard_view') }}">Suggested Exercise</a>
+        <a class="nav-link" href="{{ url_for('dashboard_view') }}"
+          >Suggested Exercise</a
+        >
       </li>
     </ul>
 
@@ -31,12 +45,11 @@
       <li class="nav-item active">
         <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
       </li>
-     {% else %}
+      {% else %}
       <li class="nav-item active">
         <a class="nav-link" href="{{ url_for('login') }}">Login</a>
       </li>
-     {% endif %}
+      {% endif %}
     </ul>
-
   </div>
 </nav>

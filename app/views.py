@@ -89,11 +89,6 @@ def video_from():
     return render_template("video_form.html",form=form)
 
 
-
-
-
-
-
 @app.route('/upload', methods=["GET", "POST"])
 def upload():
     form=VideoFrom()
@@ -409,8 +404,8 @@ def lastsession():
     value=None
     index=None
     for i in range(len(lst)):
-        v=lst[i].get_dateTime()
         if lst[i] is not None:
+            v=lst[i].get_dateTime()
             if value is None:
                 value=v
                 print(v)

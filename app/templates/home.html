@@ -1,15 +1,14 @@
 {% extends "base.html" %} {% block main %} {% include 'flash_messages.html' %}
-<h1 class="page-header">HOME FITNESS JA</h1>
 <p class="lead">
   <br />
   <a class="view-link" href="{{ url_for('RealTime3')}}">
-    <button type="submit" name="real" class="btn btn-primary btn-block">
+    <button type="submit" name="real" class="btn btn-dark btn-block">
       Real Time Correction
     </button></a
   >
   <br /><br />
   <a href="{{ url_for('video_from') }}">
-    <button type="submit" name="real" class="btn btn-primary btn-block">
+    <button type="submit" name="real" class="btn btn-dark btn-block">
       Video Correction
     </button></a
   >
