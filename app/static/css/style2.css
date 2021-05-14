@@ -1,0 +1,360 @@
+/*
+font-family: 'Lalezar', cursive;
+font-family: 'Montserrat', sans-serif;
+font-family: 'Poppins', sans-serif;
+*/
+
+/*--------------------------------NAVBAR SECTION--------------------------------------*/
+
+/*--------------------------------HERO SECTION--------------------------------------*/
+.hero {
+  background: #a9ecac;
+  padding: 0;
+}
+
+.hero-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto; /*Makes it centered*/
+  height: 90%;
+  justify-content: space-between;
+}
+
+.hero-left {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin-left: 20px;
+  width: 300px;
+  position: relative;
+}
+
+.hero-right {
+  height: 600px;
+  margin-top: 200px;
+}
+
+.asset1 {
+  width: 90px;
+  height: 100px;
+  position: absolute;
+  top: 130px;
+}
+
+.hero-heading {
+  font-family: "Montserrat", sans-serif;
+  font-size: 48px;
+  line-height: 50px;
+}
+.hero-heading span {
+  font-family: "Lalezar", sans-serif;
+  font-size: 55px;
+}
+
+.hero-btn {
+  font-size: 20px;
+  background: black;
+  color: white;
+  padding: 12px 15px;
+  width: 70%;
+  border: none;
+  outline: none;
+  border-radius: 40px;
+  margin-top: 2rem;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.5 ease;
+  align-items: flex-end;
+  margin-left: auto;
+}
+.hero-btn a {
+  color: #ffffff;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-btn a:hover {
+  color: #ff955a;
+}
+
+.carousel {
+  width: 700px;
+  height: 450px;
+  position: relative;
+}
+
+.carousel img {
+  height: 400px;
+  width: 600px;
+}
+
+.carousel-control-prev-icon {
+  background-image: url("/static/images/back.png");
+  position: absolute;
+  right: 120px;
+}
+
+.carousel-control-next-icon {
+  background-image: url("/static/images/back.png");
+  transform: scale(-1, -1);
+  position: absolute;
+  left: 120px;
+}
+.carousel-indicators .active {
+  background-color: #ff955a;
+}
+/*--------------------------------APP SECTION--------------------------------------*/
+
+.app {
+  background-color: black;
+  height: 100vh;
+}
+
+.app-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  height: 90%;
+  z-index: 1;
+  width: 100%;
+  padding: 100px 50px;
+}
+
+.app-img-card {
+  margin: 10px;
+  padding-top: 150px;
+  height: 300px;
+  width: 300px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.app-content {
+  width: 100%;
+}
+.app-content h1 {
+  color: #a9ecac;
+  font-family: "Lalezar", cursive;
+  font-size: 48px;
+  text-align: center;
+}
+
+.app-content p {
+  color: white;
+  text-align: left;
+}
+/*--------------------------------ABOUT SECTION--------------------------------------*/
+.about {
+  background-color: #a9ecac;
+  height: 100vh;
+  padding: 50px 0;
+}
+
+.about-container {
+  display: grid;
+  grid-template-columns: 800px 1fr;
+  align-items: center;
+  margin: 0 auto;
+  height: 90%;
+  z-index: 1;
+  width: 100%;
+  max-width: 1300px;
+  padding-bottom: 100px;
+}
+
+.about-img-card {
+  margin: 0 auto;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  padding-top: 150px;
+  height: 300px;
+  width: 300px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.about-img-card img {
+  transform: scaleX(-1);
+}
+
+.about-content {
+  width: 100%;
+  padding: 0 100px;
+}
+.about :nth-child(2) {
+  margin-top: 50px;
+}
+
+.about-content h1 {
+  color: black;
+  font-family: "Lalezar", cursive;
+  font-size: 48px;
+  text-align: center;
+  padding-top: 100px;
+}
+
+.about-content p {
+  color: white;
+  text-align: left;
+  font-size: 18px;
+  font-weight: bold;
+}
+/*--------------------------------FEATURES SECTION--------------------------------------*/
+.features {
+  background: #111111;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 8rem 0;
+}
+
+.features h1 {
+  color: white;
+  font-family: "Lalezar", cursive;
+  font-size: 64px;
+  margin-bottom: 2rem;
+  font-size: 4rem;
+}
+
+.features h1 span {
+  color: #ff955a;
+}
+
+.features-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr;
+  padding-bottom: 2rem;
+}
+
+.features-card {
+  margin: 20px;
+  height: 400px;
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #ffffff;
+  background: #ff955a;
+  transition: all 0.3 ease-in-out;
+  cursor: pointer;
+  position: relative;
+}
+
+.features-card img {
+  width: 60px;
+  height: 145px;
+  margin: 0 auto;
+}
+
+.features-card:nth-child(2) img {
+  width: 120px;
+  height: 50px;
+}
+.features-card a {
+  color: white;
+}
+
+.features-card h2 {
+  margin-top: 50px;
+  text-align: center;
+  font-family: "Montserrat", sans-serif;
+  font-size: 20px;
+  padding: 0 10px;
+  font-weight: bold;
+}
+
+.feature-name {
+  position: absolute;
+  width: 100%;
+  bottom: 50px;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+.features-card:hover {
+  transform: scale(1.075);
+  transition: all 0.3s ease-in-out;
+}
+
+.highlight {
+  border-bottom: 3px solid#FF955A;
+}
+
+/*--------------------------------FEATURES PAGES--------------------------------------*/
+
+.feature {
+  height: 90vh;
+  background-color: black;
+  padding: 0;
+}
+
+.feature-container {
+  display: grid;
+  grid-template-columns: 800px 1fr;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 auto; /*Makes it centered*/
+  height: 100%;
+  justify-content: space-between;
+  padding: 0 100px;
+}
+
+.feature-section {
+  padding: 0 50px;
+  margin: 0 auto;
+}
+
+.feature-section img {
+  width: 460px;
+  height: 280px;
+}
+
+.feature-section h2 {
+  padding: 20px 0;
+  color: #ff955a;
+  font-size: 36px;
+  font-family: "Lalezar", cursive;
+}
+
+.feature-section p {
+  padding: 20px 0;
+  color: white;
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+}
+
+.arrow {
+  position: relative;
+}
+.arrow img {
+  position: absolute;
+  height: 50px;
+  color: white;
+  font-size: 30px;
+  /*center element*/
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
+  bottom: 30px;
+}
+
+.up-arrow img {
+  transform: scaleY(-1);
+}
+
+.feature a {
+  color: white;
+}
