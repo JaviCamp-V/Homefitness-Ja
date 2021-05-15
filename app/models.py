@@ -15,10 +15,11 @@ class Users(db.Model):
     age = db.Column(db.Integer())
     weight = db.Column(db.Float())
     password = db.Column(db.String(255))
-    gender = db.Column(db.String(1))
+    gender = db.Column(db.CHAR(1))
     height = db.Column(db.Float())
     weight_goal = db.Column(db.Float())
-
+    level=db.Column(db.String(2))
+    intensity=db.Column(db.CHAR(1))
 
     def __init__(self,email,password,username,age,gender,weight,height,weight_goal):
         #self.first_name = first_name
@@ -50,6 +51,65 @@ class Users(db.Model):
       return self.weight
     def __repr__(self):
         return '<users %r>' % (self.username)
+
+class Calorie(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey('users.id'), nullable=False)
+    date = db.Column(db.Date()) 
+    caloriesintake=db.Column(db.Float())
+    caloriesburned=db.Column(db.Float())
+    totalcalories=db.Column(db.Float())
+    def __init__(self,user_id,date,caloriesburned,caloriesintake):
+        self.user_id=user_id
+        self.date=date
+        self.caloriesburned=caloriesburned
+        self.caloriesintake=caloriesintake
+        self.totalcalories=caloriesintake-caloriesburned
+class FoodLog(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey('users.id'), nullable=False)
+    date = db.Column(db.Date()) 
+    ingredients=db.Column(db.Text())
+    calories=db.Column(db.Float())
+
+    def __init__(self,user_id,date,ingredients,calories):
+        self.user_id=user_id
+        self.date=date
+        self.caloriesburned=caloriesburned
+        self.caloriesintake=caloriesintake
+        self.totalcalories=caloriesintake-caloriesburned
+
+class ActivityLog(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey('users.id'), nullable=False)
+    date = db.Column(db.Date()) 
+    activity_Code=db.Column(db.Integer())#met code
+    duration = db.Column(db.Integer())
+    caloriesburned=db.Column(db.Float())
+    def __init__(self,user_id,date,activity_Code,duration,caloriesburned):
+        self.user_id=user_id
+        self.date = date
+        self.activity_Code=activity_Code
+        self.duration=duration
+        self.caloriesburned=caloriesburned
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
 
 
 class HealthCondition(db.Model):

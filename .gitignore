@@ -110,6 +110,7 @@ ENV/
 env.bak/
 venv.bak/
 
+
 # Spyder project settings
 .spyderproject
 .spyproject
@@ -132,3 +133,5 @@ app/utils/graph_opt.pb
 *.prototxt
 *.caffemodel
 *.avi
+
+migrations/

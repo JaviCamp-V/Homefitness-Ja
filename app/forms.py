@@ -17,6 +17,9 @@ class SignUpForm(FlaskForm):
         weightgoal = FloatField('weightgoal',validators=[DataRequired()])
         gender =SelectField('Gender', choices=[('M', 'Male'), ('F', 'Female')],validators=[DataRequired()])
         age =IntegerField('Age', validators=[DataRequired()])
+        acivitylevel=SelectField('Physical Activity Level', choices=[('VL', 'Very Light'), ('L', 'Light'), ('M', 'Moderate'), ('VA', 'Very Active'), ('EA', 'Exceedingly Active')],validators=[DataRequired()])
+        workoutIntesnity=SelectField('Excerise Intensity level', choices=[('L', 'Light'), ('M', 'Moderate'), ('V', 'Vigorous')],validators=[DataRequired()])
+
 class VideoFrom(FlaskForm):
     video = FileField('Video', validators=[FileRequired(), FileAllowed(['mp4', 'avi', 'Mp4 and avi only!'])])
     etype = SelectField('Exercise', choices=[('sqaut', 'Squat'), ('curls', 'Biceps Curls'),('ohp','Shoulder Press'),('plank','Plank')],validators=[DataRequired()])
