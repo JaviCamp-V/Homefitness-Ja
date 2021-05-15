@@ -509,6 +509,19 @@ def date_session_record(exercise,date):
 @app.route("/homefitness/dashboard/")
 @login_required
 def dashboard_view():
+    data = [
+        ("01-01-2020", 1000),
+        ("02-01-2020", 2000),
+        ("03-01-2020", 1500),
+        ("04-01-2020", 1400),
+        ("05-01-2020", 2100),
+        ("06-01-2020", 1100),
+        ("07-01-2020", 1000),
+        ("0-01-2020", 2000),
+    ]
+
+    labels = [row[0] for row in data]
+    values = [row[1] for row in data]
     """
     Male= BMR = 66.5 + ( 13.75 × weight in kg ) + ( 5.003 × height in cm ) – ( 6.755 × age in years )
     Femae =BMR = 655 + ( 9.563 × weight in kg ) + ( 1.850 × height in cm ) – ( 4.676 × age in years )
@@ -519,7 +532,9 @@ def dashboard_view():
     else:
         BMR=655 + ( 9.563 *current_user.weight ) + ( 1.850 *current_user.height*100 )-( 4.676 * current_user.age )
     stats={"BMI":BMI,"BMR": BMR}
-    return render_template("dashboard.html",user=current_user,stats=stats)
+    return render_template("dashboard.html",user=current_user,stats=stats, labels=labels, values=values)
+
+
 
 
 

@@ -12,28 +12,52 @@
     <p><strong>BMI</strong> {{stats.BMI}}</p>
     <p><strong>BMR</strong> {{stats.BMR}}</p>
   </div>
-  <div class="charts">
-    <div>
-      <div class="card">
-        <div class="card-title">
-          <h2>Last Session Data</h2>
-        </div>
-        <div class="card-body">
-          <canvas id="lastsession"></canvas>
-          <button type="button" class="btn btn-primary" id="compare">
-            Compare with pervious session
-          </button>
-        </div>
+  <div class="chart1">
+    <div class="card">
+      <div class="card-title">
+        <h2>Last Session Data</h2>
+      </div>
+      <div class="card-body">
+        <canvas id="lastsession"></canvas>
+        <button type="button" class="btn btn-primary" id="compare">
+          Compare with pervious session
+        </button>
       </div>
     </div>
-    <div>
-      <div class="card">
-        <div class="card-title">
-          <h2>Imporve for Squat</h2>
-        </div>
-        <div class="card-body">
-          <canvas id="progress"></canvas>
-        </div>
+  </div>
+  <div class="chart2">
+    <div class="card">
+      <div class="card-title">
+        <h2>Calories Burned</h2>
+      </div>
+      <div class="card-body">
+        <canvas id="calorieschart"></canvas>
+        <script>
+          var ctx = document.getElementById("calorieschart").getContext("2d");
+          var lineChart = new Chart(ctx, {
+            type: "line",
+            data: {
+              labels: {{ labels | safe }},
+              datasets: [{
+                label: "Data points",
+                data: {{ values | safe }},
+                fill: false,
+                borderColor: "rgb(75, 192, 192)",
+                lineTension: 0.1
+              }]
+            },
+          });
+        </script>
+      </div>
+    </div>
+  </div>
+  <div class="chart3">
+    <div class="card">
+      <div class="card-title">
+        <h2>Improve for Squat</h2>
+      </div>
+      <div class="card-body">
+        <canvas id="progress"></canvas>
       </div>
     </div>
   </div>
