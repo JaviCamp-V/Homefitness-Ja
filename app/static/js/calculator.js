@@ -78,7 +78,8 @@ window.addEventListener('load', function() {
             BMR=(9.56* (weight/2.2046)) + (1.85*height) - (4.68 * age) + 655;
         }
 
-        let calorie = currentMET *(BMR/1440) * ((hr*60)+min);
+        let calorie = (currentMET/60) *(BMR/1440) * ((hr*60)+min);
+        calorie=parseFloat((calorie*1000)).toFixed(2); //kcl to cl
         calResults.innerHTML=calorie.toString();
 
 
@@ -95,7 +96,7 @@ window.addEventListener('load', function() {
 
      (kcal burned) = (MET value) X (BMR/24) X (duration of activity in hours)
 
-       (kcal burned) = (MET value) X (BMR/1440 minutes per day) X (duration of activity in minutes)
+       (kcal burned) = (MET value/60) X (BMR/1440 minutes per day) X (duration of activity in minutes)
      */
     });
     edit.addEventListener("click", function (element) {

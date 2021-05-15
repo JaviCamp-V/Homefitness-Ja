@@ -1,13 +1,11 @@
 
-from Workout import Workout,BicepCurls
+from utils import *
 
 
-
-filename="C:\\Users\\NAVARLEE PETERS UWI\\Videos\\New Dataset\\elbow flare.mkv"
-
-trainer=BicepCurls(220)
-print(trainer.export())
-out=trainer.video(filename)
-print(out)
+#trainer=BicepCurls(220)
+#print(trainer.export())
+#out=trainer.video(filename)
+#print(out)
+print(getMet("home activities","polishing floors"))
 
 

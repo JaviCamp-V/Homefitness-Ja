@@ -309,13 +309,17 @@ class Mets(db.Model):
     code=db.Column(db.Integer(),primary_key=True)
     met=db.Column(db.Float())
     heading=db.Column(db.String(50))
-    activities=db.Column(db.String(255))
+    activities=db.Column(db.Text())
+    intensity=db.Column(db.String(50))
 
-    def __init__(self, code, met,heading, activities):
+
+
+    def __init__(self, code, met,heading, activities,intensity):
         self.code=code
         self.met=met
         self.heading=heading
         self.activities=activities
+        self.intensity=intensity
     def get_code(self):
         return self.code
     def get_met(self):
