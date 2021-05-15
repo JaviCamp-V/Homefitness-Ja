@@ -112,7 +112,7 @@ window.addEventListener('load', function() {
 
 
 
-    });
+    }); 
 
 
 
