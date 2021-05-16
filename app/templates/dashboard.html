@@ -15,7 +15,7 @@
   <div class="chart1">
     <div class="card">
       <div class="card-title">
-        <h2>Last Session Data</h2>
+        <h2>Last Session Breakdown</h2>
       </div>
       <div class="card-body">
         <canvas id="lastsession"></canvas>
@@ -28,46 +28,44 @@
   <div class="chart2">
     <div class="card">
       <div class="card-title">
-        <h2>Calories Burned</h2>
+        <h2>Workout Progress</h2>
+        <select name="exercise" id="exercise">
+          <option value="sqaut">Squat</option>
+          <option value="cruls">Bicep Curl</option>
+          <option value="ohp">ohp</option>
+          <option value="plank">Plank</option>
+        </select>
+  
+  
       </div>
       <div class="card-body">
-        <canvas id="calorieschart"></canvas>
-        <script>
-          var ctx = document.getElementById("calorieschart").getContext("2d");
-          var lineChart = new Chart(ctx, {
-            type: "line",
-            data: {
-              labels: {{ labels | safe }},
-              datasets: [{
-                label: "Data points",
-                data: {{ values | safe }},
-                fill: false,
-                borderColor: "rgb(75, 192, 192)",
-                lineTension: 0.1
-              }]
-            },
-          });
-        </script>
+        <canvas id="progress"></canvas>
+
       </div>
     </div>
   </div>
   <div class="chart3">
     <div class="card">
       <div class="card-title">
-        <h2>Improve for Squat</h2>
+        <h2> Calorie Chart</h2>
       </div>
       <div class="card-body">
-        <canvas id="progress"></canvas>
+        <canvas id="calorieschart"></canvas>
       </div>
     </div>
   </div>
   <div class="chart4">
     <div class="card">
       <div class="card-title">
-        <h2>Improve for Squat</h2>
+        
+        <h2>Session Breakdown</h2>
+        <select name="session" id="session">
+          
+        </select>
+
       </div>
-      <div class="card-body">
-        <canvas id="progress"></canvas>
+        <div class="card-body">
+        <canvas id="sessionhart"></canvas>
       </div>
     </div>
   </div>

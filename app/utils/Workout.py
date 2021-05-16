@@ -128,7 +128,7 @@ class Workout:
         return json.dumps(data, indent = 4)  
 
     def video(self,filename):
-        fourcc ={'.avi': cv2.VideoWriter_fourcc(*'XVID'),'.MP4': cv2.VideoWriter_fourcc(*'mp4v'),'.mp4': cv2.VideoWriter_fourcc(*'mp4v'),'.mkv':cv2.VideoWriter_fourcc(*'mp4v')}
+        fourcc ={'.avi': cv2.VideoWriter_fourcc(*'MJPG'),'.MP4': cv2.VideoWriter_fourcc(*'mp4v'),'.mp4': cv2.VideoWriter_fourcc(*'mp4v'),'.mkv':cv2.VideoWriter_fourcc(*'mp4v')}
         _,ext = os.path.splitext(filename)
         output="app/static/uploads/output.avi"
         #clip = moviepy.VideoFileClip("app/static/uploads/"+filename)
@@ -195,7 +195,7 @@ class Workout:
 class BicepCurls(Workout):
     corrections={"No Pose Detected":"Pleasa check camera feed","Low Visbility":"Stand 2-4 meters from the camera","elbow flare":"perfrom the curls with you back aginst the wall","raise too high":"<<insert correction here>>",
                "good form":"<<insert correction here>>","soldershurg":"<<insert correction here>>","wristbent":"<<insert correction here>>","backbent":"<<insert correction here>>"}
-    model=pickle.load(open("app/static/models/basic_curls_model4.pkl", 'rb'))
+    model=pickle.load(open("app/static/models/bicepcurlsModel1.pkl", 'rb'))
     errors={"good form":0,"soldershurg":0,"elbow flare":0,"wristbent":0,"backbent":0}
 
 

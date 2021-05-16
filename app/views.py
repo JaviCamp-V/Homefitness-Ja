@@ -257,7 +257,8 @@ def test_live(message):
             response=json.loads(response)
         print( '[*socketio] Tracking in progress  ')
         emit('live corrections', response)
-     emit('error corrections', response)
+    else:
+        emit('error corrections', response)
 
 
 
@@ -560,11 +561,9 @@ def dashboard_view():
     Male= BMR = 66.5 + ( 13.75 × weight in kg ) + ( 5.003 × height in cm ) – ( 6.755 × age in years )
     Femae =BMR = 655 + ( 9.563 × weight in kg ) + ( 1.850 × height in cm ) – ( 4.676 × age in years )
     """
-    BMI=round(current_user.weight/(current_user.height**2),2)
-    if current_user.gender=="M":
-        BMR=66.5 + ( 13.75 *current_user.weight) +( 5.003 *current_user.height*100 )-( 6.755 *current_user.age )
-    else:
-        BMR=655 + ( 9.563 *current_user.weight ) + ( 1.850 *current_user.height*100 )-( 4.676 * current_user.age )
+
+    BMI=calculateBMI(current_user.weight,current_user.height)
+    BMR=calculateBMR( current_user.gender,current_user.age,current_user.weight,current_user.height)
     stats={"BMI":BMI,"BMR": BMR}
     return render_template("dashboard.html",user=current_user,stats=stats)
 

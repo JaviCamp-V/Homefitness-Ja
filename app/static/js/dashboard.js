@@ -3,6 +3,15 @@ window.addEventListener('load', function() {
     let canvas=document.querySelector('#lastsession');
     const compare = document.querySelector('#compare');
     const progress = document.querySelector('#progress').getContext('2d');
+    const exercise = document.querySelector('#compare');
+    const calorieschart = document.querySelector('#calorieschart').getContext('2d');
+    const sessionhart = document.querySelector('#sessionhart').getContext('2d');
+
+
+
+
+
+    
 
 
     var chartone_Lables=[];
@@ -22,6 +31,9 @@ window.addEventListener('load', function() {
     var charttwo_type="";
     var charttwo=null;
 
+    var chart3=null;
+
+    var chart4=null;
     compare.style.display = 'none';
 
 
@@ -142,7 +154,101 @@ window.addEventListener('load', function() {
 
 
 
+///***   calorie chart ***/
 
+      fetch('/homefitness/dashboard/lastsession', {
+        method: 'GET', // or 'PUT'
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Success:', data);
+        if (data.hasOwnProperty("Error")){
+            chartone_title="No sessesion data is available"
+        }else{
+        chartone_Lables=data.labels;
+        chartone_title=data.exercise;
+        chartone_data=data.data;
+        chartone_sid=data.sid;
+        chartone_type=data.exercise
+        if (chartone_sid>1){
+            compare.style.display = "block";
+        }
+        }
+         chart4= new Chart(calorieschart,{
+            type:'bar',
+            data: {
+                labels:chartone_Lables,
+                datasets: [{
+                          label:chartone_title,
+                          backgroundColor: 'rgb(0,99,132)',
+                          borderColor: 'rgb(0,99,132)',
+                          data:chartone_data,
+                          }]
+    
+            },
+            options:{}
+        });
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        var chartone= new Chart(lastsession,{
+            type:'bar',
+            data: {
+                labels:"No sesdion data is available for user at this moment",
+                datasets: [{
+                          label:chartone_title,
+                          backgroundColor: 'rgb(0,99,132)',
+                          borderColor: 'rgb(0,99,132)',
+                          data:chartone_data,
+                          }]
+    
+            },
+            options:{}
+        });
+    
+      });
+
+      
+
+
+
+///***   sessionhart chart ***/
+var chart4= new Chart(sessionhart,{
+  type:'doughnut',
+  data: {
+      labels:["mistake1","mistake2","mistake3"],
+      datasets: [{
+                label:"Session breakdown",
+                backgroundColor: [
+                  'rgb(255, 99, 132)',
+                  'rgb(54, 162, 235)',
+                ],
+                data:[2,3,4,5,6,7],
+                hoverOffset: 4,
+                }]
+
+  },
+  options:{}
+});
+
+
+
+      exercise.addEventListener("change", function (element) {
+        element.preventDefault();
+
+        console.log(exercise.value);
+        alert('changed');
+
+
+
+
+
+        
+
+      });
 
       compare.addEventListener("click", function (element) {
         element.preventDefault();
