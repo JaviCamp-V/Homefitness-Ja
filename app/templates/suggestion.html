@@ -1,29 +1,24 @@
-{% extends "base.html" %} 
-{% block main %} 
+{% extends "base.html" %} {% block main %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    var intakeshould="{{result.intake}}";
-    var intakeamount="{{result.intakeamount}}";
-    var burnshould="{{result.burned}}";
-    var burnamount="{{result.burnamount}}";
-
-
+  var intakeshould = "{{result.intake}}";
+  var intakeamount = "{{result.intakeamount}}";
+  var burnshould = "{{result.burned}}";
+  var burnamount = "{{result.burnamount}}";
 </script>
 <script src="/static/js/suggestion.js"></script>
 
-
-
-
 <div>
-
-    <div id="dispalybox">
-         <p><Strong> Goal Weight</Strong>{{result.weight_goal}}</p>
-        <p><Strong>Estimated time to achieve Goal</Strong>{{result.timetogoal}} weeks</p>
-        <canvas id="intake" display.width='50px' height="50px"></canvas>
-        <p><strong>Daily Calorie to Consume</strong>{{result.intake}}</p>
-        <canvas id="totalburn" width='50px' height="50px"></canvas>
-        <p><strong>Daily Calorie to Burn</strong>{{result.burned}}</p>
-        <!---
+  <div id="dispalybox">
+    <p><strong> Goal Weight</strong>{{result.weight_goal}}</p>
+    <p>
+      <strong>Estimated time to achieve Goal</strong>{{result.timetogoal}} weeks
+    </p>
+    <canvas class="displaycontainer" id="intake"></canvas>
+    <p><strong>Daily Calorie to Consume</strong>{{result.intake}}</p>
+    <canvas class="displaycontainer" id="totalburn"></canvas>
+    <p><strong>Daily Calorie to Burn</strong>{{result.burned}}</p>
+    <!---
         <canvas id="work"></canvas>
         <p id="workvlaue"><Strong>Work Activity Calories to Burn</Strong> result.work</p>
         <canvas id="home"></canvas>
@@ -33,12 +28,11 @@
         <canvas id="exercise"></canvas>
         <p id="exercisevlaue"></p>><Strong>Exercise Activity Calories to Burn</Strong></p>
         -->
-    </div>
-    <div class="suggestions">
-        {% if result.suggest %} 
-        {% for code,lst in result.suggestions.items()%}
-        <p>{{code}}{{lst}} </p>
-        {% endfor %} {% endif %}
-    </div>
+  </div>
+  <div class="suggestions">
+    {% if result.suggest %} {% for code,lst in result.suggestions.items()%}
+    <p>{{code}}{{lst}}</p>
+    {% endfor %} {% endif %}
+  </div>
 </div>
 {% endblock %}
