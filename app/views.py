@@ -7,6 +7,7 @@ This file creates your application.
 from . import socketio
 from flask_socketio import SocketIO ,send, emit
 from app import app, db, ma,login_manager,socketio
+from sqlalchemy import or_
 from flask import render_template, request, redirect, url_for, flash, Response,jsonify,session,make_response
 from flask_login import login_user, logout_user, current_user, login_required
 from app.forms import LoginForm,VideoFrom,WebcamFrom,SignUpForm,LoginForm
@@ -18,13 +19,13 @@ from flask_wtf.file import FileField, FileAllowed, FileRequired
 from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
 from app.utils.Workout import BicepCurls,Squat,Plank,OHP
+from app.utils.utils import *
 import numpy as np
 import cv2 as cv2
 from PIL import Image
-import base64,io
+import base64,io,datetime
 from py_edamam import Edamam,PyEdamam
-
-
+from sqlalchemy.sql import func
 import os
 import time,random
 import json
@@ -246,14 +247,18 @@ def close_session():
 @socketio.on('livevideo')
 def test_live(message):
     global _Trainers
+    session["user_id"]=current_user.get(id)
     id=session["user_id"]
     response={"error":"invaild frame"}
-    if len(message)>10:
-        img=stringToRGB(message.split('base64')[-1])
-        response=_Trainers[id].frame_(img)
-        response=json.loads(response)
-    print( '[*socketio] Tracking in progress  ')
-    emit('live corrections', response)
+    if id in _Trainers:
+        if len(message)>10:
+            img=stringToRGB(message.split('base64')[-1])
+            response=_Trainers[id].frame_(img)
+            response=json.loads(response)
+        print( '[*socketio] Tracking in progress  ')
+        emit('live corrections', response)
+     emit('error corrections', response)
+
 
 
 
@@ -397,6 +402,25 @@ def met_search():
 @login_required
 def met_calcuator():
     return render_template("calculator.html",user=current_user)
+
+
+@app.route("/homefitness/caloriecalculator/save",methods=["POST"])
+@login_required
+def activity_save():
+    if request.method == "POST" :
+          activities =(request.get_json()) 
+          activities = activities["Activities"]
+          date=str(datetime.datetime.now().strftime("%d/%m/%Y"))
+          user_id=current_user.get_id()
+          for act in activities:
+              alog=ActivityLog(user_id,date,act["code"],act["duration"],act["caloriesburned"])
+              db.session.add(alog)
+          db.session.commit()
+          return jsonify({"message":"Records saved sucessfully"})
+    else:
+        return jsonify({"Error":"Task Failed "})
+
+
 
 """
 charts
@@ -543,16 +567,37 @@ def dashboard_view():
         BMR=655 + ( 9.563 *current_user.weight ) + ( 1.850 *current_user.height*100 )-( 4.676 * current_user.age )
     stats={"BMI":BMI,"BMR": BMR}
     return render_template("dashboard.html",user=current_user,stats=stats)
-@app.route("/homefitness/food-tracker/",methods=["POST"])
+
+@app.route("/homefitness/food-tracker/")
+def food_tracker_view():
+    return render_template("foodcalulator.html")
+
+@app.route("/homefitness/food-tracker/search",methods=["POST"])
 @login_required
 def food_tracker():
     if request.method == "POST" :
         search =(request.get_json()) 
         search = search["query"]
         edamam_o = Edamam(nutrition_appid="e516a587",nutrition_appkey="e23713080f05e09105cfecce006c892c",recipes_appid='xxx',recipes_appkey="XXX",food_appid="1a35bab8",food_appkey="2542808961bb59a2a24fc102670c8674")
-        query_result = edamam_o.search_nutrient(search)
+        query_result = edamam_o.search_food(search)
     return query_result
 
+
+@app.route("/homefitness/food-tracker/save",methods=["POST"])
+@login_required
+def food_save():
+    if request.method == "POST" :
+          food =(request.get_json()) 
+          food = food["Activities"]
+          date=str(datetime.datetime.now().strftime("%d/%m/%Y"))
+          user_id=current_user.get_id()
+          for snack in food:
+              flog=FoodLog(user_id,date,snack["code"],snack["ingredients"],snack["calories"])
+              db.session.add(flog)
+          db.session.commit()
+          return jsonify({"message":"Records saved sucessfully"})
+    else:
+        return jsonify({"Error":"Task Failed "})
 
 
 
@@ -565,7 +610,7 @@ def suggestions():
     Caloriedeficit=0
     CalorieIntake=0
     calorieBurn=0
-    date=str(datetime.datetime.now().strftime("%x"))
+    date=str(datetime.datetime.now().strftime("%d/%m/%Y"))
     weightgoal=current_user.weight_goal
     weight=current_user.weight
     height=current_user.height
@@ -582,29 +627,63 @@ def suggestions():
     hrHome=current_user.hrHome
     """
     weightChange=weight-weightgoal
-    weeks_to_go=abs(weightChange/2)#fastest wayk to achieve goal
+    weeks_to_go=(weightChange)//2#fastest way to achieve goal
     deficit=7000
-    daily_Deficit=Deficit/7
+    daily_Deficit=deficit/7
     BMR=calculateBMR(gender,age,weight,height)
-    if EI=="L" and HI=="L"and WI=="L":
+    if EI=="L":
         TotalEnergy=1.2
-    elif EI=="M" and HI=="M"and WI=="M":
+    elif EI=="M" :
         TotalEnergy=1.6
-    elif EI=="V" and HI=="V" and VI=="V":
+    elif EI=="V" :
          TotalEnergy=2.0
-    elif EI=="V" and HI=="V":
+    elif EI=="VA":
          TotalEnergy=1.75
     else:
         TotalEnergy=1.6
     maintenance_intake=BMR*TotalEnergy
-    ##results={"weight_goal":weightgoal,"timetogoal":weeks_to_go,"intake","percentage_intake" ,"burned","percentage_burned","work","percentage_work","home","percentage_sleep",
-    #"exercise","percentage_exercise","suggest","suggestions"}
-    return render_template("suggestion.html",results=results)
-
-
-
-
+    kclChange=maintenance_intake-daily_Deficit
+    intake=kclChange/2
+    if gender=="M" and intake<1800:
+        intake=1800
+    elif gender=="F" and intake<1200:
+        intake=1200
+    burned=kclChange-intake
+    if EI=="L":
+        intensity="Light"
+        minactivity=(150*2)/7
+    elif EI=="M":
+        intensity="Moderate"
+        minactivity=150/7
+    else:
+        intensity="vigorous"
+        minactivity=(150/2)/7
+    intakeamount=0
+    burnamount=0
+    cal=Calorie.query.filter_by(user_id=current_user.get_id(),date=date).first()
+    if cal is not None:
+        intakeamount=cal.caloriesintake
+        burnamount=cal.caloriesburned
+    lst=getListbyIntensity(intensity)
+    output=dict()
+    for k in lst.keys():
+        mins=burned/(lst[k][0]*(BMR/1440))
+        output[k]=lst[k]+[mins]
         
+    suggest=len(output)!=0
+    results={"weight_goal":weightgoal,"timetogoal":weeks_to_go,"intake":intake,"intakeamount":intakeamount,"burned":burned,"burnamount":burnamount,"suggest":suggest,"suggestions":output}
+    return render_template("suggestion.html",result=results)
+
+
+
+
+def getListbyIntensity(intensity):
+    output=Mets.query.filter(Mets.intensity==intensity,or_(Mets.heading=="conditioning exercise",Mets.heading=="bicycling",Mets.heading=="running",Mets.heading=="sports",Mets.heading=="walking",Mets.heading=="water activities")).all()
+    lst=dict()
+    for out in output:
+        lst.update(out.to_dict())
+    return lst
+
     
 
    

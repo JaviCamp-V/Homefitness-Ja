@@ -1,5 +1,11 @@
 let currentMET = 0;
+let currentCode=0;
 let currentactivity = "";
+let currentCalorie=0;
+let currentDuration=0;
+
+let Total=0;
+let save=[];
 
 window.addEventListener("load", function () {
   let search = document.querySelector("#search");
@@ -8,10 +14,21 @@ window.addEventListener("load", function () {
   let edit = document.querySelector("#edit");
   let calResults = document.querySelector("#calResults");
   let calDIv = document.querySelector("#calculator");
+  let BurnedSum =document.querySelector("#totalCals");
+  let addTotal =document.querySelector("#addTotal2");
+  let adder =document.querySelector("#addTOTOtal2");
+  let divDB =document.querySelector("#totalCalsTODB");
+  let saver=document.querySelector("#save");
+
+  
+
+
+  
 
   search.addEventListener("keyup", function (element) {
     calDIv.style.display = "none";
     calResults.style.display = "none";
+    addTotal.style.display = "none";
     element.preventDefault();
     pharse = search.value;
     if (pharse.length > 2) {
@@ -57,9 +74,6 @@ window.addEventListener("load", function () {
         });
     }
   });
-  function test(values) {
-    alert(values);
-  }
   calculate.addEventListener("click", function (element) {
     element.preventDefault();
     let age = document.getElementById("age").value;
@@ -76,11 +90,16 @@ window.addEventListener("load", function () {
     }
 
     let calorie = currentMET * (BMR / 1440) * (hr * 60 + min);
-    calorie = parseFloat(calorie * 1000).toFixed(2); //kcl to cl
+    calorie = parseFloat(calorie).toFixed(2); //kcl to cl
     calResults.innerHTML = calorie.toString();
+    if (calorie>0){
+    addTotal.style.display = "block";
+    currentDuration=(hr * 60 + min);
+    }
+    currentCalorie=parseFloat(calorie);
+    
 
-    document.getElementById("addTotal").innerHTML =
-      '<button type="button" id="addTotal" class="btn btn-dark">Add To Total</button>';
+
 
     /**
     Calorie Burn = (BMR / 24) x MET x T
@@ -107,13 +126,50 @@ window.addEventListener("load", function () {
     document.getElementById("hr").value = "";
     document.getElementById("min").value = "";
   });
+  adder.addEventListener("click", function (element) {
+    element.preventDefault();
+    Total= parseFloat(Total)+parseFloat(currentCalorie);
+    BurnedSum.innerHTML="";
+    BurnedSum.innerHTML=parseFloat(Total).toFixed(2);
+    save.push({"code":currentCode,"duration":currentDuration,"caloriesburned":currentCalorie})
+    currentCode=0;currentDuration=0;currentCalorie=0;currentmet=0;
+    addTotal.style.display = "none";
+    divDB.style.display = "block";
+
+
+  });
+  saver.addEventListener("click", function (element) {
+    element.preventDefault();
+    data={"Activities":save}
+    fetch("/homefitness/caloriecalculator/save", {
+      method: "POST", // or 'PUT'
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+          alert("Record save sucessfully");
+          console.log(data);
+          save=[];
+          Total=0;
+          BurnedSum.innerHTML=parseFloat(Total).toFixed(2);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  });
+
+  
 });
 
 function calculator(obj) {
+
   let result = JSON.parse(obj);
-  console.log(result.met);
   currentMET = result.met;
   currentactivity = result.activities;
+  currentCode=result.code;
   results.innerHTML = "";
   document.getElementById("calculator").style.display = "block";
   document.getElementById("calResults").style.display = "block";

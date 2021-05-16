@@ -12,6 +12,15 @@
     var lastclass="12";
     var numErrors=0;
     const canvas = document.querySelector("#canvas");
+    const modal = document.querySelector(".modal");
+    const overviewtitle=document.querySelector("#overview-title");
+    const overviewbody=document.querySelector("#overview-body");
+    var closee=document.querySelector("#closee");
+    var close=document.querySelector("#close");
+    var save=document.querySelector("#save");
+
+
+
     const fps=30;
     var source=null;
 
@@ -99,6 +108,14 @@
     });
 
     
+    closee.addEventListener("click", function () {
+        modal.style.display = "none";
+
+      });
+      close.addEventListener("click", function () {
+        modal.style.display = "none";
+
+      });
     
     btnPause.addEventListener("click", function () {
         video.pause();
@@ -201,6 +218,8 @@
         socket.emit( 'close sesssion'); 
 
         socket.on( 'close sesssion ack', function( msg ) {
+            console.log(msg);
+
             /**close sesssion
              * create modal
              * 
@@ -228,8 +247,67 @@
             </div>
             </div>
              */
-            
-            console.log(msg);
+
+            modal.style.display = "block";
+            overviewtitle.innerHTML=msg.exercise;
+            const date = document.createElement("p");
+            const strong1 = document.createElement("strong");
+            strong1.innerHTML="Date";
+            date.innerHTML=msg.date;
+            const duration = document.createElement("p");
+            const strong2 = document.createElement("strong");
+            strong2.innerHTML="Duration";
+            duration.innerHTML=msg.duration
+            const sets = document.createElement("p");
+            sets.innerHTML=msg.sets;
+            const strong3 = document.createElement("strong");
+            strong3.innerHTML="Sets";
+            const reps = document.createElement("p");
+            reps.innerHTML=msg.reps;
+            const strong4 = document.createElement("strong");
+            strong4.innerHTML="Reps";
+            const calorie = document.createElement("p");
+            calorie.innerHTML=msg.calorie;
+            const strong5 = document.createElement("strong");
+            strong5.innerHTML="Calorie";
+            const total_errors = document.createElement("p");
+            const strong6 = document.createElement("strong");
+            strong6.innerHTML="Total Mistakes";
+            total_errors.innerHTML=msg.errors.total;
+            overviewbody.innerHTML="";
+
+
+            const grpp1 = document.createElement("p");
+            grpp1.appendChild(strong1);
+            grpp1.appendChild(date);
+
+            const grpp2 = document.createElement("p");
+            grpp2.appendChild(strong2);
+            grpp2.appendChild(duration);
+
+            const grpp3 = document.createElement("p");
+            grpp3.appendChild(strong3);
+            grpp3.appendChild(sets);
+
+            const grpp4 = document.createElement("p");
+            grpp4.appendChild(strong4);
+            grpp4.appendChild(reps);
+
+            const grpp5 = document.createElement("p");
+            grpp5.appendChild(strong5);
+            grpp5.appendChild(calorie);
+
+            const grpp6 = document.createElement("p");
+            grpp6.appendChild(strong6);
+            grpp6.appendChild(total_errors);
+
+
+            overviewbody.appendChild(grpp1);
+            overviewbody.appendChild(grpp2);
+            overviewbody.appendChild(grpp3);
+            overviewbody.appendChild(grpp4);
+            overviewbody.appendChild(grpp5);
+            overviewbody.appendChild(grpp6)
         });
 
 

@@ -2,7 +2,17 @@
 <script src="/static/js/calculator.js"></script>
 
 <div>
-  <h1 class="page-header">Calorie Calculator</h1>
+  <h1 class="page-header">Activity Calorie Calculator</h1>
+  <div class="totalCals">
+    <p><strong> Total Calories</strong></p>
+    <p id="totalCals">0</p>
+  </div>
+  <div id="totalCalsTODB" style="display: none"> 
+    <button type="button" id="save" class="btn btn-secondary">
+      Save Activities
+    </button>
+
+</div>
 
   <div class="search-box">
     <div class="row">
@@ -145,14 +155,17 @@
         <button type="button" id="calculate" class="btn btn-secondary">
           Calculate
         </button>
+        <div id="addTotal2"> 
+          <button type="button" id="addTOTOtal2" class="btn btn-secondary">
+            Add to Total
+          </button>
+    
       </div>
     </form>
     <div id="calResults"></div>
-    <div id="addTotal"></div>
+    </div>
   </div>
-  <div class="totalCals">
-    <p id="totalCals">0</p>
-  </div>
+
 </div>
 
 {% endblock %}

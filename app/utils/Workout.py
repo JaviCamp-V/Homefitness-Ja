@@ -130,7 +130,7 @@ class Workout:
     def video(self,filename):
         fourcc ={'.avi': cv2.VideoWriter_fourcc(*'XVID'),'.MP4': cv2.VideoWriter_fourcc(*'mp4v'),'.mp4': cv2.VideoWriter_fourcc(*'mp4v'),'.mkv':cv2.VideoWriter_fourcc(*'mp4v')}
         _,ext = os.path.splitext(filename)
-        output="app/static/uploads/output"+ext
+        output="app/static/uploads/output.avi"
         #clip = moviepy.VideoFileClip("app/static/uploads/"+filename)
         #clip.write_videofile(output)
         ## print("Finished converting {}".format(filename))
@@ -143,7 +143,7 @@ class Workout:
         if dimension!=(640,480):
             cap.set(3,640)
             cap.set(4,480)
-        vtype=fourcc[ext]
+        vtype=fourcc[".avi"]
         codec=int(cap.get(cv2.CAP_PROP_FOURCC))
         out = cv2.VideoWriter(output,vtype,fps,dimension,True)
         last_label=""
@@ -180,7 +180,7 @@ class Workout:
 
         ex_=self.export()
         timecodes=dict(log)
-        j={"filename":"output.mp4","timecodes":timecodes}
+        j={"filename":"output.avi","timecodes":timecodes}
         data=json.loads(ex_)
         end=self.date+datetime.timedelta(seconds=frame_count/fps)
         data["calorie"]=round((self.MET * 3.5 * self.weight )/(200 *((frame_count/fps)/60)),2)
