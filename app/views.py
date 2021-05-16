@@ -22,6 +22,8 @@ import numpy as np
 import cv2 as cv2
 from PIL import Image
 import base64,io
+from py_edamam import Edamam,PyEdamam
+
 
 import os
 import time,random
@@ -299,8 +301,16 @@ def register():
             age =form.age.data
             uTest=Users.query.filter_by(username=username).first()
             eTest=Users.query.filter_by(email=email).first()
+            days=form.days.data
+            EI=form.EI.data
+            minsExercise=form.minsExercise.data
+            hrSleep=form.hrSleep.data
+            WI=form.WI.data
+            hrWork=form.hrWork.data
+            HI=form.HI.data
+            hrHome=form.hrHome.data
             if  uTest is None and eTest is  None:
-                user=Users(email,password,username,age,gender,weight,height,weightgoal)
+                user=Users(email,password,username,age,gender,weight,height,weightgoal,days,EI,minsExercise,hrSleep,WI,hrWork,HI,hrHome)
                 db.session.add(user)
                 db.session.commit()
                 flash('User saved successfully ', 'sucess')
@@ -311,7 +321,7 @@ def register():
                 flash('username already taken', 'danger')
        else:
             flash_errors(form)
-    return render_template("register.html", form=form)
+    return render_template("testregister.html", form=form)
 """
 
 Login View function
@@ -520,6 +530,64 @@ def dashboard_view():
         BMR=655 + ( 9.563 *current_user.weight ) + ( 1.850 *current_user.height*100 )-( 4.676 * current_user.age )
     stats={"BMI":BMI,"BMR": BMR}
     return render_template("dashboard.html",user=current_user,stats=stats)
+@app.route("/homefitness/food-tracker/",methods=["POST"])
+@login_required
+def food_tracker():
+    if request.method == "POST" :
+        search =(request.get_json()) 
+        search = search["query"]
+        edamam_o = Edamam(nutrition_appid="e516a587",nutrition_appkey="e23713080f05e09105cfecce006c892c",recipes_appid='xxx',recipes_appkey="XXX",food_appid="1a35bab8",food_appkey="2542808961bb59a2a24fc102670c8674")
+        query_result = edamam_o.search_nutrient(search)
+    return query_result
+
+
+
+
+   
+
+@app.route("/homefitness/suggestions/")
+@login_required
+def suggestions():
+
+    Caloriedeficit=0
+    CalorieIntake=0
+    calorieBurn=0
+    date=str(datetime.datetime.now().strftime("%x"))
+    weightgoal=current_user.weight_goal
+    weight=current_user.weight
+    height=current_user.height
+    age=current_user.age
+    gender=current_user.gender
+    num_days_exercise=current_user.num_days_exercise
+    EI=current_user.EI
+    minsExercise=current_user.minsExercise
+    """
+    hrSleep=current_user.hrSleep
+    WI=current_user.WI
+    hrWork=current_user.hrWork
+    HI=current_user.HI
+    hrHome=current_user.hrHome
+    """
+    weightChange=weight-weightgoal
+    weeks_to_go=abs(weightChange/2)#fastest wayk to achieve goal
+    deficit=7000
+    daily_Deficit=Deficit/7
+    BMR=calculateBMR(gender,age,weight,height)
+    if EI=="L" and HI=="L"and WI=="L":
+        TotalEnergy=1.2
+    elif EI=="M" and HI=="M"and WI=="M":
+        TotalEnergy=1.6
+    elif EI=="V" and HI=="V" and VI=="V":
+         TotalEnergy=2.0
+    elif EI=="V" and HI=="V":
+         TotalEnergy=1.75
+    else:
+        TotalEnergy=1.6
+    maintenance_intake=BMR*TotalEnergy
+    ##results={"weight_goal":weightgoal,"timetogoal":weeks_to_go,"intake","percentage_intake" ,"burned","percentage_burned","work","percentage_work","home","percentage_sleep",
+    #"exercise","percentage_exercise","suggest","suggestions"}
+    return render_template("suggestion.html",results=results)
+
 
 
 

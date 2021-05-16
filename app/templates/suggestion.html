@@ -1,0 +1,31 @@
+{% extends "base.html" %} 
+{% block main %} 
+
+
+
+
+<div>
+
+    <div id="dispalybox">
+        <canvas id="intake"></canvas>
+        <p><strong>Daily Calorie to Consume</strong>result.intake</p>
+        <canvas id="totalburn"></canvas>
+        <p><strong>Daily Calorie to Burn</strong>result.burn</p>
+        <canvas id="work"></canvas>
+        <p id="workvlaue"><Strong>Work Activity Calories to Burn</Strong> result.work</p>
+        <canvas id="home"></canvas>
+        <p id="homevlaue"></p>><Strong>Home Activity Calories to Burn</Strong>result.home</p>
+        <canvas id="sleep"></canvas>
+        <p id="sleep"></p>><Strong>Sleep Calories to Burn</Strong>result.sleep</p>
+        <canvas id="exercise"></canvas>
+        <p id="exercisevlaue"></p>><Strong>Exercise Activity Calories to Burn</Strong></p>
+
+    </div>
+    <div class="suggestions">
+        {% if result.havesuggest %} 
+        {% for suggestion in result.suggestions %}
+        <p>suggestion </p>
+        {% endfor %} {% endif %}
+    </div>
+</div>
+{% endblock %}

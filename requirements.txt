@@ -41,5 +41,4 @@ email_validator
 Flask-Session
 flask-marshmallow
 tqdm
-
-
+py_edamam

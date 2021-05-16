@@ -1,0 +1,93 @@
+{% extends "base.html" %} 
+{% block main %} 
+
+
+
+
+<div>
+    {% include 'flash_messages.html' %}
+    <form action="{{ url_for('register')}}" method="POST" enctype="multipart/form-data" id="register">
+      {{ form.csrf_token }}
+        <div class="form-group" id="ETypee">
+            <label for="username"> {{ form.username.label }}</label>
+             {{ form.username(class="form-control") }}
+       </div>
+       <div class="form-group">
+            <label for="email">{{ form.email.label }}</label>
+            {{ form.email(class="form-control") }}
+       </div>
+       <div class="form-group">
+        <label for="email">{{ form.password.label }}</label>
+              {{ form.password(class="form-control") }}
+       </div>
+       <div class="form-group">
+        <label for="gender">{{ form.gender.label }}</label>
+        {{ form.gender(class="form-control") }}
+       </div>
+       <div class="form-group">
+        <label for="age">{{ form.age.label }}</label>
+        {{ form.age(class="form-control") }}
+       </div>
+       <div class="form-group">
+        <label for="height">{{ form.height.label }}</label>
+        {{ form.height(class="form-control") }}
+      </div>
+      <div class="form-group">
+        <label for="weight">{{ form.weight.label }}</label>
+        {{ form.weight(class="form-control") }}
+      </div>
+      <div class="form-group">
+        <label for="weightgoal">{{ form.weightgoal.label }}</label>
+        {{ form.weightgoal(class="form-control") }}
+      </div>
+      <div class="form-group">
+        <label for="">{{ form.days.label }}</label>
+        {{ form.days(class="form-control") }}
+      </div>
+      <div class="form-group">
+        <label for="">{{ form.EI.label }}</label>
+        {{ form.EI(class="form-control") }}
+      </div>
+      <div class="form-group">
+        <label for="">{{ form.EI.label }}</label>
+        {{ form.EI(class="form-control") }}
+      </div>
+      <div class="form-group">
+        <label for="">{{ form.minsExercise.label }}</label>
+        {{ form.minsExercise(class="form-control") }}
+      </div>
+      <!---
+      <div class="form-group">
+        <label for="">{{ form.hrSleep.label }}</label>
+        {{ form.hrSleep(class="form-control") }}
+      </div>
+      <div class="form-group">
+        <label for="WI">{{ form.WI.label }}</label>
+        {{ form.WI(class="form-control") }}
+      </div>
+
+      <div class="form-group">
+        <label for="">{{ form.hrWork.label }}</label>
+        {{ form.hrWork(class="form-control") }}
+      </div>
+
+      <div class="form-group">
+        <label for="HI">{{ form.HI.label }}</label>
+        {{ form.HI(class="form-control") }}
+      </div>
+
+      
+      <div class="form-group">
+        <label for="hrHome">{{ form.hrHome.label }}</label>
+        {{ form.hrHome(class="form-control") }}
+      </div>
+      -->
+      
+     <button type="submit" class="btn btn-success" id="upload-btn" >Register</button>
+         
+   </form>
+  
+
+</div>
+
+{% endblock %}

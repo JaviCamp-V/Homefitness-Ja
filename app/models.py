@@ -18,10 +18,23 @@ class Users(db.Model):
     gender = db.Column(db.CHAR(1))
     height = db.Column(db.Float())
     weight_goal = db.Column(db.Float())
-    level=db.Column(db.String(2))
-    intensity=db.Column(db.CHAR(1))
+    num_days_exercise=db.Column(db.Integer())
+    EI=db.Column(db.CHAR(1))#Excerise Intensity level
+    minsExercise=db.Column(db.Integer())
+    """
+    hrSleep=db.Column(db.Integer())
+    WI=db.Column(db.CHAR(1))#Work Intensity level
+    hrWork=db.Column(db.Integer())
+    HI=db.Column(db.CHAR(1))#Work Intensity level
+    hrHome=db.Column(db.Integer())
+    """
 
-    def __init__(self,email,password,username,age,gender,weight,height,weight_goal):
+
+
+
+
+
+    def __init__(self,email,password,username,age,gender,weight,height,weight_goal,num_days_exercise,EI,minsExercise):
         #self.first_name = first_name
         #self.last_name = last_name
         self.username = username
@@ -32,7 +45,16 @@ class Users(db.Model):
         self.gender = gender
         self.height = height
         self.weight_goal = weight_goal
-            
+        self.num_days_exercise=num_days_exercise
+        self.EI=EI
+        """
+        self.minsExercise=minsExercise
+        self.hrSleep=hrSleep
+        self.WI=WI
+        self.hrWork=hrWork
+        self.HI=HI
+        self.hrHome=hrHome
+        """            
     def is_authenticated(self):
         return True
 
@@ -388,6 +410,8 @@ class Mets(db.Model):
         return self.heading
     def get_activites(self):
         return self.activities
+    def to_dict(self):
+        return {self.code:[self.met,self.heading,self.activities]}
     def __repr__(self):
         return '<Code %r>' % self.code
 
