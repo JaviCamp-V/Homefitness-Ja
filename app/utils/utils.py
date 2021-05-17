@@ -3,7 +3,9 @@
 
 
 def calculateBMI(weight,height):
-    return round(weight/(height**2),2)
+    #US units: BMI = (weight (lb) ÷ height2 (in)) * 703
+    height=height*0.393701 #cm to in 
+    return round((weight/(height**2))*703,2)
 def calculateBMR(gender,age,weight,height):
     """
     Harris Benedict Equations

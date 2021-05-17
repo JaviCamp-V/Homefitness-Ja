@@ -230,10 +230,14 @@ class Workout:
 
             
 class BicepCurls(Workout):
-    corrections={"No Pose Detected":"Pleasa check camera feed","Low Visbility":"Stand 2-4 meters from the camera","elbow flare":"perfrom the curls with you back aginst the wall","raise too high":"<<insert correction here>>",
-               "good form":"<<insert correction here>>","soldershurg":"<<insert correction here>>","wristbent":"<<insert correction here>>","backbent":"<<insert correction here>>"}
-    model=pickle.load(open("app/static/models/bicepcurlsModel1.pkl", 'rb'))
-    errors={"good form":0,"soldershurg":0,"elbow flare":0,"wristbent":0,"backbent":0}
+    corrections={"No Pose Detected":"Pleasa check camera feed",
+                 "Low Visbility":"Stand 2-4 meters from the camera",
+                 "moving elbows forwardy":"perform the curls with your back against the wall, so as to detect when your elbows are leaving your side",
+                "rocking your body":"weight may be too heavy for you to drop the weight and stand straight",
+                 "good form":"you are doing fine keep up the good work remember to squeeze the curls at the top",
+                 "wrist involvement":"forearm should be straight, stop bending your wrist, this could result in serious injury"}
+    model=pickle.load(open("app/static/models/basic_curls_model_final.pkl", 'rb'))
+    errors={"wrist involvement":0,"moving elbows forward":0,"rocking your body":0}
 
 
     exerise="Bicep Curls"

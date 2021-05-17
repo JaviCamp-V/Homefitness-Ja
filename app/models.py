@@ -217,25 +217,23 @@ class CurlSession(db.Model):
     date = db.Column(db.Date())
     rep = db.Column(db.Integer())
     set_number = db.Column(db.Integer())
-    no_of_backbent = db.Column(db.Integer())
-    no_of_wristbent = db.Column(db.Integer())
-    no_of_elbowflare = db.Column(db.Integer())
-    no_of_shouldershrug = db.Column(db.Integer())
+    no_of_ryb= db.Column(db.Integer())#rocking your body
+    no_of_mef = db.Column(db.Integer())#moving elbows forward
+    no_of_wi = db.Column(db.Integer())#wrist involvement
     no_of_mistakes = db.Column(db.Integer())
 
 
-    def __init__(self, user_id,date, start_time, end_time, rep, set_number, no_of_backbent, no_of_wristbent,  no_of_elbowflare,  no_of_shouldershrug, no_of_mistakes):
+    def __init__(self, user_id,date, start_time, end_time, rep, set_number, ryb, mef,  wi,no_of_mistakes):
         self.user_id = user_id
         self.start_time = start_time
         self.end_time = end_time
         self.date = date
         self.rep = rep
         self.set_number = set_number
-        self.no_of_backbent = no_of_backbent
-        self.no_of_wristbent = no_of_wristbent
-        self.no_of_elbowflare = no_of_elbowflare
-        self.no_of_shouldershrug = no_of_shouldershrug
-        self.no_of_mistakes = no_of_mistakes
+        self.no_of_ryb = ryb
+        self.no_of_mef = mef
+        self.no_of_wi = wi
+        self.no_of_mistakes =no_of_mistakes
     def get_id(self):
         try:
             return unicode(self.id)  # python 2 support
@@ -244,7 +242,7 @@ class CurlSession(db.Model):
     def get_name(self):
         return "curls"
     def get_mistakes(self):
-        data= {"back bent":self.no_of_backbent,"wrist bent":self.no_of_wristbent,"elbow flare":self.no_of_elbowflare,"shoulder shrug":self.no_of_shouldershrug}
+        data= {"rocking your body":self.no_of_ryb,"moving elbows forward":self.no_of_mef,"wrist involvement":self.no_of_wi}
         return json.dumps(data, indent = 4) 
     def get_dateTime(self):
         start=str(self.date) +" "+str(self.start_time)
