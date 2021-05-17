@@ -101,14 +101,15 @@ def upload():
             typee= form.etype.data 
             filename = secure_filename(video.filename)
             video.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            BMR=calculateBMR(current_user.gender,current_user.age,current_user.weight,current_user.height)
             if typee=="squat":
-                real=Squat(200)
+                real=Squat(BMR)
             elif typee=="curls":
-                real=BicepCurls(200)
+                real=BicepCurls(BMR)
             elif typee=="plank":
-                real=Plank(200)
+                real=Plank(BMR)
             elif typee=="ohp":
-                real=OHP(200)
+                real=OHP(BMR)
             out=trainer.video(filename)
             flash("Video Uploaded Successfully","Sucess")
             data=jsonify(out)
@@ -190,18 +191,18 @@ def start_event( json ):
     if id in _Trainers: 
         print( '[*socketio] Trainer resumed')
         emit('start ack', msg)
-    weight=current_user.get_Weight()
+    BMR=calculateBMR(current_user.gender,current_user.age,current_user.weight,current_user.height)
     if json["data"]=="plank":
-        _Trainers[id]=Plank(weight)
+        _Trainers[id]=Plank(BMR)
         print( '[*socketio] Trainer has been started')
     elif json["data"]=="curls":
-        _Trainers[id]=BicepCurls(weight)
+        _Trainers[id]=BicepCurls(BMR)
         print( '[*socketio] Trainer has been started')
     elif json["data"]=='squat':
-        _Trainers[id]=Squat(weight)
+        _Trainers[id]=Squat(BMR)
         print( '[*socketio] Trainer has been started')
     elif json["data"]=="ohp":
-        _Trainers[id]=OHP(weight)
+        _Trainers[id]=OHP(BMR)
         print( '[*socketio] Trainer has been started')
     else:
         print( '[*socketio] Invalid Trainer type')
@@ -219,27 +220,42 @@ def close_session():
     data=json.loads(data)
     exercise=data["exercise"]
     if exercise=="Plank":
+        metcode=2022
         sess=PlankSession(user_id=user_id,date=data["date"],start_time=data["start_time"],end_time=data["end_time"],
           rep=data["reps"],set_number=data["sets"],no_of_backbentupwards=data["errors"]["errors"]["backbentupwards"],no_of_stomachinwards=data["errors"]["errors"]["stomachinwards"]
           ,no_of_kneesbent=data["errors"]["errors"]["kneesbent"],no_of_lookingstraight=data["errors"]["errors"]["lookingstraight"],no_of_loweringhips=data["errors"]["errors"]["loweringhips"],no_of_mistakes=data["errors"]["total"])
+        act=ActivityLog(user_id,data["date"],metcode,"plank",data["duration"],data["calorie"])
+        db.session.add(act)
         db.session.add(sess)
         db.session.commit()
+        
 
     elif exercise=="Squat":
+        metcode=2052
         sess=SquatSession(user_id=user_id,date=data["date"],start_time=data["start_time"],end_time=data["end_time"],
           rep=data["reps"],set_number=data["sets"],no_of_kneesinward=data["errors"]["errors"]["kneesinward"],no_of_toolow=data["errors"]["errors"]["toolow"],no_of_bentforward=data["errors"]["errors"]["bentforward"],no_of_heelsraised=data["errors"]["errors"]["heelsraised"],no_of_mistakes=data["errors"]["total"])
+        act=ActivityLog(user_id,data["date"],metcode,"squat",data["duration"],data["calorie"])
+        db.session.add(act)
         db.session.add(sess)
         db.session.commit()
+       
 
     elif exercise=="OHP":
+        metcode=2054
         sess=OhpSession(user_id=user_id,date=data["date"],start_time=data["start_time"],end_time=data["end_time"],
             rep=data["reps"],set_number=data["sets"],no_of_bentknees=data["errors"]["errors"]["bentknees"],no_of_elbowposition=data["errors"]["errors"]["elbowposition"],no_of_archedback=data["errors"]["errors"]["archedback"],no_of_mistakes=data["errors"]["total"])
+        act=ActivityLog(user_id,data["date"],metcode,"ohp",data["duration"],data["calorie"])
+        db.session.add(act)
         db.session.add(sess)
         db.session.commit()
+        
 
     elif exercise=="Bicep Curls":
+        metcode=2054
         sess=CurlSession(user_id=user_id,date=data["date"],start_time=data["start_time"],end_time=data["end_time"],
           rep=data["reps"],set_number=data["sets"],no_of_backbent=data["errors"]["errors"]["backbent"],no_of_wristbent=data["errors"]["errors"]["wristbent"],no_of_elbowflare=data["errors"]["errors"]["elbow flare"],no_of_shouldershrug=data["errors"]["errors"]["soldershurg"],no_of_mistakes=data["errors"]["total"])
+        act=ActivityLog(user_id,data["date"],metcode,"curls",data["duration"],data["calorie"])
+        db.session.add(act)
         db.session.add(sess)
         db.session.commit()
     socketio.emit( 'close sesssion ack', data)
@@ -247,7 +263,6 @@ def close_session():
 @socketio.on('livevideo')
 def test_live(message):
     global _Trainers
-    session["user_id"]=current_user.get(id)
     id=session["user_id"]
     response={"error":"invaild frame"}
     if id in _Trainers:
@@ -288,6 +303,7 @@ def gen_frames(etype):
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
     cv2.destroyAllWindows()
 """
+
 ##registation
 @app.route('/registration', methods=['GET','POST'])
 def register():
@@ -414,7 +430,7 @@ def activity_save():
           date=str(datetime.datetime.now().strftime("%d/%m/%Y"))
           user_id=current_user.get_id()
           for act in activities:
-              alog=ActivityLog(user_id,date,act["code"],act["duration"],act["caloriesburned"])
+              alog=ActivityLog(user_id,date,act["code"],act["activity"],act["duration"],act["caloriesburned"])
               db.session.add(alog)
           db.session.commit()
           return jsonify({"message":"Records saved sucessfully"})
@@ -492,13 +508,14 @@ def exercise_record(exercise):
 @login_required
 def session_record(exercise,session_id):
     user_id=current_user.get_id()
+
     obj=None
     if exercise=="plank":
         obj=PlankSession.query.filter_by(user_id=user_id,id=session_id).first()
     elif exercise=="ohp":
         obj=OhpSession.query.filter_by(user_id=user_id,id=session_id).first()
     elif exercise=="squat":
-        obj=SquatSession.query.filter_by(user_id=user_id,id=session_id).first()
+        obj=SquatSession.query.filter_by(user_id=user_id,id=int(session_id)).first()
     elif exercise=="curls":
         obj=CurlSession.query.filter_by(user_id=user_id,id=session_id).first()
     if obj is not None:
@@ -509,10 +526,52 @@ def session_record(exercise,session_id):
             labels.append(key)
             data.append(value)
 
-        reply={"exercise": obj.get_name(),"sid":session_id ,"date":obj.get_dateTime() ,"duration":obj.get_duration() ,"sets":obj.get_sets() ,"reps":obj.get_reps(), "num_mistakes":obj.get_numMistakes(),"mistakes":mistakes,"data":data}
+        reply={"exercise": obj.get_name(),"sid":session_id ,"date":obj.get_dateTime() ,"duration":obj.get_duration() ,"sets":obj.get_sets() ,"reps":obj.get_reps(), "num_mistakes":obj.get_numMistakes(),"mistakes":mistakes,"data":data,"labels":labels}
     else:
         reply={"Error": "No session data available"}
     return jsonify(reply)
+
+@app.route("/homefitness/dashboard/<exercise>/calorie/",methods=["GET"])
+@login_required
+def calorie_for_exercise(exercise):
+    acts= db.session.query(ActivityLog.date,db.func.sum(ActivityLog.caloriesburned)).filter(ActivityLog.user_id==current_user.get_id(),ActivityLog.activity==exercise).group_by(ActivityLog.date).all()
+    if acts is not None:
+        labels=[]
+        data=[]
+        for act in acts:
+            labels.append(act[0].strftime("%Y-%m-%d"))
+            data.append(act[1])
+        return jsonify({"Status":200,"exercise":exercise,"labels":labels,"data":data})
+    return jsonify({"Error": "No session data available"})
+    
+
+
+@app.route("/homefitness/dashboard/<exercise>/sessions/",methods=["GET"])
+@login_required
+def exercise_sessions(exercise):
+    user_id=current_user.get_id()
+    obj=None
+    if exercise=="plank":
+        obj=PlankSession.query.filter_by(user_id=user_id).all()
+    elif exercise=="ohp":
+        obj=OhpSession.query.filter_by(user_id=user_id).all()
+    elif exercise=="squat":
+        obj=SquatSession.query.filter_by(user_id=user_id).all()
+    elif exercise=="curls":
+        obj=CurlSession.query.filter_by(user_id=user_id).all()
+    if obj is not None:
+        megalst=[]
+        for ob in obj:
+            megalst.append({"sid":ob.id,"label":ob.get_dateTime().strftime("%Y-%m-%d %H:%M:%S")})
+
+        #for ob in obj:
+        #    lables=[key for key in json.loads(ob.get_mistakes()).keys()]
+        #    data=[value for value in json.loads(ob.get_mistakes()).values()]
+        #    megalst.append({"sid":ob.id,"date":ob.get_dateTime().strftime("%Y-%m-%d %H:%M:%S"),"labels":lables,"data":data})
+        return jsonify({"Status":200,"sessions":megalst})
+    return jsonify({"Error": "No session data available"})
+    
+
 
 """
 #### number of mistake made in a sessions of a day 
@@ -557,11 +616,6 @@ def dashboard_view():
 
     labels = [row[0] for row in data]
     values = [row[1] for row in data]
-    """
-    Male= BMR = 66.5 + ( 13.75 × weight in kg ) + ( 5.003 × height in cm ) – ( 6.755 × age in years )
-    Femae =BMR = 655 + ( 9.563 × weight in kg ) + ( 1.850 × height in cm ) – ( 4.676 × age in years )
-    """
-
     BMI=calculateBMI(current_user.weight,current_user.height)
     BMR=calculateBMR( current_user.gender,current_user.age,current_user.weight,current_user.height)
     stats={"BMI":BMI,"BMR": BMR}

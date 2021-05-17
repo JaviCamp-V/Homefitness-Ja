@@ -42,3 +42,4 @@ Flask-Session
 flask-marshmallow
 tqdm
 py_edamam
+PythonVideoConverter

@@ -20,6 +20,7 @@ window.addEventListener("load", function () {
   let divDB =document.querySelector("#totalCalsTODB");
   let saver=document.querySelector("#save");
 
+
   
 
 
@@ -89,7 +90,7 @@ window.addEventListener("load", function () {
       BMR = 9.56 * (weight / 2.2046) + 1.85 * height - 4.68 * age + 655;
     }
 
-    let calorie = currentMET * (BMR / 1440) * (hr * 60 + min);
+    let calorie = (currentMET/60) * (BMR / 1440) * (hr * 60 + min);
     calorie = parseFloat(calorie).toFixed(2); //kcl to cl
     calResults.innerHTML = calorie.toString();
     if (calorie>0){
@@ -131,7 +132,7 @@ window.addEventListener("load", function () {
     Total= parseFloat(Total)+parseFloat(currentCalorie);
     BurnedSum.innerHTML="";
     BurnedSum.innerHTML=parseFloat(Total).toFixed(2);
-    save.push({"code":currentCode,"duration":currentDuration,"caloriesburned":currentCalorie})
+    save.push({"code":currentCode,"activity":currentActivity,"duration":currentDuration,"caloriesburned":currentCalorie})
     currentCode=0;currentDuration=0;currentCalorie=0;currentmet=0;
     addTotal.style.display = "none";
     divDB.style.display = "block";

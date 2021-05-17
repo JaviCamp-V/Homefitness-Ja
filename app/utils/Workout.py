@@ -14,6 +14,8 @@ import tqdm
 import base64,io
 import moviepy.editor as moviepy
 import ffmpeg
+from converter import Converter
+
 
 """
 landmark_names = [
@@ -47,8 +49,8 @@ class Workout:
     required_points=[0,1,2,3,4,5,6]
     annotation_points=[11,12,13,14,15,16]
     exerise="Exercise"
-    def __init__(self,weight):
-        self.weight=weight
+    def __init__(self,BMR):
+        self.BMR=BMR
         self.date=datetime.datetime.now()
         self.sets_=0
         self.reps=0
@@ -92,7 +94,8 @@ class Workout:
     def calorieCalculator(self):
         now=datetime.datetime.now()-self.date
         mins=now.total_seconds()/60
-        self.calorie=(self.MET * 3.5 * self.weight )/(200 *mins)
+        #(kcal burned) = (MET value/60) X (BMR/1440 minutes per day) X (duration of activity in minutes)
+        self.calorie=(self.MET/60)*(self.BMR/1440)* mins
     def annotate(self,image,keypoints=None,videoMode=False):
         if keypoints is not None:
             image=Pose.drawJoints(image,keypoints,self.annotation_points)     
@@ -128,24 +131,54 @@ class Workout:
         return json.dumps(data, indent = 4)  
 
     def video(self,filename):
-        fourcc ={'.avi': cv2.VideoWriter_fourcc(*'MJPG'),'.MP4': cv2.VideoWriter_fourcc(*'mp4v'),'.mp4': cv2.VideoWriter_fourcc(*'mp4v'),'.mkv':cv2.VideoWriter_fourcc(*'mp4v')}
+        res = '480p'
+
+        # Set resolution for the video capture
+        # Function adapted from https://kirr.co/0l6qmh
+        def change_res(cap, width, height):
+            cap.set(3, width)
+            cap.set(4, height)
+
+        # Standard Video Dimensions Sizes
+        STD_DIMENSIONS =  {
+            "480p": (640, 480),
+            "720p": (1280, 720),
+            "1080p": (1920, 1080),
+            "4k": (3840, 2160),
+        }
+        # grab resolution dimensions and set video capture to it.
+        def get_dims(cap, res='1080p'):
+                width, height = STD_DIMENSIONS["1080p"]
+                if res in STD_DIMENSIONS:
+                    width,height = STD_DIMENSIONS[res]
+                ## change the current caputre device
+                ## to the resulting resolution
+                change_res(cap, width, height)
+                return width, height
+
+            # Video Encoding, might require additional installs
+            # Types of Codes: http://www.fourcc.org/codecs.php
+        VIDEO_TYPE = {
+                'avi': cv2.VideoWriter_fourcc(*'XVID'),
+                #'mp4': cv2.VideoWriter_fourcc(*'H264'),
+                'mp4': cv2.VideoWriter_fourcc(*'XVID'),
+            }
+
+        def get_video_type(filename):
+            filename, ext = os.path.splitext(filename)
+            if ext in VIDEO_TYPE:
+                return  VIDEO_TYPE[ext]
+            return VIDEO_TYPE['avi']
         _,ext = os.path.splitext(filename)
         output="app/static/uploads/output.avi"
-        #clip = moviepy.VideoFileClip("app/static/uploads/"+filename)
-        #clip.write_videofile(output)
-        ## print("Finished converting {}".format(filename))
         #os.remove("app/static/uploads/"+filename)
-       # os.rename(output2,"app/static/uploads/"+filename)
+        #os.rename(output2,"app/static/uploads/"+filename)
         cap = cv2.VideoCapture("app/static/uploads/"+filename)
         fps = int(cap.get(5))
         frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))-1
-        dimension= (int(cap.get(3)),int(cap.get(4)))
-        if dimension!=(640,480):
-            cap.set(3,640)
-            cap.set(4,480)
-        vtype=fourcc[".avi"]
-        codec=int(cap.get(cv2.CAP_PROP_FOURCC))
-        out = cv2.VideoWriter(output,vtype,fps,dimension,True)
+        #vtype=fourcc[".avi"]
+        #codec=int(cap.get(cv2.CAP_PROP_FOURCC))
+        out = cv2.VideoWriter(output,get_video_type(output),fps,get_dims(cap, res))
         last_label=""
         i=0
         log=[]
@@ -154,7 +187,7 @@ class Workout:
                 hasFrame, frame = cap.read()
                 if not hasFrame:
                     break
-                frame=cv2.resize(frame, (640,480), interpolation = cv2.INTER_AREA)
+                frame=cv2.resize(frame, (640,480))
                 #start=datetime.datetime.now()
                 frame=self.frame_(frame,videoMode=True)
                 #end=datetime.datetime.now()
@@ -175,12 +208,16 @@ class Workout:
                 t.update(1)
         cap.release()
         out.release()
+        clip = moviepy.VideoFileClip("app/static/uploads/output.avi")
+        clip.write_videofile("app/static/uploads/output.mp4")
+        print("Finished converting {}".format("app/static/uploads/output.avi"))
+
         #os.remove("app/static/uploads/"+filename)
         #os.rename(output,"app/static/uploads/"+filename)
 
         ex_=self.export()
         timecodes=dict(log)
-        j={"filename":"output.avi","timecodes":timecodes}
+        j={"filename":"output.mp4","timecodes":timecodes}
         data=json.loads(ex_)
         end=self.date+datetime.timedelta(seconds=frame_count/fps)
         data["calorie"]=round((self.MET * 3.5 * self.weight )/(200 *((frame_count/fps)/60)),2)

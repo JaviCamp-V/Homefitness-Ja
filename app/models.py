@@ -106,12 +106,14 @@ class ActivityLog(db.Model):
     user_id = db.Column(db.Integer(), db.ForeignKey('users.id'), nullable=False)
     date = db.Column(db.Date()) 
     activity_Code=db.Column(db.Integer())#met code
+    activity=db.Column(db.String())
     duration = db.Column(db.Integer())
     caloriesburned=db.Column(db.Float())
-    def __init__(self,user_id,date,activity_Code,duration,caloriesburned):
+    def __init__(self,user_id,date,activity_Code,activity,duration,caloriesburned):
         self.user_id=user_id
         self.date = date
         self.activity_Code=activity_Code
+        self.activity=activity
         self.duration=duration
         self.caloriesburned=caloriesburned
 
