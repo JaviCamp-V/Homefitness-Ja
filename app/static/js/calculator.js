@@ -1,11 +1,11 @@
 let currentMET = 0;
-let currentCode=0;
+let currentCode = 0;
 let currentActivity = "";
-let currentCalorie=0;
-let currentDuration=0;
+let currentCalorie = 0;
+let currentDuration = 0;
 
-let Total=0;
-let save=[];
+let Total = 0;
+let save = [];
 
 window.addEventListener("load", function () {
   let search = document.querySelector("#search");
@@ -14,17 +14,11 @@ window.addEventListener("load", function () {
   let edit = document.querySelector("#edit");
   let calResults = document.querySelector("#calResults");
   let calDIv = document.querySelector("#calculator");
-  let BurnedSum =document.querySelector("#totalCals");
-  let addTotal =document.querySelector("#addTotal2");
-  let adder =document.querySelector("#addTOTOtal2");
-  let divDB =document.querySelector("#totalCalsTODB");
-  let saver=document.querySelector("#save");
-
-
-  
-
-
-  
+  let BurnedSum = document.querySelector("#totalCals");
+  let addTotal = document.querySelector("#addTotal2");
+  let adder = document.querySelector("#addTOTOtal2");
+  let divDB = document.querySelector("#totalCalsTODB");
+  let saver = document.querySelector("#save");
 
   search.addEventListener("keyup", function (element) {
     calDIv.style.display = "none";
@@ -90,17 +84,14 @@ window.addEventListener("load", function () {
       BMR = 9.56 * (weight / 2.2046) + 1.85 * height - 4.68 * age + 655;
     }
 
-    let calorie = (currentMET/60) * (BMR / 1440) * (hr * 60 + min);
+    let calorie = (currentMET / 60) * (BMR / 1440) * (hr * 60 + min);
     calorie = parseFloat(calorie).toFixed(2); //kcl to cl
     calResults.innerHTML = calorie.toString();
-    if (calorie>0){
-    addTotal.style.display = "block";
-    currentDuration=(hr * 60 + min);
+    if (calorie > 0) {
+      addTotal.style.display = "block";
+      currentDuration = hr * 60 + min;
     }
-    currentCalorie=parseFloat(calorie);
-    
-
-
+    currentCalorie = parseFloat(calorie);
 
     /**
     Calorie Burn = (BMR / 24) x MET x T
@@ -129,19 +120,25 @@ window.addEventListener("load", function () {
   });
   adder.addEventListener("click", function (element) {
     element.preventDefault();
-    Total= parseFloat(Total)+parseFloat(currentCalorie);
-    BurnedSum.innerHTML="";
-    BurnedSum.innerHTML=parseFloat(Total).toFixed(2);
-    save.push({"code":currentCode,"activity":currentActivity,"duration":currentDuration,"caloriesburned":currentCalorie})
-    currentCode=0;currentDuration=0;currentCalorie=0;currentmet=0;
+    Total = parseFloat(Total) + parseFloat(currentCalorie);
+    BurnedSum.innerHTML = "";
+    BurnedSum.innerHTML = parseFloat(Total).toFixed(2);
+    save.push({
+      code: currentCode,
+      activity: currentActivity,
+      duration: currentDuration,
+      caloriesburned: currentCalorie,
+    });
+    currentCode = 0;
+    currentDuration = 0;
+    currentCalorie = 0;
+    currentmet = 0;
     addTotal.style.display = "none";
     divDB.style.display = "block";
-
-
   });
   saver.addEventListener("click", function (element) {
     element.preventDefault();
-    data={"Activities":save}
+    data = { Activities: save };
     fetch("/homefitness/caloriecalculator/save", {
       method: "POST", // or 'PUT'
       headers: {
@@ -151,26 +148,23 @@ window.addEventListener("load", function () {
     })
       .then((response) => response.json())
       .then((data) => {
-          alert("Record save sucessfully");
-          console.log(data);
-          save=[];
-          Total=0;
-          BurnedSum.innerHTML=parseFloat(Total).toFixed(2);
+        alert("Record save sucessfully");
+        console.log(data);
+        save = [];
+        Total = 0;
+        BurnedSum.innerHTML = parseFloat(Total).toFixed(2);
       })
       .catch((error) => {
         console.error("Error:", error);
       });
   });
-
-  
 });
 
 function calculator(obj) {
-
   let result = JSON.parse(obj);
   currentMET = result.met;
-  currentactivity = result.activities;
-  currentCode=result.code;
+  currentActivity = result.activities;
+  currentCode = result.code;
   results.innerHTML = "";
   document.getElementById("calculator").style.display = "block";
   document.getElementById("calResults").style.display = "block";

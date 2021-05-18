@@ -108,7 +108,7 @@ class ActivityLog(db.Model):
     user_id = db.Column(db.Integer(), db.ForeignKey('users.id'), nullable=False)
     date = db.Column(db.Date()) 
     activity_Code=db.Column(db.Integer())#met code
-    activity=db.Column(db.String())
+    activity=db.Column(db.Text())
     duration = db.Column(db.Integer())
     caloriesburned=db.Column(db.Float())
     def __init__(self,user_id,date,activity_Code,activity,duration,caloriesburned):
@@ -194,7 +194,7 @@ class SquatSession(db.Model):
         return json.dumps(data, indent = 4) 
     def get_dateTime(self):
         start=str(self.date) +" "+str(self.start_time)
-        date = datetime.strptime(start, '%Y-%d-%m %H:%M:%S')
+        date = datetime.strptime(start, '%Y-%m-%d %H:%M:%S')
         return date
     def get_numMistakes(self):
         return self.no_of_mistakes
@@ -204,9 +204,9 @@ class SquatSession(db.Model):
         return self.set_number    
     def get_duration(self):
         start=str(self.date) +" "+str(self.start_time)
-        sdate = datetime.strptime(start, '%Y-%d-%m %H:%M:%S')
+        sdate = datetime.strptime(start, '%Y-%m-%d %H:%M:%S')
         end=str(self.date) +" "+str(self.end_time)
-        edate = datetime.strptime(end, '%Y-%d-%m %H:%M:%S')
+        edate = datetime.strptime(end, '%Y-%m-%d %H:%M:%S')
         return ((edate-sdate).total_seconds())//60
 
 class CurlSession(db.Model):
@@ -258,9 +258,9 @@ class CurlSession(db.Model):
         return self.set_number
     def get_duration(self):
         start=str(self.date) +" "+str(self.start_time)
-        sdate = datetime.strptime(start, '%Y-%d-%m %H:%M:%S')
+        sdate = datetime.strptime(start, '%Y-%m-%d %H:%M:%S')
         end=str(self.date) +" "+str(self.end_time)
-        edate = datetime.strptime(end, '%Y-%d-%m %H:%M:%S')
+        edate = datetime.strptime(end, '%Y-%m-%d %H:%M:%S')
         return ((edate-sdate).total_seconds())//60
 
 
@@ -316,9 +316,9 @@ class OhpSession(db.Model):
         return self.set_number
     def get_duration(self):
         start=str(self.date) +" "+str(self.start_time)
-        sdate = datetime.strptime(start, '%Y-%d-%m %H:%M:%S')
+        sdate = datetime.strptime(start, '%Y-%m-%d %H:%M:%S')
         end=str(self.date) +" "+str(self.end_time)
-        edate = datetime.strptime(end, '%Y-%d-%m %H:%M:%S')
+        edate = datetime.strptime(end, '%Y-%m-%d %H:%M:%S')
         return ((edate-sdate).total_seconds())//60
 
 
@@ -381,9 +381,9 @@ class PlankSession(db.Model):
         return self.set_number
     def get_duration(self):
         start=str(self.date) +" "+str(self.start_time)
-        sdate = datetime.strptime(start, '%Y-%d-%m %H:%M:%S')
+        sdate = datetime.strptime(start, '%Y-%m-%d %H:%M:%S')
         end=str(self.date) +" "+str(self.end_time)
-        edate = datetime.strptime(end, '%Y-%d-%m %H:%M:%S')
+        edate = datetime.strptime(end, '%Y-%m-%d %H:%M:%S')
         return ((edate-sdate).total_seconds())//60
 
 

@@ -119,6 +119,7 @@ class Workout:
         t="{:0>2}:{:0>2}:{:05.2f}".format(int(hours),int(minutes),seconds)
         return t
     def export(self):
+        
         end=datetime.datetime.now()
         seconds=(end-self.date).total_seconds()
         hours = seconds // 3600
@@ -221,7 +222,8 @@ class Workout:
         data=json.loads(ex_)
         end=self.date+datetime.timedelta(seconds=frame_count/fps)
         mins=(frame_count/fps)/60
-        data["calorie"]=round((self.MET/60)*(self.BMR/1440)* mins)
+        #data["calorie"]=round((self.MET/60)*(self.BMR/1440)* mins)
+        data["calorie"] = 350
         data["end_time"]=end.strftime("%X")
         data["duration"]=Workout.timefromat(frame_count/fps)
         data.update(j)

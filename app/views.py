@@ -5,6 +5,7 @@ Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
 from operator import add
+from re import split
 from . import socketio
 from flask_socketio import SocketIO ,send, emit
 from app import app, db, ma,login_manager,socketio
@@ -66,6 +67,17 @@ def video(typee):
         return render_template("video_tracker.html",audit=audit,corrections=corrections)
     return redirect(url_for('video_from'))
 
+
+
+def timetoint(timecode):
+    # timearray = timecode.split(":")
+    # timemins = int(timearray[0])
+    # timearray = timearray[1].split(".")
+    # timesec = (int(timearray[0]) / 60)
+    # timemili = (int(timearray[1]) / 1000) / 60
+    # timemins += timesec + timemili
+    return int(56)
+
 @app.route("/workout-tracker/video/upload",methods=["GET","POST"])
 @login_required
 def video_from():
@@ -86,7 +98,75 @@ def video_from():
             elif typee=="ohp":
                 trainer=OHP(weight)
             out=trainer.video(filename)
+            data = out
             session["video_session"]=out
+            user_id = current_user.get_id()
+            date=str(datetime.datetime.now().strftime("%Y/%m/%d"))
+            caloriesburned = Calorie.query.filter_by(user_id=user_id,date=date).first()
+            if typee=="plank":
+                metcode=2022
+                sess=PlankSession(user_id=user_id,date=data["date"],start_time=data["start_time"],end_time=data["end_time"],
+                rep=data["reps"],set_number=data["sets"],no_of_backbentupwards=data["errors"]["errors"]["backbentupwards"],no_of_stomachinwards=data["errors"]["errors"]["stomachinwards"]
+                ,no_of_kneesbent=data["errors"]["errors"]["kneesbent"],no_of_lookingstraight=data["errors"]["errors"]["lookingstraight"],no_of_loweringhips=data["errors"]["errors"]["loweringhips"],no_of_mistakes=data["errors"]["total"])
+                act=ActivityLog(user_id,data["date"],metcode,"plank",timetoint(data["duration"]),data["calorie"])
+                db.session.add(act)
+                db.session.add(sess)
+                if caloriesburned is None:
+                    cal = Calorie(user_id,date,data["calorie"],0)
+                    db.session.add(cal)
+                    db.session.commit()
+                    caloriesburned = Calorie.query.filter_by(user_id=user_id,date=date).first()
+                else :
+                    caloriesburned.caloriesburned = caloriesburned.caloriesburned + data["calorie"]
+                db.session.commit()
+            elif typee=="sqaut":
+                #print('I AM HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+                metcode=2052
+                sess=SquatSession(user_id=user_id,date=data["date"],start_time=data["start_time"],end_time=data["end_time"],
+                rep=data["reps"],set_number=data["sets"],no_of_kneesinward=data["errors"]["errors"]["kneesinward"],no_of_toolow=data["errors"]["errors"]["toolow"],no_of_bentforward=data["errors"]["errors"]["bentforward"],no_of_heelsraised=data["errors"]["errors"]["heelsraised"],no_of_mistakes=data["errors"]["total"])
+                act=ActivityLog(user_id,data["date"],metcode,"squat",timetoint(data["duration"]),data["calorie"])
+                db.session.add(act)
+                db.session.add(sess)
+                if caloriesburned is None:
+                    cal = Calorie(user_id,date,data["calorie"],0)
+                    db.session.add(cal)
+                    db.session.commit()
+                    caloriesburned = Calorie.query.filter_by(user_id=user_id,date=date).first()
+                else :
+                    caloriesburned.caloriesburned = caloriesburned.caloriesburned + data["calorie"]
+                db.session.commit()
+            elif typee=="ohp":
+                metcode=2054
+                sess=OhpSession(user_id=user_id,date=data["date"],start_time=data["start_time"],end_time=data["end_time"],
+                rep=data["reps"],set_number=data["sets"],no_of_bentknees=data["errors"]["errors"]["bentknees"],no_of_elbowposition=data["errors"]["errors"]["elbowposition"],no_of_archedback=data["errors"]["errors"]["archedback"],no_of_mistakes=data["errors"]["total"])
+                act=ActivityLog(user_id,data["date"],metcode,"ohp",timetoint(data["duration"]),data["calorie"])
+                db.session.add(act)
+                db.session.add(sess)
+                if caloriesburned is None:
+                    cal = Calorie(user_id,date,data["calorie"],0)
+                    db.session.add(cal)
+                    db.session.commit()
+                    caloriesburned = Calorie.query.filter_by(user_id=user_id,date=date).first()
+                else :
+                    caloriesburned.caloriesburned = caloriesburned.caloriesburned + data["calorie"]
+                db.session.commit()
+            elif typee=="curls":
+                metcode=2054
+                sess=CurlSession(user_id,data["date"],data["start_time"],data["end_time"],data["reps"],data["sets"],data["errors"]["errors"]["rocking your body"],data["errors"]["errors"]["moving elbows forward"],data["errors"]["errors"]["wrist involvement"],data["errors"]["total"])
+                act=ActivityLog(user_id,data["date"],metcode,"curls",timetoint(data["duration"]),data["calorie"])
+                db.session.add(act)
+                db.session.add(sess)
+                if caloriesburned is None:
+                    cal = Calorie(user_id,date,data["calorie"],0)
+                    db.session.add(cal)
+                    db.session.commit()
+                    caloriesburned = Calorie.query.filter_by(user_id=user_id,date=date).first()
+                else :
+                    caloriesburned.caloriesburned = caloriesburned.caloriesburned + data["calorie"]
+                db.session.commit()
+
+            #else:
+                #print('I AM HERE 2!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
             return redirect(url_for('video',typee=typee))
         else:
             flash_errors(form)
@@ -112,6 +192,11 @@ def upload():
             elif typee=="ohp":
                 real=OHP(BMR)
             out=trainer.video(filename)
+            
+
+
+
+
             flash("Video Uploaded Successfully","Sucess")
             data=jsonify(out)
             return redirect(url_for('uploaded_file',filename=typee))
@@ -220,14 +305,24 @@ def close_session():
     _Trainers.pop(user_id)
     data=json.loads(data)
     exercise=data["exercise"]
+
+    date=str(datetime.datetime.now().strftime("%Y/%m/%d"))
+    caloriesburned = Calorie.query.filter_by(user_id=user_id,date=date).first()
     if exercise=="Plank":
         metcode=2022
         sess=PlankSession(user_id=user_id,date=data["date"],start_time=data["start_time"],end_time=data["end_time"],
           rep=data["reps"],set_number=data["sets"],no_of_backbentupwards=data["errors"]["errors"]["backbentupwards"],no_of_stomachinwards=data["errors"]["errors"]["stomachinwards"]
           ,no_of_kneesbent=data["errors"]["errors"]["kneesbent"],no_of_lookingstraight=data["errors"]["errors"]["lookingstraight"],no_of_loweringhips=data["errors"]["errors"]["loweringhips"],no_of_mistakes=data["errors"]["total"])
-        act=ActivityLog(user_id,data["date"],metcode,"plank",data["duration"],data["calorie"])
+        act=ActivityLog(user_id,data["date"],metcode,"plank",timetoint(data["duration"]),data["calorie"])
         db.session.add(act)
         db.session.add(sess)
+        if caloriesburned is None:
+            cal = Calorie(user_id,date,data["calorie"],0)
+            db.session.add(cal)
+            db.session.commit()
+            caloriesburned = Calorie.query.filter_by(user_id=user_id,date=date).first()
+        else :
+            caloriesburned.caloriesburned = caloriesburned.caloriesburned + data["calorie"]
         db.session.commit()
         
 
@@ -235,9 +330,16 @@ def close_session():
         metcode=2052
         sess=SquatSession(user_id=user_id,date=data["date"],start_time=data["start_time"],end_time=data["end_time"],
           rep=data["reps"],set_number=data["sets"],no_of_kneesinward=data["errors"]["errors"]["kneesinward"],no_of_toolow=data["errors"]["errors"]["toolow"],no_of_bentforward=data["errors"]["errors"]["bentforward"],no_of_heelsraised=data["errors"]["errors"]["heelsraised"],no_of_mistakes=data["errors"]["total"])
-        act=ActivityLog(user_id,data["date"],metcode,"squat",data["duration"],data["calorie"])
+        act=ActivityLog(user_id,data["date"],metcode,"squat",timetoint(data["duration"]),data["calorie"])
         db.session.add(act)
         db.session.add(sess)
+        if caloriesburned is None:
+            cal = Calorie(user_id,date,data["calorie"],0)
+            db.session.add(cal)
+            db.session.commit()
+            caloriesburned = Calorie.query.filter_by(user_id=user_id,date=date).first()
+        else :
+            caloriesburned.caloriesburned = caloriesburned.caloriesburned + data["calorie"]
         db.session.commit()
        
 
@@ -245,18 +347,32 @@ def close_session():
         metcode=2054
         sess=OhpSession(user_id=user_id,date=data["date"],start_time=data["start_time"],end_time=data["end_time"],
             rep=data["reps"],set_number=data["sets"],no_of_bentknees=data["errors"]["errors"]["bentknees"],no_of_elbowposition=data["errors"]["errors"]["elbowposition"],no_of_archedback=data["errors"]["errors"]["archedback"],no_of_mistakes=data["errors"]["total"])
-        act=ActivityLog(user_id,data["date"],metcode,"ohp",data["duration"],data["calorie"])
+        act=ActivityLog(user_id,data["date"],metcode,"ohp",timetoint(data["duration"]),data["calorie"])
         db.session.add(act)
         db.session.add(sess)
+        if caloriesburned is None:
+            cal = Calorie(user_id,date,data["calorie"],0)
+            db.session.add(cal)
+            db.session.commit()
+            caloriesburned = Calorie.query.filter_by(user_id=user_id,date=date).first()
+        else :
+            caloriesburned.caloriesburned = caloriesburned.caloriesburned + data["calorie"]
         db.session.commit()
         
 
     elif exercise=="Bicep Curls":
         metcode=2054
         sess=CurlSession(user_id,data["date"],data["start_time"],data["end_time"],data["reps"],data["sets"],data["errors"]["errors"]["rocking your body"],data["errors"]["errors"]["moving elbows forward"],data["errors"]["errors"]["wrist involvement"],data["errors"]["total"])
-        act=ActivityLog(user_id,data["date"],metcode,"curls",data["duration"],data["calorie"])
+        act=ActivityLog(user_id,data["date"],metcode,"curls",timetoint(data["duration"]),data["calorie"])
         db.session.add(act)
         db.session.add(sess)
+        if caloriesburned is None:
+            cal = Calorie(user_id,date,data["calorie"],0)
+            db.session.add(cal)
+            db.session.commit()
+            caloriesburned = Calorie.query.filter_by(user_id=user_id,date=date).first()
+        else :
+            caloriesburned.caloriesburned = caloriesburned.caloriesburned + data["calorie"]
         db.session.commit()
     socketio.emit( 'close sesssion ack', data)
 
@@ -484,6 +600,7 @@ def lastsession():
         for key,value in mistakes.items():
             labels.append(key)
             data.append(value)
+        print(data)
         reply={"exercise": lst[index].get_name(),"sid":lst[index].get_id(), "date":value ,"duration":lst[index].get_duration() ,"sets":lst[index].get_sets() ,"reps":lst[index].get_reps(), "num_mistakes":lst[index].get_numMistakes(),"labels":labels,"data":data}
         return jsonify(reply)
 
@@ -628,7 +745,7 @@ def dashboard_view():
     labels = [row[0] for row in data]
     values = [row[1] for row in data]
     BMI=calculateBMI(current_user.weight,current_user.height)
-    BMR=calculateBMR( current_user.gender,current_user.age,current_user.weight,current_user.height)
+    BMR=round(calculateBMR( current_user.gender,current_user.age,current_user.weight,current_user.height),2)
     stats={"BMI":BMI,"BMR": BMR}
     return render_template("dashboard.html",user=current_user,stats=stats)
 
@@ -700,7 +817,7 @@ def suggestions():
     Extra active lifestyle (very hard exercise, physical job or sports 6-7 days/week): 2.0
     Professional athlete: 2.3
     """
-    level="M"
+    level=current_user.level
     BMR=calculateBMR(current_user.gender,current_user.age,current_user.weight,current_user.height)
     if level=="S":
         TotalEnergy=1.2
@@ -729,18 +846,23 @@ def suggestions():
         intensity="Moderate"
     else:
         intensity="vigorous"
+    #print(intensity)
     intakeamount=0
     burnamount=0
     cal=Calorie.query.filter_by(user_id=current_user.get_id(),date=date).first()
     if cal is not None:
         intakeamount=cal.caloriesintake
         burnamount=cal.caloriesburned
+    else:
+        print("error")
     suggest=False
     output=[]
     if (burned-burnamount)>0:
         lst=getListbyIntensity(intensity)
+        #print("12445")
+        #print(lst)
         for obj in lst:
-            mins=burned/(obj[1]*(BMR/1440))
+            mins= (burned - burnamount) / (obj[1]*(BMR/1440))
             output.append((obj[2],int(mins)))
             suggest=len(output)!=0
     results={"weight_goal":current_user.weight_goal,"timetogoal":weeks_to_go,"intake":intake,"intakeamount":intakeamount,"burned":burned,"burnamount":burnamount,"suggest":suggest,"suggestions":output}
@@ -750,7 +872,8 @@ def suggestions():
 
 
 def getListbyIntensity(intensity):
-    output=Mets.query.filter(Mets.intensity==intensity,or_(Mets.heading=="conditioning exercise",Mets.heading=="bicycling",Mets.heading=="running",Mets.heading=="sports",Mets.heading=="walking",Mets.heading=="water activities")).order_by(Mets.met).all()
+    output=Mets.query.filter(Mets.intensity==intensity,or_(Mets.heading=="conditioning exercise",Mets.heading=="running",Mets.heading=="walking")).order_by(Mets.met).all()
+    #output=Mets.query.filter(Mets.intensity==intensity,or_(Mets.heading=="conditioning exercise",Mets.heading=="bicycling",Mets.heading=="running",Mets.heading=="sports",Mets.heading=="walking",Mets.heading=="water activities")).order_by(Mets.met).all()
     lst=[]
     for out in output[:20]:
         lst.append(out.to_dict())
