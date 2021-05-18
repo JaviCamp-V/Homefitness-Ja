@@ -252,8 +252,7 @@ def close_session():
 
     elif exercise=="Bicep Curls":
         metcode=2054
-        sess=CurlSession(user_id=user_id,date=data["date"],start_time=data["start_time"],end_time=data["end_time"],
-          rep=data["reps"],set_number=data["sets"],no_of_backbent=data["errors"]["errors"]["backbent"],no_of_wristbent=data["errors"]["errors"]["wristbent"],no_of_elbowflare=data["errors"]["errors"]["elbow flare"],no_of_shouldershrug=data["errors"]["errors"]["soldershurg"],no_of_mistakes=data["errors"]["total"])
+        sess=CurlSession(user_id,data["date"],data["start_time"],data["end_time"],data["reps"],data["sets"],data["errors"]["errors"]["rocking your body"],data["errors"]["errors"]["moving elbows forward"],data["errors"]["errors"]["wrist involvement"],data["errors"]["total"])
         act=ActivityLog(user_id,data["date"],metcode,"curls",data["duration"],data["calorie"])
         db.session.add(act)
         db.session.add(sess)
@@ -323,16 +322,19 @@ def register():
             age =form.age.data
             uTest=Users.query.filter_by(username=username).first()
             eTest=Users.query.filter_by(email=email).first()
+            level=form.level.data
             days=form.days.data
             EI=form.EI.data
             minsExercise=form.minsExercise.data
+            """
             hrSleep=form.hrSleep.data
             WI=form.WI.data
             hrWork=form.hrWork.data
             HI=form.HI.data
             hrHome=form.hrHome.data
+            """
             if  uTest is None and eTest is  None:
-                user=Users(email,password,username,age,gender,weight,height,weightgoal,days,EI,minsExercise,hrSleep,WI,hrWork,HI,hrHome)
+                user=Users(email,password,username,age,gender,weight,height,weightgoal,days,level,EI,minsExercise)
                 db.session.add(user)
                 db.session.commit()
                 flash('User saved successfully ', 'sucess')
@@ -664,77 +666,85 @@ def suggestions():
     CalorieIntake=0
     calorieBurn=0
     date=str(datetime.datetime.now().strftime("%d/%m/%Y"))
-    weightgoal=current_user.weight_goal
-    weight=current_user.weight
-    height=current_user.height
-    age=current_user.age
-    gender=current_user.gender
+    
+    
     num_days_exercise=current_user.num_days_exercise
     EI=current_user.EI
     minsExercise=current_user.minsExercise
-    """
-    hrSleep=current_user.hrSleep
-    WI=current_user.WI
-    hrWork=current_user.hrWork
-    HI=current_user.HI
-    hrHome=current_user.hrHome
-    """
-    weightChange=weight-weightgoal
+    rate_of_loss=2
+    weightChange=current_user.weight-current_user.weight_goal
     weeks_to_go=(weightChange)//2#fastest way to achieve goal
-    deficit=7000
-    daily_Deficit=deficit/7
-    BMR=calculateBMR(gender,age,weight,height)
-    if EI=="L":
+    if weightChange==0:
+        kchange=0
+    elif weightChange<0:
+        kchange=-((rate_of_loss*3500)/7)#surplus
+
+    else:
+        kchange=(rate_of_loss*3500)/7#defict
+    
+
+    """"
+    Sedentary lifestyle (little or no exercise): 1.2
+    Slightly active lifestyle (light exercise or sports 1-2 days/week): 1.4
+    Moderately active lifestyle (moderate exercise or sports 2-3 days/week): 1.6
+    Very active lifestyle (hard exercise or sports 4-5 days/week): 1.75
+    Extra active lifestyle (very hard exercise, physical job or sports 6-7 days/week): 2.0
+    Professional athlete: 2.3
+    """
+    level="M"
+    BMR=calculateBMR(current_user.gender,current_user.age,current_user.weight,current_user.height)
+    if level=="S":
         TotalEnergy=1.2
-    elif EI=="M" :
-        TotalEnergy=1.6
-    elif EI=="V" :
-         TotalEnergy=2.0
-    elif EI=="VA":
+    elif level=="L" :
+        TotalEnergy=1.4
+    elif level=="M" :
+         TotalEnergy=1.6
+    elif level=="VA":
          TotalEnergy=1.75
     else:
-        TotalEnergy=1.6
-    maintenance_intake=BMR*TotalEnergy
-    kclChange=maintenance_intake-daily_Deficit
-    intake=kclChange/2
-    if gender=="M" and intake<1800:
-        intake=1800
-    elif gender=="F" and intake<1200:
-        intake=1200
-    burned=kclChange-intake
+        TotalEnergy=2.0
+    maintenance_intake=BMR*TotalEnergy # to
+    intake=maintenance_intake-kchange
+    if intake>=maintenance_intake:
+        burned=maintenance_intake
+    elif intake<maintenance_intake:
+        intake=intake/2
+        if current_user.gender=="M" and intake<1800:
+            intake=1800
+        elif current_user.gender=="F" and intake<1200:
+            intake=1200
+        burned=(maintenance_intake-kchange)-intake
     if EI=="L":
         intensity="Light"
-        minactivity=(150*2)/7
     elif EI=="M":
         intensity="Moderate"
-        minactivity=150/7
     else:
         intensity="vigorous"
-        minactivity=(150/2)/7
     intakeamount=0
     burnamount=0
     cal=Calorie.query.filter_by(user_id=current_user.get_id(),date=date).first()
     if cal is not None:
         intakeamount=cal.caloriesintake
         burnamount=cal.caloriesburned
-    lst=getListbyIntensity(intensity)
-    output=dict()
-    for k in lst.keys():
-        mins=burned/(lst[k][0]*(BMR/1440))
-        output[k]=lst[k]+[mins]
-        
-    suggest=len(output)!=0
-    results={"weight_goal":weightgoal,"timetogoal":weeks_to_go,"intake":intake,"intakeamount":intakeamount,"burned":burned,"burnamount":burnamount,"suggest":suggest,"suggestions":output}
+    suggest=False
+    output=[]
+    if (burned-burnamount)>0:
+        lst=getListbyIntensity(intensity)
+        for obj in lst:
+            mins=burned/(obj[1]*(BMR/1440))
+            output.append((obj[2],mins))
+            suggest=len(output)!=0
+    results={"weight_goal":current_user.weight_goal,"timetogoal":weeks_to_go,"intake":intake,"intakeamount":intakeamount,"burned":burned,"burnamount":burnamount,"suggest":suggest,"suggestions":output}
     return render_template("suggestion.html",result=results)
 
 
 
 
 def getListbyIntensity(intensity):
-    output=Mets.query.filter(Mets.intensity==intensity,or_(Mets.heading=="conditioning exercise",Mets.heading=="bicycling",Mets.heading=="running",Mets.heading=="sports",Mets.heading=="walking",Mets.heading=="water activities")).all()
-    lst=dict()
-    for out in output:
-        lst.update(out.to_dict())
+    output=Mets.query.filter(Mets.intensity==intensity,or_(Mets.heading=="conditioning exercise",Mets.heading=="bicycling",Mets.heading=="running",Mets.heading=="sports",Mets.heading=="walking",Mets.heading=="water activities")).order_by(Mets.met).all()
+    lst=[]
+    for out in output[:20]:
+        lst.append(out.to_dict())
     return lst
 
     

@@ -1,6 +1,6 @@
 let currentMET = 0;
 let currentCode=0;
-let currentactivity = "";
+let currentActivity = "";
 let currentCalorie=0;
 let currentDuration=0;
 

@@ -232,7 +232,7 @@ class Workout:
 class BicepCurls(Workout):
     corrections={"No Pose Detected":"Pleasa check camera feed",
                  "Low Visbility":"Stand 2-4 meters from the camera",
-                 "moving elbows forwardy":"perform the curls with your back against the wall, so as to detect when your elbows are leaving your side",
+                 "moving elbows forward":"perform the curls with your back against the wall, so as to detect when your elbows are leaving your side",
                 "rocking your body":"weight may be too heavy for you to drop the weight and stand straight",
                  "good form":"you are doing fine keep up the good work remember to squeeze the curls at the top",
                  "wrist involvement":"forearm should be straight, stop bending your wrist, this could result in serious injury"}
@@ -241,7 +241,7 @@ class BicepCurls(Workout):
 
 
     exerise="Bicep Curls"
-    MET=6.0
+    MET=3.5
     required_points=[11,12,13,14,15,16]
     annotation_points=[11,12,13,14,15,16]
     rstage_qu=0

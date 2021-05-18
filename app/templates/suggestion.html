@@ -30,8 +30,8 @@
         -->
   </div>
   <div class="suggestions">
-    {% if result.suggest %} {% for code,lst in result.suggestions.items()%}
-    <p>{{code}}{{lst}}</p>
+    {% if result.suggest %} {% for code in result.suggestions%}
+    <p>{{code[0]}}{{code[1]}}</p>
     {% endfor %} {% endif %}
   </div>
 </div>

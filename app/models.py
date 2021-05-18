@@ -19,6 +19,7 @@ class Users(db.Model):
     height = db.Column(db.Float())
     weight_goal = db.Column(db.Float())
     num_days_exercise=db.Column(db.Integer())
+    level=db.Column(db.CHAR(2))#Excerise Intensity level
     EI=db.Column(db.CHAR(1))#Excerise Intensity level
     minsExercise=db.Column(db.Integer())
     """
@@ -34,9 +35,9 @@ class Users(db.Model):
 
 
 
-    def __init__(self,email,password,username,age,gender,weight,height,weight_goal,num_days_exercise,EI,minsExercise):
+    def __init__(self,email,password,username,age,gender,weight,height,weight_goal,num_days_exercise,level,EI,minsExercise):
         #self.first_name = first_name
-        #self.last_name = last_name
+        #self.last_name = last_name,
         self.username = username
         self.email = email
         self.age=age
@@ -47,8 +48,9 @@ class Users(db.Model):
         self.weight_goal = weight_goal
         self.num_days_exercise=num_days_exercise
         self.EI=EI
-        """
+        self.level=level
         self.minsExercise=minsExercise
+        """
         self.hrSleep=hrSleep
         self.WI=WI
         self.hrWork=hrWork
@@ -411,7 +413,7 @@ class Mets(db.Model):
     def get_activites(self):
         return self.activities
     def to_dict(self):
-        return {self.code:[self.met,self.heading,self.activities]}
+        return [self.heading,self.met,self.activities]
     def __repr__(self):
         return '<Code %r>' % self.code
 
