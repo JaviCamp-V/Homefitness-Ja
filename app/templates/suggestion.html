@@ -14,10 +14,12 @@
     <p>
       <strong>Estimated time to achieve Goal</strong>{{result.timetogoal}} weeks
     </p>
-    <canvas class="displaycontainer" id="intake"></canvas>
-    <p><strong>Daily Calorie to Consume</strong>{{result.intake}}</p>
-    <canvas class="displaycontainer" id="totalburn"></canvas>
-    <p><strong>Daily Calorie to Burn</strong>{{result.burned}}</p>
+    <div class="canvasgrid">
+      <canvas class="displaycontainer" id="intake"></canvas>
+      <p><strong>Daily Calorie to Consume</strong>{{result.intake}}</p>
+      <canvas class="displaycontainer" id="totalburn"></canvas>
+      <p><strong>Daily Calorie to Burn</strong>{{result.burned}}</p>
+    </div>
     <!---
         <canvas id="work"></canvas>
         <p id="workvlaue"><Strong>Work Activity Calories to Burn</Strong> result.work</p>
