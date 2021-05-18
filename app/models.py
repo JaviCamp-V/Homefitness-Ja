@@ -248,7 +248,7 @@ class CurlSession(db.Model):
         return json.dumps(data, indent = 4) 
     def get_dateTime(self):
         start=str(self.date) +" "+str(self.start_time)
-        sdate = datetime.strptime(start, '%Y-%d-%m %H:%M:%S')
+        sdate = datetime.strptime(start, '%Y-%m-%d %H:%M:%S')
         return sdate
     def get_numMistakes(self):
         return self.no_of_mistakes
