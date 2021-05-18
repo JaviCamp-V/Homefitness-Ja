@@ -4,6 +4,7 @@ Jinja2 Documentation:    http://jinja.pocoo.org/2/documentation/
 Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
+from operator import add
 from . import socketio
 from flask_socketio import SocketIO ,send, emit
 from app import app, db, ma,login_manager,socketio
@@ -429,10 +430,18 @@ def activity_save():
     if request.method == "POST" :
           activities =(request.get_json()) 
           activities = activities["Activities"]
-          date=str(datetime.datetime.now().strftime("%d/%m/%Y"))
+          date=str(datetime.datetime.now().strftime("%Y/%m/%d"))
           user_id=current_user.get_id()
+          caloriesburned = Calorie.query.filter_by(user_id=user_id,date=date).first()
           for act in activities:
               alog=ActivityLog(user_id,date,act["code"],act["activity"],act["duration"],act["caloriesburned"])
+              if caloriesburned is None:
+                  cal = Calorie(user_id,date,act["caloriesburned"],0)
+                  db.session.add(cal)
+                  db.session.commit()
+                  caloriesburned = Calorie.query.filter_by(user_id=user_id,date=date).first()
+              else :
+                  caloriesburned.caloriesburned = caloriesburned.caloriesburned + act["caloriesburned"]
               db.session.add(alog)
           db.session.commit()
           return jsonify({"message":"Records saved sucessfully"})
@@ -665,7 +674,7 @@ def suggestions():
     Caloriedeficit=0
     CalorieIntake=0
     calorieBurn=0
-    date=str(datetime.datetime.now().strftime("%d/%m/%Y"))
+    date=str(datetime.datetime.now().strftime("%Y/%m/%d"))
     
     
     num_days_exercise=current_user.num_days_exercise

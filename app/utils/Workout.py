@@ -220,7 +220,8 @@ class Workout:
         j={"filename":"output.mp4","timecodes":timecodes}
         data=json.loads(ex_)
         end=self.date+datetime.timedelta(seconds=frame_count/fps)
-        data["calorie"]=round((self.MET * 3.5 * self.weight )/(200 *((frame_count/fps)/60)),2)
+        mins=(frame_count/fps)/60
+        data["calorie"]=round((self.MET/60)*(self.BMR/1440)* mins)
         data["end_time"]=end.strftime("%X")
         data["duration"]=Workout.timefromat(frame_count/fps)
         data.update(j)
@@ -263,19 +264,19 @@ class BicepCurls(Workout):
             last_arm=2
         """
               
-        if rAngle>150:
+        if rAngle>135:
             self.rightState="stage"
             self.rstage_qu+=1
-        if lAngle>150:
+        if lAngle>135:
             self.leftState="stage"
             self.lstage_qu+=1
-        if rAngle<71  and  self.rightState=="stage" and self.rstage_qu>20:
+        if rAngle<56  and  self.rightState=="stage" and self.rstage_qu>20:
             self.rightState="up"
             self.leftState="up"
             self.reps+=1
             self.rstage_qu=0
             self.lstage_qu=0
-        elif lAngle<=70  and  self.leftState=="stage" and self.lstage_qu>20:
+        elif lAngle<=55  and  self.leftState=="stage" and self.lstage_qu>20:
             self.rightState="up"
             self.leftState="up"
             self.reps+=1
@@ -287,7 +288,7 @@ class BicepCurls(Workout):
         self.steps=1
 
 class Squat(Workout):
-    corrections={"No Pose Detected":"Pleasa check camera feed","Low Visbility":"Stand 2-4 meters from the camera","kneesinward":"<<insert correction here>>","toolow":"<<insert correction here>>","bentforward":"<<insert correction here>>","heelsraised":"<<insert correction here>>"}
+    corrections={"No Pose Detected":"Pleasa check camera feed","Low Visbility":"Stand 2-4 meters from the camera","kneesinward":"push knees outward a little","toolow":"dont bend too low","bentforward":"straighten back and lean upwards","heelsraised":"place heels on the ground"}
     model=pickle.load(open("app/static/models/squat_detection_model.pkl", 'rb'))
     errors={"squat":0,"kneesinward":0,"toolow":0,"bentforward":0,"heelsraised":0}
     exerise="Sqaut"
