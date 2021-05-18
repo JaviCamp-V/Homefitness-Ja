@@ -47,7 +47,9 @@ window.addEventListener("load", function () {
               console.log(data.text);
               console.log(data);
 
-              if(data.hints.length>0){
+              if(data.hints.length==0){
+                results.innerHTML = "No records found";
+                return;    
 
               }
               for (var i = 0; i < data.hints.length; i++) {
