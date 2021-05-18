@@ -133,8 +133,12 @@ window.addEventListener("load", function () {
     currentDuration = 0;
     currentCalorie = 0;
     currentmet = 0;
+    calDIv.style.display = "none";
+    calResults.style.display = "none";
     addTotal.style.display = "none";
+    search.value="";
     divDB.style.display = "block";
+
   });
   saver.addEventListener("click", function (element) {
     element.preventDefault();
