@@ -272,13 +272,13 @@ class BicepCurls(Workout):
         if lAngle>135:
             self.leftState="stage"
             self.lstage_qu+=1
-        if rAngle<56  and  self.rightState=="stage" and self.rstage_qu>20:
+        if rAngle<70 and  self.rightState=="stage" and self.rstage_qu>15:
             self.rightState="up"
             self.leftState="up"
             self.reps+=1
             self.rstage_qu=0
             self.lstage_qu=0
-        elif lAngle<=55  and  self.leftState=="stage" and self.lstage_qu>20:
+        elif lAngle<=71  and  self.leftState=="stage" and self.lstage_qu>15:
             self.rightState="up"
             self.leftState="up"
             self.reps+=1

@@ -10,21 +10,20 @@ def calculateBMR(gender,age,weight,height):
     """
     Harris Benedict Equations
     """
-    """
     if gender=="M":
          BMR= (13.7516*(weight/2.2046)) + (5.0033 *height) - (6.7550 * age) + 66.4730
     else:
         BMR=(9.5634*(weight/2.2046)) + (1.8496*height) - (4.6756 *age) + 655.0955
-    """
 
     """
     Mifflin St. Jeor Equations
+    """
     """
     if gender=="M":
          BMR= (10*(weight/2.2046)) + (6.25 *height) - (5 * age) + 5
     else:
         BMR=(10*(weight/2.2046)) + (6.25*height) - (5 *age) + 161
-
+    """
     return BMR
 def calculateCalorie(BMR,MET,duration):
     "Corrected MET"

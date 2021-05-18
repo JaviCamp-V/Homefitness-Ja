@@ -825,19 +825,23 @@ def suggestions():
     Extra active lifestyle (very hard exercise, physical job or sports 6-7 days/week): 2.0
     Professional athlete: 2.3
     """
-    level=current_user.level
+    level=str(current_user.level)
     BMR=calculateBMR(current_user.gender,current_user.age,current_user.weight,current_user.height)
     if level=="S":
         TotalEnergy=1.2
     elif level=="L" :
         TotalEnergy=1.4
-    elif level=="M" :
+    elif level=='M':
          TotalEnergy=1.6
     elif level=="VA":
          TotalEnergy=1.75
     else:
         TotalEnergy=2.0
+    print(BMR)
+    print(level)
+    print(TotalEnergy)
     maintenance_intake=BMR*TotalEnergy # to
+    print("maintenance_intake",maintenance_intake)
     intake=maintenance_intake-kchange
     if intake>=maintenance_intake:
         burned=maintenance_intake
