@@ -99,9 +99,8 @@ class FoodLog(db.Model):
     def __init__(self,user_id,date,ingredients,calories):
         self.user_id=user_id
         self.date=date
-        self.caloriesburned=caloriesburned
-        self.caloriesintake=caloriesintake
-        self.totalcalories=caloriesintake-caloriesburned
+        self.ingredients=ingredients
+        self.calories=calories
 
 class ActivityLog(db.Model):
     id = db.Column(db.Integer(), primary_key=True)

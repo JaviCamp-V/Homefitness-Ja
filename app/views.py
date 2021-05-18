@@ -769,11 +769,19 @@ def food_tracker():
 def food_save():
     if request.method == "POST" :
           food =(request.get_json()) 
-          food = food["Activities"]
-          date=str(datetime.datetime.now().strftime("%d/%m/%Y"))
+          food = food["Food"]
+          date=str(datetime.datetime.now().strftime("%Y/%m/%d"))
           user_id=current_user.get_id()
+          calories = Calorie.query.filter_by(user_id=user_id,date=date).first()
           for snack in food:
-              flog=FoodLog(user_id,date,snack["code"],snack["ingredients"],snack["calories"])
+              flog=FoodLog(user_id,date,snack["ingredients"],snack["calories"])
+              if calories is None:
+                  cal = Calorie(user_id,date,0,snack["calories"])
+                  db.session.add(cal)
+                  db.session.commit()
+                  calories = Calorie.query.filter_by(user_id=user_id,date=date).first()
+              else :
+                  calories.caloriesintake = calories.caloriesintake + float(snack["calories"])
               db.session.add(flog)
           db.session.commit()
           return jsonify({"message":"Records saved sucessfully"})

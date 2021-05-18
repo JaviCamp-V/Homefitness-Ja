@@ -138,7 +138,7 @@ window.addEventListener("load", function () {
   });
   saver.addEventListener("click", function (element) {
     element.preventDefault();
-    data = { Activities: save };
+    data = { "Activities": save };
     fetch("/homefitness/caloriecalculator/save", {
       method: "POST", // or 'PUT'
       headers: {
