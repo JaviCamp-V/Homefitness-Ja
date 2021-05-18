@@ -732,7 +732,7 @@ def suggestions():
         lst=getListbyIntensity(intensity)
         for obj in lst:
             mins=burned/(obj[1]*(BMR/1440))
-            output.append((obj[2],mins))
+            output.append((obj[2],int(mins)))
             suggest=len(output)!=0
     results={"weight_goal":current_user.weight_goal,"timetogoal":weeks_to_go,"intake":intake,"intakeamount":intakeamount,"burned":burned,"burnamount":burnamount,"suggest":suggest,"suggestions":output}
     return render_template("suggestion.html",result=results)
