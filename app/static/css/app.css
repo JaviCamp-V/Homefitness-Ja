@@ -159,8 +159,21 @@ body {
 }
 
 .timecodes {
+  display: flex;
 }
 
 .timecodes div {
-  display: flex;
+  padding: 0 20px;
+}
+
+.timecodes-container {
+  height: 400px;
+  overflow-y: scroll;
+}
+
+.video-details {
+  border: 2px solid black;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 50px;
 }

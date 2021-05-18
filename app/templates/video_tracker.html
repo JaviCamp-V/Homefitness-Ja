@@ -5,7 +5,7 @@
 <div class="video_tracker" class="columns">
 
     {{audit.Exercise}} Video aduting
-
+<div class="video-details">
     <div id="videocontent" class="column">
         <video controls=""  id="video" preload="auto" width="640px;" height="480px;">
           <source src="{{ url_for('send_file', filename=audit.filename) }}" type="video/mp4">
@@ -13,6 +13,7 @@
           Your browser does not support the video tag.
         </video>
   </div>
+  <div class="details">
   <div class="overview">
       <p id="duaration"><strong>Duration:       </strong>{{audit.duration}}</p>
       <p id="sets"><strong>Sets:                </strong>{{audit.sets}}</p>
@@ -34,12 +35,15 @@
           </div>
 
       </div>
+      </div>
+      </div>
       
-      <div id="timecodes" display="inline-block">
+      <div id="timecodes" class="timecodes-container">
         {% for timecode,mistake in audit.timecodes.items() %}
-
-             <a href="javascript:void(0);" onclick="timecode(this)" display="inline-block"> {{timecode}}  </a>
-             <p>{{mistake}}</p>
+              <div class="timecodes">
+              <div><a href="javascript:void(0);" onclick="timecode(this)"> {{timecode}}  </a></div>
+              <div><p>{{mistake}}</p></div>
+              </div>
             </br>
              {% endfor %}             
 
