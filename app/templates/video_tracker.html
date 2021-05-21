@@ -37,18 +37,30 @@
       </div>
       </div>
       </div>
-      
-      <div id="timecodes" class="timecodes-container">
-        {% for timecode,mistake in audit.timecodes.items() %}
-              <div class="timecodes">
-              <div><a href="javascript:void(0);" onclick="timecode(this)"> {{timecode}}  </a></div>
-              <div><p>{{mistake}}</p></div>
-              </div>
-            </br>
-             {% endfor %}             
 
-      </div>
+            <div id="corectionTable">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                  <th scope="col">Timecode</th>
+                  <th scope="col">Mistake</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for timecode,mistake in audit.timecodes.items() %}
+                <tr>
 
+                <th scope="row"><div><a href="javascript:void(0);" onclick="timecode(this)">{{timecode}}</a> 
+                  </th>
+                <th>{{mistake}}</th>
+                </tr>
+                {% endfor %}             
+            </tbody>
+        </table>
+          
+     </div> 
+<br>
+<br>
       <div id="corectionTable">
         <table class="table table-hover">
             <thead>

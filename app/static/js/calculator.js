@@ -136,13 +136,12 @@ window.addEventListener("load", function () {
     calDIv.style.display = "none";
     calResults.style.display = "none";
     addTotal.style.display = "none";
-    search.value="";
+    search.value = "";
     divDB.style.display = "block";
-
   });
   saver.addEventListener("click", function (element) {
     element.preventDefault();
-    data = { "Activities": save };
+    data = { Activities: save };
     fetch("/homefitness/caloriecalculator/save", {
       method: "POST", // or 'PUT'
       headers: {
@@ -172,6 +171,5 @@ function calculator(obj) {
   results.innerHTML = "";
   document.getElementById("calculator").style.display = "block";
   document.getElementById("calResults").style.display = "block";
-  document.getElementById("results").style.display = "none";
   document.getElementById("activity").value = result.activities;
 }

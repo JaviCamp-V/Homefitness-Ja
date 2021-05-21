@@ -70,9 +70,8 @@ class Workout:
 
             class_name=self.model.predict(X)[0]
             if class_name!=self.lastclass:
-                if class_name not in self.errors:
-                    self.errors[class_name]=0
-                self.errors[class_name]+=1
+                if class_name in self.errors:
+                    self.errors[class_name] += 1
                 self.lastclass=class_name
             self.Repcounter(keypoints)
             self.Setcounter()
@@ -95,7 +94,7 @@ class Workout:
         now=datetime.datetime.now()-self.date
         mins=now.total_seconds()/60
         #(kcal burned) = (MET value/60) X (BMR/1440 minutes per day) X (duration of activity in minutes)
-        self.calorie=(self.MET/60)*(self.BMR/1440)* mins
+        self.calorie=(self.MET)*(self.BMR/1440)* mins
     def annotate(self,image,keypoints=None,videoMode=False):
         if keypoints is not None:
             image=Pose.drawJoints(image,keypoints,self.annotation_points)     
@@ -222,8 +221,9 @@ class Workout:
         data=json.loads(ex_)
         end=self.date+datetime.timedelta(seconds=frame_count/fps)
         mins=(frame_count/fps)/60
-        #data["calorie"]=round((self.MET/60)*(self.BMR/1440)* mins)
-        data["calorie"] = 350
+        data["calorie"]=round((self.MET)*(self.BMR/1440)* mins)
+        print("DEBUG!!!!!!!!!!!!!!!!!")
+        #data["calorie"] = 350
         data["end_time"]=end.strftime("%X")
         data["duration"]=Workout.timefromat(frame_count/fps)
         data.update(j)
@@ -272,13 +272,13 @@ class BicepCurls(Workout):
         if lAngle>135:
             self.leftState="stage"
             self.lstage_qu+=1
-        if rAngle<70 and  self.rightState=="stage" and self.rstage_qu>15:
+        if rAngle<70 and  self.rightState=="stage" and self.rstage_qu>13:
             self.rightState="up"
             self.leftState="up"
             self.reps+=1
             self.rstage_qu=0
             self.lstage_qu=0
-        elif lAngle<=71  and  self.leftState=="stage" and self.lstage_qu>15:
+        elif lAngle<=71  and  self.leftState=="stage" and self.lstage_qu>13:
             self.rightState="up"
             self.leftState="up"
             self.reps+=1
@@ -292,7 +292,7 @@ class BicepCurls(Workout):
 class Squat(Workout):
     corrections={"No Pose Detected":"Pleasa check camera feed","Low Visbility":"Stand 2-4 meters from the camera","kneesinward":"push knees outward a little","toolow":"dont bend too low","bentforward":"straighten back and lean upwards","heelsraised":"place heels on the ground"}
     model=pickle.load(open("app/static/models/squat_detection_model.pkl", 'rb'))
-    errors={"squat":0,"kneesinward":0,"toolow":0,"bentforward":0,"heelsraised":0}
+    errors={"squat":0,"knees inward":0,"too low":0,"bent forward":0,"heels raised":0}
     exerise="Sqaut"
     MET=4.0
     required_points=[23,24,25,26,27,28]
@@ -304,7 +304,7 @@ class Squat(Workout):
         # Squat counter logic
         if lAngle > 160 and rAngle > 160:
             self.state = "up"
-        if lAngle < 120 and rAngle < 120 and self.state=='up':
+        if lAngle < 140 and rAngle < 140 and self.state=='up':
             self.state="down"
             self.reps+=1
 

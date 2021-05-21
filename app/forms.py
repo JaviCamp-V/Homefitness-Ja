@@ -17,7 +17,7 @@ class SignUpForm(FlaskForm):
         weightgoal = FloatField('weightgoal',validators=[DataRequired()])
         gender =SelectField('Gender', choices=[('M', 'Male'), ('F', 'Female')],validators=[DataRequired()])
         age =IntegerField('Age', validators=[DataRequired()])
-        level=SelectField('Exercise Intesntity Level', choices=[('S', 'Sedentary'), ('L', 'Light'), ('M', 'Moderate'), ('VA', 'Very Active'), ('EA', 'Exceedingly Active')],validators=[DataRequired()])
+        level=SelectField('Activity Intesntity Level', choices=[('S', 'Sedentary'), ('L', 'Light'), ('M', 'Moderate'), ('VA', 'Very Active'), ('EA', 'Exceedingly Active')],validators=[DataRequired()])
         days =IntegerField('Days per Week', validators=[DataRequired(),NumberRange(min=0, max=7)])
         EI=SelectField('Excerise Intensity level', choices=[('L', 'Light'), ('M', 'Moderate'), ('V', 'Vigorous')],validators=[DataRequired()])
         minsExercise =IntegerField(' average mins per exercise', validators=[DataRequired()])
