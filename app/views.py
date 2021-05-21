@@ -123,8 +123,9 @@ def video_from():
                 #print('I AM HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
                 metcode=2052
                 sess=SquatSession(user_id=user_id,date=data["date"],start_time=data["start_time"],end_time=data["end_time"],
-                rep=data["reps"],set_number=data["sets"],no_of_kneesinward=data["errors"]["errors"]["knees inward"],no_of_toolow=data["errors"]["errors"]["too low"],no_of_bentforward=data["errors"]["errors"]["bent forward"],no_of_heelsraised=data["errors"]["errors"]["heels raised"],no_of_mistakes=data["errors"]["total"])
+                rep=data["reps"],set_number=data["sets"],no_of_kneesinward=data["errors"]["errors"]["kneesinward"],no_of_toolow=data["errors"]["errors"]["toolow"],no_of_bentforward=data["errors"]["errors"]["bentforward"],no_of_heelsraised=data["errors"]["errors"]["heelsraised"],no_of_mistakes=data["errors"]["total"])
                 act=ActivityLog(user_id,data["date"],metcode,"squat",timetoint(data["duration"]),data["calorie"])
+               
                 db.session.add(act)
                 db.session.add(sess)
                 if caloriesburned is None:
@@ -416,7 +417,7 @@ def gen_frames(etype):
             ret, buffer = cv2.imencode('.jpg', frame)
             frame = buffer.tobytes()
             yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
+                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concane by one and show result
     cv2.destroyAllWindows()
 """
 
@@ -816,7 +817,7 @@ def suggestions():
     else:
         kchange=(rate_of_loss*3500)/7#defict
     
-
+     
     """"
     Sedentary lifestyle (little or no exercise): 1.2
     Slightly active lifestyle (light exercise or sports 1-2 days/week): 1.4
@@ -839,25 +840,24 @@ def suggestions():
         TotalEnergy=2.0
     print(BMR)
     print(level)
+    print(TotalEnergy)
     maintenance_intake=BMR*TotalEnergy # to
     print("maintenance_intake",maintenance_intake)
-    intake=maintenance_intake-kchange
+    intake=maintenance_intake-(kchange/2)
     if intake>=maintenance_intake:
         burned=maintenance_intake
     elif intake<maintenance_intake:
-        intake=intake/2
         if current_user.gender=="M" and intake<1800:
             intake=1800
         elif current_user.gender=="F" and intake<1200:
             intake=1200
-        burned=(maintenance_intake-kchange)-intake
+        burned=(kchange -(maintenance_intake-intake))
     if EI=="L":
         intensity="Light"
     elif EI=="M":
         intensity="Moderate"
     else:
         intensity="vigorous"
-    #print(intensity)
     intakeamount=0
     burnamount=0
     cal=Calorie.query.filter_by(user_id=current_user.get_id(),date=date).first()
@@ -870,8 +870,8 @@ def suggestions():
     output=[]
     if (burned-burnamount)>0:
         lst=getListbyIntensity(intensity)
-        print("12445")
-        print(lst)
+        #print("12445")
+        #print(lst)
         for obj in lst:
             mins= (burned - burnamount) / (obj[1]*(BMR/1440))
             output.append((obj[2],int(mins)))
