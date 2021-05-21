@@ -10,15 +10,17 @@
 
 <div>
   <div id="dispalybox">
-    <p><strong> Goal Weight</strong>{{result.weight_goal}}</p>
+    <p><strong> Goal Weight</strong> {{result.weight_goal}}</p>
     <p>
-      <strong>Estimated time to achieve Goal</strong>{{result.timetogoal}} weeks
+      <strong>Estimated time to achieve Goal</strong> {{result.timetogoal}}
+      weeks
     </p>
+    <p><strong>Maintenance intake</strong> {{result.maintenance}} kcl</p>
     <div class="canvasgrid">
       <canvas class="displaycontainer" id="intake"></canvas>
-      <p><strong>Daily Calorie to Consume</strong>{{result.intake}}</p>
+      <p><strong>Daily Calorie to Consume </strong> {{result.intake}} kcl</p>
       <canvas class="displaycontainer" id="totalburn"></canvas>
-      <p><strong>Daily Calorie to Burn</strong>{{result.burned}}</p>
+      <p><strong>Daily Calorie to Burn </strong> {{result.burned}} kcl</p>
     </div>
     <!---
         <canvas id="work"></canvas>
@@ -32,9 +34,29 @@
         -->
   </div>
   <div class="suggestions">
-    {% if result.suggest %} {% for code in result.suggestions%}
-    <p>{{code[0]}}{{code[1]}}</p>
-    {% endfor %} {% endif %}
+    {% if result.suggest %}
+    <div id="corectionTable">
+      <table class="table table-hover">
+        <h3>You can select from any one of these exercises</h3>
+        <thead>
+          <tr>
+            <th scope="col">Workout</th>
+            <th scope="col">Time(mins)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for code in result.suggestions%}
+          <tr>
+            <th scope="row">{{code[0]}}</th>
+            <th>{{code[1]}}</th>
+          </tr>
+
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {% endif %}
   </div>
 </div>
 {% endblock %}

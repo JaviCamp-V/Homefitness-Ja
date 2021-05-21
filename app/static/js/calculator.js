@@ -136,13 +136,12 @@ window.addEventListener("load", function () {
     calDIv.style.display = "none";
     calResults.style.display = "none";
     addTotal.style.display = "none";
-    search.value="";
+    search.value = "";
     divDB.style.display = "block";
-
   });
   saver.addEventListener("click", function (element) {
     element.preventDefault();
-    data = { "Activities": save };
+    data = { Activities: save };
     fetch("/homefitness/caloriecalculator/save", {
       method: "POST", // or 'PUT'
       headers: {

@@ -96,7 +96,7 @@ class RepCounter(object):
         # Squat counter logic
         if leftangle > 160 and rightangle > 160:
             self.state = "up"
-        if leftangle < 120 and rightangle < 120 and stage =='up':
+        if leftangle < 140 and rightangle < 140 and self.state =='up':
             self.state="down"
             self.reps+=1
         return self.reps

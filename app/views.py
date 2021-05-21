@@ -123,7 +123,7 @@ def video_from():
                 #print('I AM HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
                 metcode=2052
                 sess=SquatSession(user_id=user_id,date=data["date"],start_time=data["start_time"],end_time=data["end_time"],
-                rep=data["reps"],set_number=data["sets"],no_of_kneesinward=data["errors"]["errors"]["kneesinward"],no_of_toolow=data["errors"]["errors"]["toolow"],no_of_bentforward=data["errors"]["errors"]["bentforward"],no_of_heelsraised=data["errors"]["errors"]["heelsraised"],no_of_mistakes=data["errors"]["total"])
+                rep=data["reps"],set_number=data["sets"],no_of_kneesinward=data["errors"]["errors"]["knees inward"],no_of_toolow=data["errors"]["errors"]["too low"],no_of_bentforward=data["errors"]["errors"]["bent forward"],no_of_heelsraised=data["errors"]["errors"]["heels raised"],no_of_mistakes=data["errors"]["total"])
                 act=ActivityLog(user_id,data["date"],metcode,"squat",timetoint(data["duration"]),data["calorie"])
                 db.session.add(act)
                 db.session.add(sess)
@@ -839,7 +839,6 @@ def suggestions():
         TotalEnergy=2.0
     print(BMR)
     print(level)
-    print(TotalEnergy)
     maintenance_intake=BMR*TotalEnergy # to
     print("maintenance_intake",maintenance_intake)
     intake=maintenance_intake-kchange
@@ -871,13 +870,13 @@ def suggestions():
     output=[]
     if (burned-burnamount)>0:
         lst=getListbyIntensity(intensity)
-        #print("12445")
-        #print(lst)
+        print("12445")
+        print(lst)
         for obj in lst:
             mins= (burned - burnamount) / (obj[1]*(BMR/1440))
             output.append((obj[2],int(mins)))
             suggest=len(output)!=0
-    results={"weight_goal":current_user.weight_goal,"timetogoal":weeks_to_go,"intake":round(intake,2),"intakeamount":round(intakeamount,2),"burned":round(burned,2),"burnamount":round(burnamount,2),"suggest":suggest,"suggestions":output}
+    results={"weight_goal":current_user.weight_goal,"timetogoal":weeks_to_go,"intake":round(intake,2),"intakeamount":round(intakeamount,2),"burned":round(burned,2),"burnamount":round(burnamount,2),"suggest":suggest,"suggestions":output, "maintenance":round(maintenance_intake, 2)}
     return render_template("suggestion.html",result=results)
 
 
