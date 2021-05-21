@@ -172,6 +172,5 @@ function calculator(obj) {
   results.innerHTML = "";
   document.getElementById("calculator").style.display = "block";
   document.getElementById("calResults").style.display = "block";
-  document.getElementById("results").style.display = "none";
   document.getElementById("activity").value = result.activities;
 }
