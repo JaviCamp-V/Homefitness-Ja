@@ -123,7 +123,7 @@ def video_from():
                 #print('I AM HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
                 metcode=2052
                 sess=SquatSession(user_id=user_id,date=data["date"],start_time=data["start_time"],end_time=data["end_time"],
-                rep=data["reps"],set_number=data["sets"],no_of_kneesinward=data["errors"]["errors"]["kneesinward"],no_of_toolow=data["errors"]["errors"]["toolow"],no_of_bentforward=data["errors"]["errors"]["bentforward"],no_of_heelsraised=data["errors"]["errors"]["heelsraised"],no_of_mistakes=data["errors"]["total"])
+                rep=data["reps"],set_number=data["sets"],no_of_kneesinward=data["errors"]["errors"]["knees inward"],no_of_toolow=data["errors"]["errors"]["too low"],no_of_bentforward=data["errors"]["errors"]["bent forward"],no_of_heelsraised=data["errors"]["errors"]["heels raised"],no_of_mistakes=data["errors"]["total"])
                 act=ActivityLog(user_id,data["date"],metcode,"squat",timetoint(data["duration"]),data["calorie"])
                
                 db.session.add(act)
@@ -808,7 +808,7 @@ def suggestions():
     minsExercise=current_user.minsExercise
     rate_of_loss=2
     weightChange=current_user.weight-current_user.weight_goal
-    weeks_to_go=(weightChange)//2#fastest way to achieve goal
+    weeks_to_go=(weightChange)//2 #fastest way to achieve goal
     if weightChange==0:
         kchange=0
     elif weightChange<0:
@@ -845,7 +845,8 @@ def suggestions():
     print("maintenance_intake",maintenance_intake)
     intake=maintenance_intake-(kchange/2)
     if intake>=maintenance_intake:
-        burned=maintenance_intake
+        burned = 0
+        weeks_to_go *= -1
     elif intake<maintenance_intake:
         if current_user.gender=="M" and intake<1800:
             intake=1800
